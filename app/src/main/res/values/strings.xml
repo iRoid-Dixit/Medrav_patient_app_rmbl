@@ -1,0 +1,267 @@
+<resources>
+    <string name="app_name">Medrev Patient</string>
+
+    <!--Splash-->
+    <string name="skai">SKAI</string>
+    <string name="fitness">FITNESS</string>
+    <string name="notification_channel_id">123</string>
+
+    <!--Login & Signup-->
+    <string name="log_in">Log In</string>
+    <string name="welcome_back">Welcome back !</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="or">OR</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset">Reset</string>
+    <string name="if_you_are_new">If you are new,</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="lets_begin">Welcome ! Let’s begin your\nfitness journey.</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="existing_user">Existing user?</string>
+    <string name="existing_user_login">Login</string>
+    <string name="by_registering">By registering, you agree to the</string>
+    <string name="terms_condition">Terms &amp; Conditions</string>
+    <string name="of_the_skai_fitness_app">of the SKAI Fitness App.</string>
+    <string name="verify_email_title">Verify Your Email</string>
+    <string name="code_sent_to_email">A verification code has been sent to</string>
+    <string name="change_email">Change Email</string>
+    <string name="verify">Verify</string>
+    <string name="did_not_receive_code">Didn’t receive code?</string>
+    <string name="resend">Resend</string>
+    <string name="get_started">Get Started</string>
+    <string name="congratulations">Congratulations !</string>
+    <string name="email_has_been_verified">Your Email has been verified successfully.</string>
+    <string name="empty_first_name">Please enter your first name</string>
+    <string name="empty_last_name">Please enter your last name</string>
+    <string name="empty_email">Please enter your email address</string>
+    <string name="empty_password">Please enter a password</string>
+    <string name="empty_confirm_password">Please confirm your password</string>
+    <string name="password_mismatch">Confirm password must be same as password</string>
+    <string name="empty_otp">Please enter OTP for verification</string>
+    <string name="internet_connection">Please check your internet connection first!</string>
+    <string name="terms_condition_error">To continue, please review and accept our Terms and Conditions by selecting the checkbox.</string>
+
+    <!--Reset password-->
+    <string name="reset_your_password">Reset Your Password</string>
+    <string name="please_enter_your_registered_email_to_reset_your_password">Please enter your registered Email\nto reset your Password.</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="remember_password">Remember Password?</string>
+    <string name="set_new_password">Set New Password</string>
+    <string name="new_pass_must_be_different">Your new password must be different from your previous one.</string>
+    <string name="set_password">Set Password</string>
+    <string name="great">Great !</string>
+    <string name="reset_successful">You have successfully Reset your password.</string>
+    <string name="continue_txt">Continue</string>
+
+
+    <!--OnBoarding-->
+    <string name="on_board_1_txt">A little progress each day adds up to big results.</string>
+    <string name="let_start">Let’s Start</string>
+    <string name="next">Next</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="picture_uploaded">Picture Uploaded</string>
+    <string name="upload_picture_txt">Please upload a picture for\nyour App profile.</string>
+    <string name="age">Age</string>
+    <string name="age_text">Please share more information\nabout yourself.</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="body_type">Body Type</string>
+    <string name="energy_level">Energy Level’s</string>
+    <string name="lifestyle">Lifestyle</string>
+    <string name="fitness_level">Fitness Level</string>
+    <string name="goals">Goals</string>
+    <string name="feet">Feet</string>
+    <string name="inch">Inch</string>
+    <string name="lbs">LBS</string>
+    <string name="start">Start</string>
+    <string-array name="body_type_array">
+        <item>Endomorph</item>
+        <item>Mesomorph</item>
+        <item>Ectomorph</item>
+    </string-array>
+    <string-array name="energy_level_array">
+        <item>Regular</item>
+        <item>High</item>
+        <item>Low</item>
+        <item>Fatigued</item>
+    </string-array>
+    <string-array name="lifestyle_array">
+        <item>Parent</item>
+        <item>Working Student</item>
+        <item>Pregnant</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="fitness_level_array">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+    <string-array name="goals_array">
+        <item>Lose Weight</item>
+        <item>Gain Muscle Mass</item>
+        <item>Maintain Physique</item>
+        <item>Tone</item>
+    </string-array>
+    <string name="empty_picture">Please, upload your picture or click on skip button to continue</string>
+    <string name="empty_age">Please, select your birth date</string>
+    <string name="age_should_not_be_future">Birthdate should not be in future</string>
+    <string name="empty_height">Please, provide your height</string>
+    <string name="empty_weight">Please, provide your weight</string>
+    <string name="empty_body_type">Please, select your body type</string>
+    <string name="empty_energy_level">Please, select your energy level</string>
+    <string name="empty_lifestyle">Please, select your lifestyle</string>
+    <string name="empty_fitness_level">Please, select your fitness level</string>
+    <string name="empty_goals">Please, select your goals</string>
+
+    <!--Subscription-->
+    <string name="start_my_free_7_days">Start My Free 7 Days</string>
+    <string name="commited_to_a_stronger_you">Commit to a Stronger You</string>
+    <string name="unblock_your_potential">Unlock your potential and make every workout count.</string>
+    <string name="if_canceled_charges_will_begin_on">If not canceled, charges will begin on Dec 20th</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="save_41">Save 41%</string>
+    <string-array name="subscription_array">
+        <item>Access to all programs, recipes and classes.</item>
+        <item>Program recommendations based on your goals.</item>
+        <item>Nutrition and goal tracking with reminders.</item>
+        <item>Offline access to programs and classes.</item>
+        <item>Stay motivated with the in-app Skai Fitness Community.</item>
+    </string-array>
+    <string name="free_trial">Free 7-day trial</string>
+    <string name="month_value">$14.99</string>
+    <string name="month_value_txt">/ Month</string>
+    <string name="year_value">$130</string>
+    <string name="year_value_txt">/ Year</string>
+    <string name="what_s_included_in_your_subscription">What\'s included in your subscription?</string>
+    <string name="skip">Skip</string>
+    <string name="select_from_gallery">Select from Gallery</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="choose_an_option">Choose an option</string>
+    <string name="camera_permission_txt">Allow Skai Fitness to access your storage and camera while you are using the app.</string>
+    <string name="cancel">Cancel</string>
+    <string name="open_setting">Open Settings</string>
+
+    <!--Community-->
+    <string name="community">Community</string>
+    <string name="community_txt">The platform where you can explore your fitness exercises,\nhealthy tips and you can learn too.</string>
+    <string name="lets_explore">LET\'S EXPLORE</string>
+    <string name="community_disclaimer">Welcome to the Skai Fitness community! To help everyone enjoy our community, we ask that when you post, you keep in mind the following:</string>
+    <string-array name="community_array">
+        <item>We don\'t allow defamatory, indecent, offensive, profane, discriminatory, misleading, unlawful or threatening comments.</item>
+        <item>Personal attacks, name-calling, trolling, and abuse will not be tolerated.</item>
+        <item>Spamming, posting promotional material, or posting links to third-party websites is not permitted.</item>
+        <item>Coordinated group attacks will not be tolerated.</item>
+        <item>Respect that other people in the community have had different life experiences and may have a different perspective to yours. We welcome different viewpoints.</item>
+        <item>Our community is a public place. Don\'t post personal information that you would not be comfortable sharing with a stranger. We recommend that you don\'t post any information that may identify you or anyone else, such as your address, email address, or phone number.</item>
+        <item>Employees participating in the discussion in our community are reminded of the staff\'s social media guidelines.</item>
+    </string-array>
+    <string name="please_check_guidelines">Please check that you understand and have read the guidelines carefully</string>
+    <string name="agree_to_guidelines">Agree To Guidelines</string>
+    <string name="coach_broadcast">#COACH BROADCAST</string>
+    <string name="all_posts">All Posts</string>
+    <string name="comments">Comments</string>
+    <string name="make_a_comment">Make a comment</string>
+    <string name="more">… more</string>
+    <string name="create_post">Create Post</string>
+    <string name="my_posts">My Posts</string>
+    <string name="preview">Preview</string>
+    <string name="upload_photos">Upload Photos</string>
+    <string name="you_can_add_max_3_photos">You can attach max 3 photos</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="write_about_post">Write About Your Post</string>
+    <string name="share_details_of_your_post">Share details of your post here (Max 200 Char)</string>
+    <string name="write_here">Write Here</string>
+    <string name="about_your_post">About Your Post</string>
+    <string name="post">Post</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="post_has_been_deleted">The Post has been deleted.</string>
+    <string name="post_is_no_more">You don\'t have this post anymore.</string>
+    <string name="see_my_posts">SEE MY POSTS</string>
+    <string name="are_you_sure_you_want_to_delete_this_post">Are you sure, you want to delete this Post?</string>
+    <string name="this_post_will_be_removed_permanently_after_deletion">This post will be removed permanently after deletion.</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="edit_profile">Edit Profile</string>
+
+    <!--Profile Section-->
+    <string name="update_password">Update Password</string>
+    <string name="manage_personalizes">Manage Profile</string>
+    <string name="name">Name</string>
+    <string name="update_picture">Update Picture</string>
+    <string name="update_name">Update Name</string>
+    <string name="update_email">Update Email</string>
+    <string name="update">Update</string>
+    <string name="current_password">Current Password</string>
+    <string name="log_out">Log Out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete?</string>
+    <string name="by_deleting">By deleting your account, the data will be erased permanently from your account.</string>
+    <string name="are_you_sure_or_logout">Are you sure you want to log out?</string>
+    <string name="you_need_to_login_again">You will need to Log In again to access your account.</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="reminder">Reminder</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="how_often_repeat">How Often Repeat</string>
+    <string name="everyday">Everyday</string>
+    <string name="mon_fri">Mon-Fri</string>
+    <string name="weekends">Weekends</string>
+    <string name="calendar">Calendar</string>
+    <string name="rate_us">Rate Us</string>
+    <string-array name="week_days">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+        <item>None</item>
+    </string-array>
+    <string name="update_profile_success_msg">Your %1$s has been updated successfully.</string>
+    <string name="go_back">Go Back</string>
+    <string name="profile">Profile</string>
+    <string name="under_development">Under Development</string>
+    <string name="completed_workouts">Completed Workouts</string>
+    <string name="steps">Steps</string>
+    <string name="workouts">Workouts</string>
+    <string name="popular_workouts_and_recipes"><![CDATA[Popular workouts & recipes]]></string>
+    <string name="calories">Calories</string>
+    <string name="no_comments">No comments found</string>
+    <string name="comment_empty_error">Please enter comment to post</string>
+    <string name="max_3_images">You can select upto 3 images only</string>
+    <string name="post_preview_error">"Please add images or post details for preview "</string>
+    <string name="please_read_community_guidelines">Please confirm by selecting the checkbox before continuing</string>
+    <string name="post_edit_error">Please include images or additional details to update the post</string>
+    <string name="select_program_goal">Select Program / Goal</string>
+
+    <!--Program and WorkOut-->
+    <string name="append_days">%s Days</string>
+    <string name="append_kcal">%s KCAL</string>
+    <string name="append_exercises">%s Exercises</string>
+    <string name="no_posts_found">No posts found</string>
+    <string name="warn_reminder_program">Please select program/goal</string>
+    <string name="warn_reminder_frequency">Please select a repeat option before continuing</string>
+    <string name="report_post">Report Post</string>
+    <string name="report">Report</string>
+    <string name="select_reason_error">Please select a reason for report</string>
+    <string name="report_content_empty_error">Please write your reason for reporting this post</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="enable_notifications_desc">Please enable notifications in settings to receive alerts.</string>
+    <string-array name="report_post_array">
+        <item>Spam</item>
+        <item>Nudity or sexually explicit material</item>
+        <item>Child abuse</item>
+        <item>Hate speech</item>
+        <item>Suicide or self injury</item>
+        <item>Misinformation</item>
+        <item>Promote terrorism</item>
+        <item>Harassment or bullying</item>
+        <item>Other</item>
+    </string-array>
+</resources>

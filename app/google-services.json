@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "459936982021",
+    "project_id": "medrev-patient",
+    "storage_bucket": "medrev-patient.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459936982021:android:0cf01c988036cb88f4286c",
+        "android_client_info": {
+          "package_name": "com.medrevpatient.mobile.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBusA_UIwrmg2FdBF7pfMJLp-hmvAtFytM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
