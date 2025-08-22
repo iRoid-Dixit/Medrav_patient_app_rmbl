@@ -19,7 +19,7 @@
 
     <!-- Auth screen -->
     <string name="login">Login</string>
-    <string name="email">Email</string>
+    <string name="email">Enter your Email</string>
     <string name="login_with">Or Login With</string>
     <string name="new_to_thought_rise">New to Thought Rise?</string>
     <string name="sign_up_now">Sign up Now!</string>
@@ -155,7 +155,7 @@
     <string name="feedback_help_us_txt">Your feedback will really help us</string>
     <string name="cancel_subscription">Cancel Subscription</string>
     <string name="see_you_again_txt">We hope to see you again soon</string>
-    <string name="password">Password</string>
+    <string name="password">Enter your password</string>
     <string name="sign_in">Sign In</string>
 
 

@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.login
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,13 +52,16 @@ import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextField
 import com.medrevpatient.mobile.app.ui.compose.common.LogInSignInNavText
+import com.medrevpatient.mobile.app.ui.compose.common.OrDivider
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
+import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_800
 import com.medrevpatient.mobile.app.ui.theme.Gray50
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 
 @ExperimentalMaterial3Api
 @Composable
@@ -109,7 +113,7 @@ private fun LoginScreeContent(uiState: LoginUiState, event: (LoginUiEvent) -> Un
                 keyboardController?.hide()
             }
             .background(color = White),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         LoginViewContent(uiState = uiState) { authUiEvent ->
@@ -117,7 +121,6 @@ private fun LoginScreeContent(uiState: LoginUiState, event: (LoginUiEvent) -> Un
         }
     }
 }
-
 @Composable
 private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Unit) {
     val loginUiState by uiState.loginDataFlow.collectAsStateWithLifecycle()
@@ -125,8 +128,9 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 22.dp, horizontal = 16.dp),
-        horizontalAlignment = Alignment.Start
+            .padding(vertical = 22.dp, horizontal = 20.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center
     ) {
         ScreenTitleComponent()
         Spacer(modifier = Modifier.height(35.dp))
@@ -135,6 +139,8 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
         AppInputTextField(
             value = loginUiState?.email ?: "",
             onValueChange = { event(LoginUiEvent.EmailValueChange(it)) },
+            title = "Email Address",
+            isTitleVisible = true,
             errorMessage = loginUiState?.emailErrorMsg,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -149,25 +155,27 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
         // Password Input Field
         AppInputTextField(
             value = loginUiState?.password ?: "",
+            isTitleVisible = true,
             onValueChange = { event(LoginUiEvent.PasswordValueChanges(it)) },
+            title = "Password",
             errorMessage = loginUiState?.passwordErrorMsg,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
+            isTrailingIconVisible = true,
             onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             header = stringResource(R.string.password),
-            trailingIcon = if (passwordVisible) R.drawable.ic_app_icon else R.drawable.ic_app_icon,
-            leadingIcon = R.drawable.ic_app_icon,
+            trailingIcon = if (passwordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = stringResource(R.string.forgot_your_password),
-            fontFamily = WorkSans,
-            color = Color(0xFF6B46C1), // Purple color matching the design
-            fontWeight = FontWeight.W500,
+            fontFamily = nunito_sans_700,
+            color = AppThemeColor, // Purple color matching the design
+
             fontSize = 14.sp,
             modifier = Modifier
                 .align(alignment = Alignment.End)
@@ -177,94 +185,23 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
         )
         
         Spacer(modifier = Modifier.height(40.dp))
-        
-        // Login Button
         AppButtonComponent(
             onClick = {
                 event(LoginUiEvent.DoLogin)
             },
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.sign_in),
+            isLoading = loginUiState?.showLoader == true,
+
+
         )
         
         Spacer(modifier = Modifier.height(20.dp))
-        
-        // Divider with "or" text
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(1.dp)
-                    .background(Color(0xFFE5E7EB))
-            )
-            Text(
-                text = "or",
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = Color(0xFF6B7280),
-                fontSize = 14.sp,
-                fontFamily = WorkSans
-            )
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(1.dp)
-                    .background(Color(0xFFE5E7EB))
-            )
+        OrDivider()
+        Row {
+
         }
-        
-        Spacer(modifier = Modifier.height(20.dp))
-        
-        // Social Login Buttons
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Google Login Button
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(White)
-                    .border(1.dp, Color(0xFFE5E7EB), CircleShape)
-                    .clickable { /* Handle Google login */ }
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                // Placeholder for Google icon - you'll need to add the actual icon
-                Text(
-                    text = "G",
-                    color = Color(0xFF4285F4),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            // Facebook Login Button
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(White)
-                    .border(1.dp, Color(0xFFE5E7EB), CircleShape)
-                    .clickable { /* Handle Facebook login */ }
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                // Placeholder for Facebook icon - you'll need to add the actual icon
-                Text(
-                    text = "f",
-                    color = Color(0xFF1877F2),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+
     }
 }
 
@@ -272,10 +209,10 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
 fun ScreenTitleComponent() {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = "Welcome Back!",
             fontFamily = nunito_sans_800,

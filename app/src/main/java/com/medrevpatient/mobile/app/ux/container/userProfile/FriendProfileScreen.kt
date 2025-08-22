@@ -72,6 +72,7 @@ import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.White50
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 import com.medrevpatient.mobile.app.utils.AppUtils
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 
 @ExperimentalMaterial3Api
 @Composable
@@ -128,21 +129,12 @@ fun FriendProfileScreen(
 
                         AppButtonComponent(
                             onClick = {
-                                if (friendInfoData.value?.isMemberOfInnerCircle == false) {
-                                    uiState.event(FriendProfileUiEvent.AddInnerCircle)
-                                }
+
                             },
-                            buttonBackgroundColor = if (friendInfoData.value?.isMemberOfInnerCircle == true) AppThemeColor else Gray2F,
-                            textColors = White,
-                            borderColors = if (friendInfoData.value?.isMemberOfInnerCircle == true) White else Gray2F,
-                            fontWeight = W400,
-                            fonsSize = 16,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 20.dp),
-                            text = if (friendInfoData.value?.isMemberOfInnerCircle == true) stringResource(
-                                R.string.added_to_inner_circle
-                            ) else stringResource(R.string.add_to_inner_circle)
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.sign_in),
+                            isLoading = false,
+
 
                         )
 

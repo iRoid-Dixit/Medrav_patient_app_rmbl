@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ui.compose.common
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -46,7 +49,10 @@ import com.medrevpatient.mobile.app.ui.theme.Gray5
 import com.medrevpatient.mobile.app.ui.theme.Gray50
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import androidx.compose.ui.graphics.Color
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppInputTextField(
     value: String,
@@ -64,18 +70,28 @@ fun AppInputTextField(
     isReadOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     @DrawableRes leadingIcon: Int? = null,
-    ) {
+    isTitleVisible: Boolean = false,
+    title: String = ""
+) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isFocused by interactionSource.collectIsFocusedAsState()
 
     Column {
+        if (isTitleVisible) {
+            Text(
+                text = title,
+                fontFamily = nunito_sans_600,
+                color = SteelGray,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .background(color = Gray5, shape = RoundedCornerShape(10))
+                .background(color = Gray5, shape = RoundedCornerShape(15))
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(10))
+                .clip(RoundedCornerShape(15))
         ) {
             if (isLeadingIconVisible && leadingIcon != null) {
                 Image(
@@ -84,60 +100,118 @@ fun AppInputTextField(
                     modifier = Modifier.padding(start = 16.dp),
                 )
             }
-            OutlinedTextField(
+
+            BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                singleLine = true,
-                readOnly = isReadOnly,
-                interactionSource = interactionSource,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = nunito_sans_400,
+                    fontSize = 14.sp,
+                    color = SteelGray,
+                    lineHeight = 20.sp
+                ),
                 modifier = Modifier
                     .weight(1f)
+                    .clip(RoundedCornerShape(15.dp))
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(10),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    cursorColor = Color(0xFF7A42F4),
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    disabledTextColor = Gray40,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                ),
-                maxLines = 1,
-                enabled = isEnable,
+                interactionSource = interactionSource,
                 keyboardOptions = keyboardOptions,
                 visualTransformation = visualTransformation,
-                placeholder = {
-                    Text(
-                        text = header,
-                        fontFamily = nunito_sans_400,
-                        fontSize = 14.sp,
-                        color = Gray40,
-                    )
-                }
-            )
+                enabled = true,
+                singleLine = true
+            ) {
+                TextFieldDefaults.DecorationBox(
+                    value = value,
+                    innerTextField = it,
+                    singleLine = true,
+                    enabled = true,
+                    isError = !errorMessage.isNullOrBlank(),
+                    visualTransformation = visualTransformation,
+                    placeholder = {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = header,
+                                fontFamily = nunito_sans_400,
+                                fontSize = 14.sp,
+                                color = Gray40,
+                            )
+                        }
+                    },
+                    interactionSource = interactionSource,
+                    // change the padding
+                    contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
+                        top = 12.dp, bottom = 12.dp, end = 15.dp, start = 15.dp
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        cursorColor = Color(0xFF7A42F4),
+                        errorIndicatorColor = Color.Transparent,
+                        errorContainerColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        disabledTextColor = Gray40,
+                        disabledIndicatorColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                    ),
 
+                    )
+            }
+
+            /* OutlinedTextField(
+                 value = value,
+                 onValueChange = onValueChange,
+                 singleLine = true,
+                 readOnly = isReadOnly,
+                 interactionSource = interactionSource,
+                 modifier = Modifier
+                     .weight(1f)
+                     .fillMaxWidth(),
+                 shape = RoundedCornerShape(12),
+                 colors = TextFieldDefaults.colors(
+                     focusedIndicatorColor = Color.Transparent,
+                     unfocusedIndicatorColor = Color.Transparent,
+                     focusedContainerColor = Color.Transparent,
+                     unfocusedContainerColor = Color.Transparent,
+                     cursorColor = Color(0xFF7A42F4),
+                     focusedTextColor = Color.Black,
+                     unfocusedTextColor = Color.Black,
+                     disabledTextColor = Gray40,
+                     disabledIndicatorColor = Color.Transparent,
+                     disabledContainerColor = Color.Transparent,
+                 ),
+                 maxLines = 1,
+                 enabled = isEnable,
+                 keyboardOptions = keyboardOptions,
+                 visualTransformation = visualTransformation,
+                 placeholder = {
+                     Text(
+                         text = header,
+                         fontFamily = nunito_sans_400,
+                         fontSize = 14.sp,
+                         color = Gray40,
+                     )
+                 }
+             )*/
             if (isTrailingIconVisible && trailingIcon != null) {
                 IconButton(onClick = {
-                    if(isTrailingIconClickable) onTrailingIconClick() else onTogglePasswordVisibility()
+                    if (isTrailingIconClickable) onTrailingIconClick() else onTogglePasswordVisibility()
                 }) {
                     Image(
                         painter = painterResource(trailingIcon),
-                        colorFilter = if(isTrailingIconClickable) ColorFilter.tint(Color(0xFF7A42F4)) else ColorFilter.tint(Gray40),
+                        colorFilter = if (isTrailingIconClickable) ColorFilter.tint(Color(0xFF7A42F4)) else ColorFilter.tint(Gray40),
                         contentDescription = "User",
                     )
                 }
             }
         }
-        if (errorMessage?.isNotEmpty()==true){
+        if (errorMessage?.isNotEmpty() == true) {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
-                fontFamily = WorkSans,
-                fontWeight = FontWeight.Normal,
+                fontFamily = nunito_sans_600,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 modifier = Modifier.padding(start = 15.dp, top = 10.dp)

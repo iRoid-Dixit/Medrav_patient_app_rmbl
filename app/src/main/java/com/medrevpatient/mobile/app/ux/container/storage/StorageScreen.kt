@@ -51,6 +51,7 @@ import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.White50
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 import com.medrevpatient.mobile.app.utils.AppUtils
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 import java.util.Locale
 
 @ExperimentalMaterial3Api
@@ -90,17 +91,12 @@ fun StorageScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     AppButtonComponent(
                         onClick = {
-                            uiState.event(StorageUiEvent.SubscriptionClick)
+
                         },
-                        buttonBackgroundColor = AppThemeColor,
-                        textColors = White,
-                        borderColors = White,
-                        fontWeight = W400,
-                        fonsSize = 16,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 20.dp),
-                        text = "Upgrade Storage"
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.sign_in),
+                        isLoading = false,
+                        isEnabled = false
 
                     )
                     Spacer(modifier = Modifier.height(15.dp))
