@@ -1,9 +1,11 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.login
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -83,8 +87,8 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     LogInSignInNavText(
-                        message = stringResource(R.string.don_t_have_an_account),
-                        actionText = stringResource(R.string.sign_up),
+                        message = stringResource(R.string.already_have_an_account),
+                        actionText = stringResource(R.string.login),
                         onClick = {
                             uiState.event(LoginUiEvent.SignUp)
                         },
@@ -125,6 +129,7 @@ private fun LoginScreeContent(uiState: LoginUiState, event: (LoginUiEvent) -> Un
 private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Unit) {
     val loginUiState by uiState.loginDataFlow.collectAsStateWithLifecycle()
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -193,13 +198,44 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             text = stringResource(R.string.sign_in),
             isLoading = loginUiState?.showLoader == true,
 
-
         )
-        
         Spacer(modifier = Modifier.height(20.dp))
         OrDivider()
-        Row {
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(22.dp, Alignment.CenterHorizontally)
+        ) {
+            listOf(
+                stringResource(R.string.google) to R.drawable.ic_google,
+                stringResource(R.string.facebook) to R.drawable.ic_facebook
+            ).forEach { (provider, icon) ->
+                Box(
+                    modifier = Modifier
+                        .clickable {
+                            when (provider) {
+                                context.getString(R.string.google) -> {
 
+                                }
+
+                                context.getString(R.string.facebook) -> {
+
+                                    /*  AppUtils.showMessage(
+                                          context,
+                                          context.getString(R.string.feature_in_progress_coming_soon)
+                                      )*/
+                                }
+                            }
+                        }
+                        .padding(13.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = "$provider login"
+                    )
+                }
+            }
         }
 
     }

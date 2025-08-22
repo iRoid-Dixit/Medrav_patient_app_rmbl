@@ -125,7 +125,7 @@ private fun RegisterScreenContent(
                 event(RegisterUiEvent.DoSignUp)
             },
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.sign_up),
+            text = stringResource(id = R.string.sign_in),
         )
         Spacer(modifier = Modifier.height(60.dp))
         LogInSignInNavText(

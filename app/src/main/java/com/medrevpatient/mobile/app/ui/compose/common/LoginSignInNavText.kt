@@ -13,9 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.Gray5A
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 import com.medrevpatient.mobile.app.ui.theme.YellowDF
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_300
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 
 @Composable
 fun LogInSignInNavText(
@@ -28,19 +31,17 @@ fun LogInSignInNavText(
         Row(modifier = modifier, verticalAlignment = Alignment.Bottom) {
             Text(
                 text = message,
-                fontFamily = WorkSans,
+                fontFamily = nunito_sans_400,
                 color = Gray5A,
-                fontWeight = FontWeight.W500,
+
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.padding(2.dp))
             Text(
                 text = actionText,
-                fontFamily = WorkSans,
-                fontWeight = FontWeight.W500,
+                fontFamily = nunito_sans_400,
                 fontSize = 14.sp,
-                color = YellowDF,
-                textDecoration = TextDecoration.Underline,
+                color = AppThemeColor,
                 modifier = modifier.clickable(onClick = onClick)
 
             )

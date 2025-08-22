@@ -23,7 +23,6 @@
     <string name="login_with">Or Login With</string>
     <string name="new_to_thought_rise">New to Thought Rise?</string>
     <string name="sign_up_now">Sign up Now!</string>
-    <string name="sign_up">Sign Up</string>
     <string name="sing_up_subtitle">Begin your Thought Rise journey today!</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
@@ -199,7 +198,6 @@
     <!-- AuthFlow-->
     <string name="welcome">Welcome</string>
     <string name="please_enter_your_details">Please enter your details</string>
-    <string name="don_t_have_an_account">Don’t Have An Account?</string>
     <string name="full_name">Full Name</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="date_of_birth">Date Of Birth</string>
@@ -395,4 +393,11 @@
     <string name="edit_advertisement">Edit Advertisement</string>
     <string name="activate_now">Activate Now</string>
     <string name="offline">offline</string>
+
+
+     <!--medrev-->
+    <string name="google">google</string>
+    <string name="apple">apple</string>
+    <string name="facebook">facebook</string>
+
 </resources>

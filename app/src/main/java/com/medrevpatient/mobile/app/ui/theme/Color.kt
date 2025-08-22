@@ -59,4 +59,4 @@ val Gray50 = Color(0x802C5180)
 val Gray5 = Color(0x0D2C2340)
 val Gray40 = Color(0x662C2C51)
 val ShuttleGray = Color(0xFF5A6673)
-
+val Gray94 = Color(0xFF949494)

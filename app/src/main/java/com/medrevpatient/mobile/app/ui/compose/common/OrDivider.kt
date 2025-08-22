@@ -32,7 +32,7 @@ fun OrDivider(modifier: Modifier = Modifier) {
             contentDescription = null
         )
         Text(
-            text = "OR",
+            text = "or continue with",
             modifier = Modifier.padding(horizontal = 8.dp),
             color = ShuttleGray,
             fontSize = 14.sp,
