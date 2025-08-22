@@ -12,19 +12,19 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 android {
-    namespace = "com.griotlegacy.mobile.app"
+    namespace = "com.medrevpatient.mobile.app"
     compileSdk = 35
     signingConfigs {
         create("release") {
             storeFile =
-                file("/Users/imac/Documents/dixit/Projects/legacy_cache_app/Legacy_Cache-Android/Legacy_Cache.jks")
+                file("/Users/imac/Documents/dixit/Projects/medrev_patient_app/Legacy_Cache-Android/MedrevPatient.jks")
             storePassword = "android"
             keyAlias = "android"
             keyPassword = "android"
         }
     }
     defaultConfig {
-        applicationId = "com.griotlegacy.mobile.app"
+        applicationId = "com.medrevpatient.mobile.app"
         minSdk = 26
         targetSdk = 35
         versionCode = 9
@@ -33,7 +33,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        setProperty("archivesBaseName", "LegacyCache_" + formatDateWithOrdinal(Date()))
+        setProperty("archivesBaseName", "medrevpatient" + formatDateWithOrdinal(Date()))
         // setProperty("archivesBaseName", "$applicationId-ver$versionName.ver_code-$versionCode")
         signingConfig = signingConfigs.getByName("release")
     }

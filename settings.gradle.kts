@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GriotLegacy"
+rootProject.name = "MedrevPatient"
 include(":app")
  

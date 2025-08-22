@@ -9,7 +9,7 @@
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
-    <style name="Theme.GriotLegacy" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.MedrevPatient" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimary">@color/app_primary</item>
     </style>
 </resources>
