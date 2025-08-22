@@ -7,5 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="white10">#1AFFFFFF</color>
+    <color name="red">#C53B3B</color>
+
+    <color name="app_primary">#FF000000</color>
+    <color name="app_bg">#FF000000</color>
+    <color name="successColor">@color/app_primary</color>
+    <color name="errorColor">@color/app_primary</color>
+    <color name="warning_colors">#FFA900</color>
+    <color name="error_colors">#D50000</color>
+    <color name="success_colors">#388E3C</color>
+    <color name="warningColor">@color/app_primary</color>
 </resources>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MedrevPatientApp" parent="android:Theme.Material.Light.NoActionBar" >
-        <item name="android:colorPrimary">@color/white</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+    <!-- Workaround for issue for large splash images on SDK > 31 (use above and remove v31/themes.xml when fixed https://issuetracker.google.com/issues/201724091) -->
+    <style name="AppTheme.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/app_bg</item>
+        <item name ="windowSplashScreenIconBackgroundColor">@color/app_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
-    <style name="Theme.Splash" parent="Theme.SplashScreen.IconBackground">
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
-        <item name="postSplashScreenTheme">@style/Theme.MedrevPatientApp</item>
+    <style name="Theme.GriotLegacy" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/app_primary</item>
     </style>
 </resources>

@@ -3,6 +3,6 @@
     <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
         <!-- The color above the App (where the clock and battery icons are) -->
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/app_bg</item>
     </style>
 </resources>

@@ -1,181 +1,78 @@
+import org.gradle.kotlin.dsl.android
+import org.gradle.kotlin.dsl.kotlin
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
-
 plugins {
-    alias(libs.plugins.ksp.module)
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.dagger.plugin)
-    alias(libs.plugins.firebase.crashlytics)
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
-
 android {
-    namespace = "com.medrevpatient.mobile.app"
+    namespace = "com.griotlegacy.mobile.app"
     compileSdk = 35
-
+    signingConfigs {
+        create("release") {
+            storeFile =
+                file("/Users/imac/Documents/dixit/Projects/legacy_cache_app/Legacy_Cache-Android/Legacy_Cache.jks")
+            storePassword = "android"
+            keyAlias = "android"
+            keyPassword = "android"
+        }
+    }
     defaultConfig {
-        applicationId = "com.medrevpatient.mobile.app"
+        applicationId = "com.griotlegacy.mobile.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
-
+        versionCode = 9
+        versionName = "1.0.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        setProperty("archivesBaseName", "medrevpatient" + formatDateWithOrdinal(Date()))
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+        setProperty("archivesBaseName", "LegacyCache_" + formatDateWithOrdinal(Date()))
+        // setProperty("archivesBaseName", "$applicationId-ver$versionName.ver_code-$versionCode")
+        signingConfig = signingConfigs.getByName("release")
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
             isDebuggable = false
             buildConfigField("boolean", "EnableAnim", "true")
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                "\"https://dev.iroidsolutions.com:3001/api/v1/\""
-            ) //please put your respective base url
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            buildConfigField("String", "BASE_URL", "\"https://dev.iroidsolutions.com:4009/api/v1/\"") //please put your respective base url
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-
         debug {
             isDebuggable = true
             buildConfigField("boolean", "EnableAnim", "true")
-            buildConfigField(
-                "String",
-                "BASE_URL",
-                "\"https://dev.iroidsolutions.com:3001/api/v1/\""
-            ) //please put your respective base url
+            buildConfigField("String", "BASE_URL", "\"https://dev.iroidsolutions.com:4009/api/v1/\"") //please put your respective base url
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get().toString()
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 }
-
-dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.window.size)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.paging.common.android)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.camera2)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    //implementation(libs.androidx.paging.common.android)
-
-    //Retrofit-Network
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.converter.scalar)
-    implementation(libs.logging.interceptor)
-    implementation(libs.timber)
-
-    // Android Architecture Components
-    implementation(libs.androidx.lifecycle.compose)
-    implementation(libs.androidx.lifecycle.process)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-
-    //Android
-    implementation(libs.androidx.splashscreen)
-    implementation(libs.androidx.datastorePrefs)
-
-    //coroutine
-    implementation(libs.kotlin.coroutines.android)
-
-    //Hilt
-    implementation(libs.google.hilt.library)
-    ksp(libs.google.hilt.compiler)
-    ksp(libs.androidx.hilt.compiler)
-
-    //services
-    implementation(libs.firebase.messaging.ktx)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-
-    //Coil
-    implementation(libs.coil.compose)
-    implementation(libs.coil.video)
-    implementation(libs.coil.gif)
-
-    implementation(libs.accompanist.systemuicontroller)
-
-    //picker
-    implementation(libs.snapper)
-
-    //toast messages
-    implementation(libs.toasty)
-
-    //Media3
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.dash)
-    implementation(libs.media3.ui)
-
-    //Animation - AVD
-    implementation(libs.compose.animation.graphic)
-
-    //Loader
-    implementation(libs.mahboubehSeyedpour.loading)
-
-    //permission
-    implementation(libs.ezpermission)
-
-    //script
-    implementation(libs.script)
-
-    //room database
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-
-    //worker
-    implementation(libs.worker.runtime)
-    implementation(libs.worker.hilt)
-
-    //firebase crashlytics
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
-
-}
-
-
 fun formatDateWithOrdinal(date: Date): String {
     val daySuffix = getDaySuffix(date)
     val formattedDate = SimpleDateFormat("d'$daySuffix'MMMMyyyy").apply {
@@ -183,9 +80,7 @@ fun formatDateWithOrdinal(date: Date): String {
     }.format(date)
     return formattedDate
 }
-
 fun getDaySuffix(date: Date): String {
-
     val day = SimpleDateFormat("d").apply {
         timeZone = TimeZone.getDefault()
     }.format(date)
@@ -193,16 +88,128 @@ fun getDaySuffix(date: Date): String {
     val dayInt = day.toInt()
     var suffix = "th"
 
-    if (dayInt in 11..13) return suffix
+    if (dayInt >= 11 && dayInt <= 13) return suffix
 
-    val suffixMap =
-        arrayOfNulls<String>(100) + arrayOf("nd", "st", "rd") + (4..20).map { "th" } + arrayOf(
-            "st",
-            "nd",
-            "rd"
-        ) + (24..30).map { "th" } + arrayOf("st")
+    val suffixMap = arrayOf(null, "st", "nd", "rd") +
+            (4..20).map { "th" } + arrayOf("st", "nd", "rd") +
+            (24..30).map { "th" } + arrayOf("st")
 
-    suffix = suffixMap[dayInt % 100] ?: "th"
-
+    suffix = suffixMap[dayInt % 100].toString()
     return suffix
+}
+dependencies {
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3)
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.ui.test.android)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+
+    //Android
+    implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.datastorePrefs)
+    implementation(libs.androidx.activity)
+    // Inject - Dagger hilt
+    kapt(libs.google.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.google.hilt.library)
+//    implementation(libs.androidx.hilt.work)
+
+    //compose
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material3.windowsize)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.google.gson)
+
+    // Android Architecture Components
+    implementation(libs.androidx.lifecycle.compose)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+    implementation(libs.androidx.lifecycle.runtime)
+
+    //firebase
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.messaging.ktx)
+
+    //country code
+    implementation(libs.komposecountrycodepicker)
+
+    // Logging
+    implementation(libs.kermit)
+
+// image load
+    implementation(libs.coil.kt.coil.compose)
+
+    //coroutine
+    implementation(libs.kotlin.coroutines.android)
+
+    //System UI
+    implementation(libs.accompanist.systemuicontroller)
+
+    //toast messages
+    implementation(libs.toasty)
+
+    //paging-3
+    implementation(libs.paging.compose)
+
+    //calendar
+    implementation(libs.threetenabp)
+
+    //in-app subscription
+    implementation(libs.billing.ktx)
+    implementation(libs.revenuecat.purchases)
+
+    //facebook login
+    implementation(libs.facebook.android.sdk)
+
+    //Youtube video
+    implementation(libs.youtubeplayer.compose.android)
+
+    implementation(libs.androidyoutubeplayer.core)
+    // custom toast
+    implementation (libs.cookiebar2)
+
+    implementation (libs.accompanist.pager)
+
+    // pull to refresh
+    implementation (libs.accompanist.swiperefresh)
+
+    //firebase crashlytics
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+
+
+    // image swap
+
+    //   Socket
+    implementation(libs.socket.io.client)
+
+
+
+
 }

@@ -1,267 +1,398 @@
 <resources>
-    <string name="app_name">Medrev Patient</string>
+    <string name="app_name">Legacy Cache</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="show_password">Show Password</string>
+    <string name="settings">Settings</string>
+    <string name="full_profile">Full Profile</string>
+    <string name="some_part_of_profile">Some Part Of Profile</string>
 
-    <!--Splash-->
-    <string name="skai">SKAI</string>
-    <string name="fitness">FITNESS</string>
-    <string name="notification_channel_id">123</string>
+    <!-- facebook configuration -->
+    <string name="facebook_app_id">3840996699483700</string>
+    <string name="fb_login_protocol_scheme">fb3840996699483700</string>
+    <string name="facebook_client_token">6d0094378bc8f749be59d722ff1eaa6d</string>
 
-    <!--Login & Signup-->
-    <string name="log_in">Log In</string>
-    <string name="welcome_back">Welcome back !</string>
+    <!-- On boarding screen -->
+    <string name="onboarding_state_msg_1">Discover the power of a consistent scripture-based morning routine, personalized just for you !</string>
+    <string name="onboarding_state_msg_2">See how Thought Rise can help you kickstart each day with personalized audio that speaks to you by name, guiding you through prayer, affirmations, and reminders of your God-Sized Dream.</string>
+    <string name="start_here">Start Here</string>
+    <string name="trial_day">Try it Free for 7 Days</string>
+
+    <!-- Auth screen -->
+    <string name="login">Login</string>
     <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="or">OR</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="reset">Reset</string>
-    <string name="if_you_are_new">If you are new,</string>
+    <string name="login_with">Or Login With</string>
+    <string name="new_to_thought_rise">New to Thought Rise?</string>
+    <string name="sign_up_now">Sign up Now!</string>
     <string name="sign_up">Sign Up</string>
-    <string name="lets_begin">Welcome ! Let’s begin your\nfitness journey.</string>
+    <string name="sing_up_subtitle">Begin your Thought Rise journey today!</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="existing_user">Existing user?</string>
-    <string name="existing_user_login">Login</string>
-    <string name="by_registering">By registering, you agree to the</string>
-    <string name="terms_condition">Terms &amp; Conditions</string>
-    <string name="of_the_skai_fitness_app">of the SKAI Fitness App.</string>
-    <string name="verify_email_title">Verify Your Email</string>
-    <string name="code_sent_to_email">A verification code has been sent to</string>
+    <string name="signup_with">Or Sign Up With</string>
+    <string name="have_an_account">Have an account?</string>
+    <string name="login_now">Login Now</string>
+    <string name="terms_and_condition">Terms &amp; Conditions</string>
+
+    <!-- OTP verification -->
+    <string name="verify_your_email">Verify your Email</string>
+    <string name="verification_msg_prefix">A verification code has been sent to</string>
     <string name="change_email">Change Email</string>
-    <string name="verify">Verify</string>
-    <string name="did_not_receive_code">Didn’t receive code?</string>
+    <string name="verify_and_login">Verify &amp; Login</string>
+    <string name="verify_and_sign_up">Verify &amp; Sign Up</string>
+    <string name="didn_t_receive_code">Didn’t receive code?</string>
     <string name="resend">Resend</string>
-    <string name="get_started">Get Started</string>
+    <string name="verify">Verify</string>
     <string name="congratulations">Congratulations !</string>
-    <string name="email_has_been_verified">Your Email has been verified successfully.</string>
-    <string name="empty_first_name">Please enter your first name</string>
-    <string name="empty_last_name">Please enter your last name</string>
-    <string name="empty_email">Please enter your email address</string>
-    <string name="empty_password">Please enter a password</string>
-    <string name="empty_confirm_password">Please confirm your password</string>
-    <string name="password_mismatch">Confirm password must be same as password</string>
-    <string name="empty_otp">Please enter OTP for verification</string>
-    <string name="internet_connection">Please check your internet connection first!</string>
-    <string name="terms_condition_error">To continue, please review and accept our Terms and Conditions by selecting the checkbox.</string>
+    <string name="verified_emails_msg">Your Email has been verified successfully.</string>
+    <string name="app_starter_msg">Get Started With Thought Rise</string>
 
-    <!--Reset password-->
-    <string name="reset_your_password">Reset Your Password</string>
-    <string name="please_enter_your_registered_email_to_reset_your_password">Please enter your registered Email\nto reset your Password.</string>
-    <string name="send_otp">Send OTP</string>
-    <string name="remember_password">Remember Password?</string>
-    <string name="set_new_password">Set New Password</string>
-    <string name="new_pass_must_be_different">Your new password must be different from your previous one.</string>
-    <string name="set_password">Set Password</string>
-    <string name="great">Great !</string>
-    <string name="reset_successful">You have successfully Reset your password.</string>
-    <string name="continue_txt">Continue</string>
-
-
-    <!--OnBoarding-->
-    <string name="on_board_1_txt">A little progress each day adds up to big results.</string>
-    <string name="let_start">Let’s Start</string>
-    <string name="next">Next</string>
-    <string name="upload_picture">Upload Picture</string>
-    <string name="picture_uploaded">Picture Uploaded</string>
-    <string name="upload_picture_txt">Please upload a picture for\nyour App profile.</string>
-    <string name="age">Age</string>
-    <string name="age_text">Please share more information\nabout yourself.</string>
-    <string name="height">Height</string>
-    <string name="weight">Weight</string>
-    <string name="body_type">Body Type</string>
-    <string name="energy_level">Energy Level’s</string>
-    <string name="lifestyle">Lifestyle</string>
-    <string name="fitness_level">Fitness Level</string>
-    <string name="goals">Goals</string>
-    <string name="feet">Feet</string>
-    <string name="inch">Inch</string>
-    <string name="lbs">LBS</string>
-    <string name="start">Start</string>
-    <string-array name="body_type_array">
-        <item>Endomorph</item>
-        <item>Mesomorph</item>
-        <item>Ectomorph</item>
-    </string-array>
-    <string-array name="energy_level_array">
-        <item>Regular</item>
-        <item>High</item>
-        <item>Low</item>
-        <item>Fatigued</item>
-    </string-array>
-    <string-array name="lifestyle_array">
-        <item>Parent</item>
-        <item>Working Student</item>
-        <item>Pregnant</item>
-        <item>Other</item>
-    </string-array>
-    <string-array name="fitness_level_array">
-        <item>Beginner</item>
-        <item>Intermediate</item>
-        <item>Advanced</item>
-    </string-array>
-    <string-array name="goals_array">
-        <item>Lose Weight</item>
-        <item>Gain Muscle Mass</item>
-        <item>Maintain Physique</item>
-        <item>Tone</item>
-    </string-array>
-    <string name="empty_picture">Please, upload your picture or click on skip button to continue</string>
-    <string name="empty_age">Please, select your birth date</string>
-    <string name="age_should_not_be_future">Birthdate should not be in future</string>
-    <string name="empty_height">Please, provide your height</string>
-    <string name="empty_weight">Please, provide your weight</string>
-    <string name="empty_body_type">Please, select your body type</string>
-    <string name="empty_energy_level">Please, select your energy level</string>
-    <string name="empty_lifestyle">Please, select your lifestyle</string>
-    <string name="empty_fitness_level">Please, select your fitness level</string>
-    <string name="empty_goals">Please, select your goals</string>
-
-    <!--Subscription-->
-    <string name="start_my_free_7_days">Start My Free 7 Days</string>
-    <string name="commited_to_a_stronger_you">Commit to a Stronger You</string>
-    <string name="unblock_your_potential">Unlock your potential and make every workout count.</string>
-    <string name="if_canceled_charges_will_begin_on">If not canceled, charges will begin on Dec 20th</string>
+    <!-- Subscriptions -->
+    <string name="subs_title_text">Elevate Your Thoughts, Transform Your Days with a Subscription to Thought Rise</string>
     <string name="monthly">Monthly</string>
+    <string name="monthly_price">$1.99 / Month</string>
+    <string name="free_trial_text">7-Day Free Trial</string>
     <string name="yearly">Yearly</string>
-    <string name="save_41">Save 41%</string>
-    <string-array name="subscription_array">
-        <item>Access to all programs, recipes and classes.</item>
-        <item>Program recommendations based on your goals.</item>
-        <item>Nutrition and goal tracking with reminders.</item>
-        <item>Offline access to programs and classes.</item>
-        <item>Stay motivated with the in-app Skai Fitness Community.</item>
-    </string-array>
-    <string name="free_trial">Free 7-day trial</string>
-    <string name="month_value">$14.99</string>
-    <string name="month_value_txt">/ Month</string>
-    <string name="year_value">$130</string>
-    <string name="year_value_txt">/ Year</string>
+    <string name="yearly_price">$19.99 / Year</string>
     <string name="what_s_included_in_your_subscription">What\'s included in your subscription?</string>
-    <string name="skip">Skip</string>
-    <string name="select_from_gallery">Select from Gallery</string>
-    <string name="open_camera">Open Camera</string>
-    <string name="choose_an_option">Choose an option</string>
-    <string name="camera_permission_txt">Allow Skai Fitness to access your storage and camera while you are using the app.</string>
+    <string name="subscribe_now">Subscribe Now</string>
+    <string name="restore_subscription">Restore Subscription</string>
+    <string name="subs_dialog_title">Feed a hungry\nchild in Africa!</string>
+    <string name="dialog_content_msg">25% of today’s purchase will be donated to</string>
+    <string name="no_hungry_children">No Hungry Children</string>
+    <string name="learn_more">Learn More</string>
+    <string name="got_it">Got It</string>
+
+    <!-- Logout -->
+    <string name="logout_content_text">Are you sure you want to logout?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+
+    <!-- Bottom Bar -->
+    <string name="home">Home</string>
+    <string name="archives">Archives</string>
+    <string name="subscription">Subscription</string>
+
+
+    <!-- Home screen -->
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="good_night">Good Night</string>
+
+    <!-- Personalize audio -->
+    <string name="personalize_audio_title">Personalize your audio now to begin using Thought Rise !</string>
+    <string name="not_now">Not Now</string>
+    <string name="lets_get_started">Let\'s Get Started!</string>
+    <string name="tap_to_retry">Tap to retry</string>
+    <string name="i_ll_come_back_later">I\'ll come back later</string>
+    <string name="personalize_screen_title">Personalize Your Audio</string>
+    <string name="personalize_screen_sub_title">Every day, you\'ll hear your God-Sized Dream and Affirmations you set here in your audio feed.</string>
+    <string name="first_name_pronunciation">First Name Pronunciation</string>
+    <string name="goal_title">My God-Sized Dream is to…</string>
+    <string name="max_char">(Max 100 Chars)</string>
+    <string name="enter_your_goal">Enter your God-Sized Dream</string>
+    <string name="affirmations_title">My Personal Affirmations</string>
+    <string name="affirmations_condition">(Choose 3)</string>
+    <string name="affirmations_char_limit">I....(Max 50 Chars)</string>
+    <string name="or_choose">OR CHOOSE</string>
+    <string name="view_all">View All</string>
+    <string name="remind_me_everyday_at">Remind Me Everyday At</string>
+    <string name="choose_time">Choose Time</string>
+    <string name="all_set">All Set !</string>
+    <string name="change">Change</string>
+
+    <!-- TTS sheet -->
+    <string name="que_name_pronounce_confirmation">Did we pronounce your name right?</string>
+    <string name="reenter_name_title">Please enter the phonetic spelling (the way your name sounds) of your first name and try again.</string>
+    <string name="save_my_name">Save My Name</string>
+    <string name="help_text">Still not right? Let us help!</string>
     <string name="cancel">Cancel</string>
-    <string name="open_setting">Open Settings</string>
+    <string name="pick">Pick</string>
 
-    <!--Community-->
-    <string name="community">Community</string>
-    <string name="community_txt">The platform where you can explore your fitness exercises,\nhealthy tips and you can learn too.</string>
-    <string name="lets_explore">LET\'S EXPLORE</string>
-    <string name="community_disclaimer">Welcome to the Skai Fitness community! To help everyone enjoy our community, we ask that when you post, you keep in mind the following:</string>
-    <string-array name="community_array">
-        <item>We don\'t allow defamatory, indecent, offensive, profane, discriminatory, misleading, unlawful or threatening comments.</item>
-        <item>Personal attacks, name-calling, trolling, and abuse will not be tolerated.</item>
-        <item>Spamming, posting promotional material, or posting links to third-party websites is not permitted.</item>
-        <item>Coordinated group attacks will not be tolerated.</item>
-        <item>Respect that other people in the community have had different life experiences and may have a different perspective to yours. We welcome different viewpoints.</item>
-        <item>Our community is a public place. Don\'t post personal information that you would not be comfortable sharing with a stranger. We recommend that you don\'t post any information that may identify you or anyone else, such as your address, email address, or phone number.</item>
-        <item>Employees participating in the discussion in our community are reminded of the staff\'s social media guidelines.</item>
-    </string-array>
-    <string name="please_check_guidelines">Please check that you understand and have read the guidelines carefully</string>
-    <string name="agree_to_guidelines">Agree To Guidelines</string>
-    <string name="coach_broadcast">#COACH BROADCAST</string>
-    <string name="all_posts">All Posts</string>
-    <string name="comments">Comments</string>
-    <string name="make_a_comment">Make a comment</string>
-    <string name="more">… more</string>
-    <string name="create_post">Create Post</string>
-    <string name="my_posts">My Posts</string>
-    <string name="preview">Preview</string>
-    <string name="upload_photos">Upload Photos</string>
-    <string name="you_can_add_max_3_photos">You can attach max 3 photos</string>
-    <string name="upload_photo">Upload Photo</string>
-    <string name="write_about_post">Write About Your Post</string>
-    <string name="share_details_of_your_post">Share details of your post here (Max 200 Char)</string>
-    <string name="write_here">Write Here</string>
-    <string name="about_your_post">About Your Post</string>
-    <string name="post">Post</string>
-    <string name="edit_post">Edit Post</string>
-    <string name="delete_post">Delete Post</string>
-    <string name="post_has_been_deleted">The Post has been deleted.</string>
-    <string name="post_is_no_more">You don\'t have this post anymore.</string>
-    <string name="see_my_posts">SEE MY POSTS</string>
-    <string name="are_you_sure_you_want_to_delete_this_post">Are you sure, you want to delete this Post?</string>
-    <string name="this_post_will_be_removed_permanently_after_deletion">This post will be removed permanently after deletion.</string>
-    <string name="yes">YES</string>
-    <string name="no">NO</string>
-    <string name="edit_profile">Edit Profile</string>
+    <!-- Affirmation sheet -->
+    <string name="god_whispers">God Whispers</string>
+    <string name="affirmations">Affirmations</string>
+    <string name="affirmations_subtitle">The words you need to hear most in this season of your life.</string>
+    <string name="to_get_you_started">To get you started !</string>
+    <string name="choose">Choose</string>
 
-    <!--Profile Section-->
-    <string name="update_password">Update Password</string>
-    <string name="manage_personalizes">Manage Profile</string>
-    <string name="name">Name</string>
-    <string name="update_picture">Update Picture</string>
+    <!-- Profile -->
+    <string name="personalize_audio">Personalize Audio</string>
+    <string name="manage_profile">Manage Profile</string>
+    <string name="help_and_support">Help &amp; Support</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about_thought_rise">About Thought Rise</string>
     <string name="update_name">Update Name</string>
     <string name="update_email">Update Email</string>
     <string name="update">Update</string>
-    <string name="current_password">Current Password</string>
-    <string name="log_out">Log Out</string>
-    <string name="delete_account">Delete Account</string>
-    <string name="account_settings">Account Settings</string>
-    <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete?</string>
-    <string name="by_deleting">By deleting your account, the data will be erased permanently from your account.</string>
-    <string name="are_you_sure_or_logout">Are you sure you want to log out?</string>
-    <string name="you_need_to_login_again">You will need to Log In again to access your account.</string>
-    <string name="terms_conditions">Terms &amp; Conditions</string>
-    <string name="reminder">Reminder</string>
-    <string name="reminder_time">Reminder Time</string>
-    <string name="how_often_repeat">How Often Repeat</string>
-    <string name="everyday">Everyday</string>
-    <string name="mon_fri">Mon-Fri</string>
-    <string name="weekends">Weekends</string>
-    <string name="calendar">Calendar</string>
-    <string name="rate_us">Rate Us</string>
-    <string-array name="week_days">
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
-        <item>Sun</item>
-        <item>None</item>
-    </string-array>
-    <string name="update_profile_success_msg">Your %1$s has been updated successfully.</string>
+    <string name="great">Great !</string>
+    <string name="email_updating_msg">Your Email has been updated successfully.</string>
     <string name="go_back">Go Back</string>
-    <string name="profile">Profile</string>
-    <string name="under_development">Under Development</string>
-    <string name="completed_workouts">Completed Workouts</string>
-    <string name="steps">Steps</string>
-    <string name="workouts">Workouts</string>
-    <string name="popular_workouts_and_recipes"><![CDATA[Popular workouts & recipes]]></string>
-    <string name="calories">Calories</string>
-    <string name="no_comments">No comments found</string>
-    <string name="comment_empty_error">Please enter comment to post</string>
-    <string name="max_3_images">You can select upto 3 images only</string>
-    <string name="post_preview_error">"Please add images or post details for preview "</string>
-    <string name="please_read_community_guidelines">Please confirm by selecting the checkbox before continuing</string>
-    <string name="post_edit_error">Please include images or additional details to update the post</string>
-    <string name="select_program_goal">Select Program / Goal</string>
+    <string name="delete_acc_title">We’re sad to see you go! Are you sure you want to delete your account?</string>
+    <string name="delete_acc_dis">By deleting your account, all information will be erased permanently from your account.</string>
+    <string name="want_keep_account_txt">I want to keep my account!</string>
+    <string name="delete_info_txt">Please delete all my information permanently.</string>
 
-    <!--Program and WorkOut-->
-    <string name="append_days">%s Days</string>
-    <string name="append_kcal">%s KCAL</string>
-    <string name="append_exercises">%s Exercises</string>
-    <string name="no_posts_found">No posts found</string>
-    <string name="warn_reminder_program">Please select program/goal</string>
-    <string name="warn_reminder_frequency">Please select a repeat option before continuing</string>
-    <string name="report_post">Report Post</string>
-    <string name="report">Report</string>
-    <string name="select_reason_error">Please select a reason for report</string>
-    <string name="report_content_empty_error">Please write your reason for reporting this post</string>
-    <string name="enable_notifications">Enable Notifications</string>
-    <string name="enable_notifications_desc">Please enable notifications in settings to receive alerts.</string>
-    <string-array name="report_post_array">
-        <item>Spam</item>
-        <item>Nudity or sexually explicit material</item>
-        <item>Child abuse</item>
-        <item>Hate speech</item>
-        <item>Suicide or self injury</item>
-        <item>Misinformation</item>
-        <item>Promote terrorism</item>
-        <item>Harassment or bullying</item>
-        <item>Other</item>
-    </string-array>
+    <!-- Subscription -->
+    <string name="current_plan">Current Plan</string>
+    <string name="started_on">Started On</string>
+    <string name="expiring_on">Expiring On</string>
+    <string name="renewal_type">Renewal Type</string>
+    <string name="upgrade_to_annual_plan">Upgrade to Annual Plan</string>
+    <string name="upgrade_now">Upgrade Now</string>
+
+    <!-- Help & Support -->
+    <string name="write_here">Write Here</string>
+    <string name="or_email_us">OR EMAIL US</string>
+    <string name="submit">Submit</string>
+
+    <!-- About us -->
+    <string name="meet_the_team">Meet The Team</string>
+    <string name="why_thought_rise">Why Thought Rise?</string>
+
+    <!-- Cancel Subscription -->
+    <string name="are_you_sure_this_is_goodbye">Are You Sure This Is Goodbye?</string>
+    <string name="share_feedback">Share Feedback</string>
+    <string name="feedback_help_us_txt">Your feedback will really help us</string>
+    <string name="cancel_subscription">Cancel Subscription</string>
+    <string name="see_you_again_txt">We hope to see you again soon</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+
+
+    <!--validation error-->
+    <string name="error_enter_phone_number">Please enter a phone number</string>
+    <string name="error_enter_valid_number">Please enter a valid phone number (10–15 digits)</string>
+    <string name="error_enter_password">Please enter the password</string>
+    <string name="password_text">Your password must be at least 8 characters and should contain a combination of letters, numbers and special characters {!@#$%} </string>
+    <string name="please_enter_your_full_name">Please enter your full name.</string>
+    <string name="please_enter_your_circle_name">Please enter your circle Name.</string>
+    <string name="please_enter_your_album_name">Please enter your album name.</string>
+    <string name="please_enter_your_legacy">Please enter your legacy.</string>
+    <string name="please_enter_message">Please enter a message</string>
+    <string name="please_enter_a_phone_number">Please enter a phone number</string>
+    <string name="please_select_your_gender">Please select your gender</string>
+    <string name="please_select_your_circle">Please select your circle</string>
+    <string name="please_select_your_profile">Please select your profile</string>
+    <string name="please_select_your_group_circle">Please select your group circle</string>
+    <string name="please_select_your_legacy_type">Please select your legacy type</string>
+    <string name="please_confirm_your_password">Please confirm your password</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="you_must_accept_the_terms_and_conditions_to_continue">You must accept the Terms and Conditions to continue</string>
+    <string name="you_must_accept_the_community_guidelines_to_continue">You must accept the community guidelines to continue</string>
+    <string name="please_select_image_or_video">Please select at least one image or video</string>
+    <string name="please_enter_your_date_of_birth">Please enter your date of birth</string>
+    <string name="select_at_least_one_member">Please select at least one member.</string>
+    <string name="please_select_at_least_one_tribe">Please select at least one Tribe</string>
+    <string name="please_select_at_least_one_innercircle">Please select at least one InnerCircle</string>
+    <string name="please_check_your_internet_connection_first">Please check your internet connection first!</string>
+    <string name="please_enter_an_email_address">Please enter an email address</string>
+    <string name="please_provide_otp_for_verification">Please, provide OTP for verification</string>
+    <string name="the_otp_filed_must_be_6_digits">The otp filed must be 6 digits</string>
+    <string name="please_enter_the_new_password">Please enter the new password</string>
+    <string name="please_enter_the_old_password">Please enter the old password</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="tap_here_to_refresh_it">Tap here to refresh it.</string>
+    <string name="please_select_at_least_one_member">Please select at least one member</string>
+    <string name="error_video_length">The video exceeds the maximum allowed length of %d seconds.</string>
+    <string name="compressing_video_please_wait">Compressing video... Please wait</string>
+
+    <!-- AuthFlow-->
+    <string name="welcome">Welcome</string>
+    <string name="please_enter_your_details">Please enter your details</string>
+    <string name="don_t_have_an_account">Don’t Have An Account?</string>
+    <string name="full_name">Full Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="date_of_birth">Date Of Birth</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="create_new_account_and_get_started_today">"Create new account and Get started Today. "</string>
+    <string name="already_have_an_account">Already have an Account?</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="enter_email_id">Enter Email ID</string>
+    <string name="please_enter_your_email_id_to_receive_an_otp_to_reset_your_password">Please enter your Email ID to receive an OTP to reset your password.</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="did_not_receive_otp">Didn’t receive OTP?</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="enter_the_code_send_to_you_via_email">Enter the code send to you via Email\n</string>
+    <string name="enter_code">Enter code</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="non_binary">Non Binary</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="your_new_password_must_be_different_from_previously_used_password">Your new password must be different from previously used password.</string>
+
+    <!-- Main flow and Container Flow   -->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="friend">Friends</string>
+    <string name="invite_friend">Invite Friends</string>
+    <string name="notification_on">Notification</string>
+    <string name="block">Blocks</string>
+    <string name="profile_profile_privacy">Profile Privacy</string>
+    <string name="about_us">About Us</string>
+    <string name="term_condition">Terms &amp; Conditions</string>
+    <string name="privacy_and_policy">Privacy &amp; Policy</string>
+    <string name="faq">FAQ</string>
+    <string name="legacy_reflection">Legacy Reflection</string>
+    <string name="advertisement">Advertisement</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="storage">Storage</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="enter_your_message_here">Enter your message here</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="my_circle">My Circle</string>
+    <string name="innercircle">InnerCircle</string>
+    <string name="tribe">VIP’s</string>
+    <string name="add_member">Add Member</string>
+    <string name="done">Done</string>
+    <string name="add_people">Add People</string>
+    <string name="are_you_sure_you_want_to_logout">Are you sure you want to logout?</string>
+    <string name="no_comment_yet">No comment yet</string>
+    <string name="members">" Members"</string>
+    <string name="create_circle">Create Circle</string>
+    <string name="tribe_info">Tribe info</string>
+    <string name="leave_tribe">Leave tribe</string>
+    <string name="all">All</string>
+    <string name="village">World</string>
+    <string name="justme">JustMe</string>
+    <string name="choose_from_gallery">choose from gallery</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="record_video">Record Video</string>
+    <string name="post">Post</string>
+    <string name="edit">edit</string>
+    <string name="edit_post">Edit post</string>
+    <string name="delete_post">Delete post</string>
+    <string name="unchecked">Unchecked</string>
+    <string name="checked">Checked</string>
+    <string name="add_new_comment">Add New Comment...</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="comments">Comments</string>
+    <string name="small_comments">comments</string>
+    <string name="post_image">Post Image</string>
+    <string name="video">Video</string>
+    <string name="delete">Delete</string>
+    <string name="are_you_sure_you_want_to_delete_this_post_once_deleted_it_cannot_be_recovered">Are you sure you want to delete this post? Once deleted, it cannot be recovered.</string>
+    <string name="block_list">Block List</string>
+    <string name="unblock">unblock</string>
+    <string name="remove">Remove</string>
+    <string name="des_remove">- Remove</string>
+    <string name="report_this_post">Report this post</string>
+    <string name="report_user">Report user</string>
+    <string name="no_members_found">No members found</string>
+    <string name="notifications">Notifications</string>
+    <string name="there_is_no_notification_on_your_app">There is no notification on your app.</string>
+    <string name="griot_legacy_app">Legacy Cache App</string>
+    <string name="allow_griot_legacy_app_to_access_your_storage_and_camera_while_you_are_using_the_app">Allow “Legacy Cache App” to access your storage and camera while you are using the app.</string>
+    <string name="open_setting">Open Setting</string>
+    <string name="create">Create</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="build_your_legacy">Build Your Legacy</string>
+    <string name="your_inner_circle_list">Your Inner Circle List :</string>
+    <string name="your_tribe_list">Your Tribe List :</string>
+    <string name="share">Share</string>
+    <string name="next">Next</string>
+    <string name="company_name">Company Name</string>
+    <string name="contact_person">Contact Person</string>
+    <string name="email_address">Email Address</string>
+    <string name="physical_address">Physical Address</string>
+    <string name="purpose_of_advertisement">Purpose of Advertisement</string>
+    <string name="description">Description</string>
+    <string name="link">Link</string>
+    <string name="title">Title</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="please_enter_your_link">Please enter your link</string>
+    <string name="please_enter_the_valid_link">Please enter the valid link</string>
+    <string name="please_enter_your_company_name">Please enter your company name.</string>
+    <string name="please_enter_your_description">Please enter your description.</string>
+    <string name="please_enter_your_physical_address">Please enter your physical address.</string>
+    <string name="please_enter_your_purpose_of_advertisement">Please enter your purpose of advertisement.</string>
+    <string name="please_enter_your_title">Please enter your title.</string>
+    <string name="please_select_your_photo">Please select your photo.</string>
+    <string name="admin">Admin</string>
+    <string name="max_selection_limit_reached">You can select maximum %d items</string>
+    <string name="notification_channel_id">123</string>
+    <string name="no_faqs_available_at_the_moment">No FAQs available at the moment</string>
+    <string name="select_circle">Select Circle</string>
+    <string name="member">Member</string>
+    <string name="please_add_comment_text">Please add comment text</string>
+    <string name="file_type">File Type</string>
+    <string name="photos">Photos</string>
+    <string name="no_blocked_users_found">No blocked users found</string>
+    <string name="unblock_member">Unblock Member</string>
+    <string name="are_you_sure_you_want_to_unblock_this_member">Are you sure you want to Unblock this member?</string>
+    <string name="added_to_inner_circle">Added to Inner circle</string>
+    <string name="add_to_inner_circle">+ Add to Inner circle</string>
+    <string name="currently_no_post">Currently, no post</string>
+    <string name="block_member">Block Member</string>
+    <string name="are_you_sure_you_want_to_block_this_member">Are you sure you want to block this member?</string>
+    <string name="today">Today</string>
+    <string name="no_messages_available">No messages available.</string>
+    <string name="no_messages_in_this_group_yet">No messages in this group yet.</string>
+    <string name="advertisements">Advertisements</string>
+    <string name="completed">● Completed</string>
+    <string name="live">● Live</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="upload_photo_banner">+  Upload photo/banner</string>
+    <string name="no_advertisement_found">No Advertisement Found</string>
+    <string name="search_member">Search member</string>
+    <string name="no_search_results_found">No search results found</string>
+    <string name="no_member_found">no member found</string>
+    <string name="remove_member">Remove Member</string>
+    <string name="are_you_sure_you_want_to_remove_this_member">Are you sure you want to remove this member?</string>
+    <string name="welcome_to_griot_legacy">Welcome to Legacy Cache!</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
+    <string name="storage_tiers">Storage Tiers</string>
+    <string name="advertisement_plans">Advertisement Plans</string>
+    <string name="edit_advertisement">Edit Advertisement</string>
+    <string name="activate_now">Activate Now</string>
+    <string name="offline">offline</string>
 </resources>
