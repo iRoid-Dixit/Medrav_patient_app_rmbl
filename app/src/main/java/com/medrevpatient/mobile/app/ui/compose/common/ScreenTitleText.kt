@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.ui.theme.appTextColor
-import com.medrevpatient.mobile.app.ui.theme.Sarabun
+import com.medrevpatient.mobile.app.ui.theme.WorkSans
 
 @Composable
 fun ScreenTitleText(
@@ -20,7 +20,7 @@ fun ScreenTitleText(
     titleText: String = "",
     titleTextAlign: TextAlign = TextAlign.Center,
     textSize: TextUnit = TextUnit.Unspecified,
-    textFontFamily: FontFamily = Sarabun,
+    textFontFamily: FontFamily = WorkSans,
     textFontWeight: FontWeight = FontWeight.Bold,
     lineHeight: TextUnit = TextUnit.Unspecified,
 ) {

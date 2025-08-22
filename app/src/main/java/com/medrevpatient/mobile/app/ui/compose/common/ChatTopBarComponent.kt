@@ -92,7 +92,6 @@ fun ChatTopBarComponent(
             Text(
                 text = userName,
                 color = White,
-                fontFamily = WorkSans,
                 fontWeight = FontWeight.W500,
                 fontSize = 20.sp,
             )

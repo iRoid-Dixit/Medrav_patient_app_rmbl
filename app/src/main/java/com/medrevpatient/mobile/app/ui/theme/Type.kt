@@ -17,30 +17,30 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
-
-
-val Sarabun = FontFamily(
-    Font(R.font.sarabun)
-
 )
 val WorkSans = FontFamily(
-    Font(R.font.work_sans)
+    Font(R.font.nunito_sans_light)
 )
 
+val nunito_sans_300 = FontFamily(
+    Font(R.font.nunito_sans_light)
+)
+
+val nunito_sans_400 = FontFamily(
+    Font(R.font.nunito_sans_regular)
+)
+
+val nunito_sans_600 = FontFamily(
+    Font(R.font.nunito_sans_semi_bold)
+)
+
+val nunito_sans_700 = FontFamily(
+    Font(R.font.nunito_sans_bold)
+)
+
+val nunito_sans_800 = FontFamily(
+    Font(R.font.nunito_sans_extra_bold)
+)
+val nunito_sans_900 = FontFamily(
+    Font(R.font.nunito_sans_black)
+)

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
-import com.medrevpatient.mobile.app.ui.theme.Sarabun
+
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 
@@ -104,7 +104,7 @@ fun PermissionDialog(
                         Text(
                             text = negativeText,
                             fontWeight = FontWeight.W600,
-                            fontFamily = Sarabun,
+                            fontFamily = WorkSans,
                             color = AppThemeColor,
                             fontSize = 16.sp,
                         )
@@ -123,7 +123,7 @@ fun PermissionDialog(
                         Text(
                             text = positiveText,
                             fontWeight = FontWeight.W600,
-                            fontFamily = Sarabun,
+                            fontFamily = WorkSans,
                             fontSize = 16.sp,
                             color = White
                         )

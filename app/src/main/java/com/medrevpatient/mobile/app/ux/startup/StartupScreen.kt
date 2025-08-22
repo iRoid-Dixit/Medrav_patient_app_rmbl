@@ -35,12 +35,12 @@ fun StartupScreen(
             show(WindowInsetsCompat.Type.navigationBars())
         }
         systemUi.setSystemBarsColor(
-            color = Color.Black, // ✅ Use standard `Color.Black`
-            darkIcons = false // ✅ Ensures white icons on dark background
+            color = Color.White, // ✅ Use standard `Color.Black`
+            darkIcons = true // ✅ Ensures white icons on dark background
         )
         systemUi.setStatusBarColor(
-            color = Color.Black, // ✅ Use standard `Color.Black`
-            darkIcons = false
+            color = Color.White, // ✅ Use standard `Color.Black`
+            darkIcons = true
         )
     }
     AppStartUpGraph(

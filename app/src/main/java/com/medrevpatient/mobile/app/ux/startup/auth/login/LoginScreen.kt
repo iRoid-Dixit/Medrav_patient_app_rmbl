@@ -1,7 +1,6 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.login
-
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,9 +27,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -50,9 +52,12 @@ import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextField
 import com.medrevpatient.mobile.app.ui.compose.common.LogInSignInNavText
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
-import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_800
+import com.medrevpatient.mobile.app.ui.theme.Gray50
 
 @ExperimentalMaterial3Api
 @Composable
@@ -65,7 +70,7 @@ fun LoginScreen(
     uiState.event(LoginUiEvent.GetContext(context))
     val loginUiState by uiState.loginDataFlow.collectAsStateWithLifecycle()
     AppScaffold(
-        containerColor = AppThemeColor,
+        containerColor = White,
         navBarData = AppNavBarData(
             appNavBarType = AppNavBarType.NAV_BAR,
             navBar = {
@@ -78,27 +83,22 @@ fun LoginScreen(
                         actionText = stringResource(R.string.sign_up),
                         onClick = {
                             uiState.event(LoginUiEvent.SignUp)
-
                         },
-
-                        )
+                    )
                 }
-
             },
-
-            )
+        )
     ) {
-        SignInScreenContent(uiState = uiState, event = uiState.event)
+        LoginScreeContent(uiState = uiState, event = uiState.event)
     }
     if (loginUiState?.showLoader == true) {
         CustomLoader()
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
-
 }
 
 @Composable
-private fun SignInScreenContent(uiState: LoginUiState, event: (LoginUiEvent) -> Unit) {
+private fun LoginScreeContent(uiState: LoginUiState, event: (LoginUiEvent) -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         Modifier
@@ -108,7 +108,7 @@ private fun SignInScreenContent(uiState: LoginUiState, event: (LoginUiEvent) -> 
             .clickable {
                 keyboardController?.hide()
             }
-            .background(color = AppThemeColor),
+            .background(color = White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -126,15 +126,16 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 22.dp, horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
         ScreenTitleComponent()
         Spacer(modifier = Modifier.height(35.dp))
+        
+        // Email Input Field
         AppInputTextField(
             value = loginUiState?.email ?: "",
             onValueChange = { event(LoginUiEvent.EmailValueChange(it)) },
             errorMessage = loginUiState?.emailErrorMsg,
-            isLeadingIconVisible = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
@@ -145,11 +146,11 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Password Input Field
         AppInputTextField(
             value = loginUiState?.password ?: "",
             onValueChange = { event(LoginUiEvent.PasswordValueChanges(it)) },
             errorMessage = loginUiState?.passwordErrorMsg,
-            isLeadingIconVisible = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
@@ -157,15 +158,15 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             onTogglePasswordVisibility = { passwordVisible = !passwordVisible },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             header = stringResource(R.string.password),
-            isTrailingIconVisible = true,
             trailingIcon = if (passwordVisible) R.drawable.ic_app_icon else R.drawable.ic_app_icon,
             leadingIcon = R.drawable.ic_app_icon,
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         Text(
             text = stringResource(R.string.forgot_your_password),
             fontFamily = WorkSans,
-            color = White,
+            color = Color(0xFF6B46C1), // Purple color matching the design
             fontWeight = FontWeight.W500,
             fontSize = 14.sp,
             modifier = Modifier
@@ -174,7 +175,10 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                     event(LoginUiEvent.ForgetPassword)
                 }
         )
+        
         Spacer(modifier = Modifier.height(40.dp))
+        
+        // Login Button
         AppButtonComponent(
             onClick = {
                 event(LoginUiEvent.DoLogin)
@@ -182,43 +186,117 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.sign_in),
         )
+        
+        Spacer(modifier = Modifier.height(20.dp))
+        
+        // Divider with "or" text
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(1.dp)
+                    .background(Color(0xFFE5E7EB))
+            )
+            Text(
+                text = "or",
+                modifier = Modifier.padding(horizontal = 16.dp),
+                color = Color(0xFF6B7280),
+                fontSize = 14.sp,
+                fontFamily = WorkSans
+            )
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(1.dp)
+                    .background(Color(0xFFE5E7EB))
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(20.dp))
+        
+        // Social Login Buttons
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Google Login Button
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(White)
+                    .border(1.dp, Color(0xFFE5E7EB), CircleShape)
+                    .clickable { /* Handle Google login */ }
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                // Placeholder for Google icon - you'll need to add the actual icon
+                Text(
+                    text = "G",
+                    color = Color(0xFF4285F4),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            // Facebook Login Button
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(White)
+                    .border(1.dp, Color(0xFFE5E7EB), CircleShape)
+                    .clickable { /* Handle Facebook login */ }
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                // Placeholder for Facebook icon - you'll need to add the actual icon
+                Text(
+                    text = "f",
+                    color = Color(0xFF1877F2),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
+
 @Composable
 fun ScreenTitleComponent() {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(50.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_app_icon),
-            contentDescription = null,
-            modifier = Modifier.size(160.dp)
-        )
-
         Text(
-            text = stringResource(R.string.welcome),
-            fontFamily = WorkSans,
-            fontWeight = FontWeight.W500,
-            color = White,
-            fontSize = 24.sp,
+            text = "Welcome Back!",
+            fontFamily = nunito_sans_800,
+            color = SteelGray,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.please_enter_your_details),
-            fontFamily = WorkSans,
-            fontWeight = FontWeight.W400,
-            color = White,
-            fontSize = 18.sp,
+            text = "Log in to continue your journey.",
+            fontFamily = nunito_sans_400,
+            color = Gray50,
+            fontSize = 14.sp
         )
     }
 }
+
 @Preview
 @Composable
 private fun Preview() {
     val uiState = LoginUiState()
     Surface {
-        SignInScreenContent(uiState = uiState, event = {})
+        LoginScreeContent(uiState = uiState, event = {})
     }
 }

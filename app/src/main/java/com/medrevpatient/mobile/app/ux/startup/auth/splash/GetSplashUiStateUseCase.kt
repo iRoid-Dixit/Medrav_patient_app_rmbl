@@ -44,6 +44,7 @@ class GetSplashUiStateUseCase
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): SplashUiState {
+
         coroutineScope.launch {
             networkMonitor.isOnline.map(Boolean::not).stateIn(
                 scope = coroutineScope,
@@ -75,7 +76,8 @@ class GetSplashUiStateUseCase
             delay(3000)
             if (!isOffline.value) {
                 coroutineScope.launch {
-                    val userData = appPreferenceDataStore.getUserData()
+                    navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
+                    /*val userData = appPreferenceDataStore.getUserData()
                     if (userData != null) {
                         if (userData.isVerify == true) {
                             val intent = Intent(context, MainActivity::class.java)
@@ -90,7 +92,7 @@ class GetSplashUiStateUseCase
                         }
                     } else {
                         navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
-                    }
+                    }*/
                 }
             } else {
                 showWaringMessage(
@@ -133,7 +135,7 @@ class GetSplashUiStateUseCase
                     clearAllPrefData(coroutineScope = coroutineScope, navigate = navigate)
                 } else {
                     //checkAppUpdate(coroutineScope = coroutineScope, context = context, navigate = navigate)
-                    // navigateToNextScreen(navigate, coroutineScope, context)
+                    navigateToNextScreen(navigate, coroutineScope, context)
                 }
             }
 

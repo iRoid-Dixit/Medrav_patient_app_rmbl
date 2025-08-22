@@ -2,6 +2,8 @@ package com.medrevpatient.mobile.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+
+
 val primary = Color(0xFFAE6F2D)
 val primary60 = Color(0x99AE6F2D)
 val primary30 = Color(0x4DAE6F2D)
@@ -33,7 +35,8 @@ val GrayAF = Color(0xFFAFAFAF)
 val YellowDF = Color(0xFFDFC863)
 val YellowB2 = Color(0xFFB2A04F)
 val White50 = Color(0x80FFFFFF)
-val AppThemeColor = Color(0xFF000000)
+val AppThemeColor = Color(0xFF7A42F4)
+val BgColor = listOf(AppThemeColor,White)
 val Gray2F = Color(0xFF2F2F2F)
 val Black50 = Color(0x80000000)
 val Black = Color(0xFF000000)
@@ -51,3 +54,8 @@ val Blue05 = Color(0xFF0A55C9)
 val Blue20 = Color(0xFF206EEE)
 val GrayC0 = Color(0xFFC0C0C0)
 val RedC9 = Color(0xFFC90A0D)
+val SteelGray = Color(0xFF2C2340)
+val Gray50 = Color(0x802C5180)
+val Gray5 = Color(0x0D2C2340)
+val Gray40 = Color(0x662C2C51)
+

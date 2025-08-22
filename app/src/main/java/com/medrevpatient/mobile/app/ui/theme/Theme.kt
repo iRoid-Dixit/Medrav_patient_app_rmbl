@@ -39,8 +39,8 @@ fun MedrevPatientTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Black.toArgb()
-            window.navigationBarColor =Black.toArgb()
+            window.statusBarColor = White.toArgb()
+            window.navigationBarColor =White.toArgb()
 
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
         }

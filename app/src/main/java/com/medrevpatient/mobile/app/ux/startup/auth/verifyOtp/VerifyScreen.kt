@@ -49,7 +49,7 @@ import com.medrevpatient.mobile.app.ui.compose.common.OtpTextField
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
-import com.medrevpatient.mobile.app.ui.theme.Sarabun
+import com.medrevpatient.mobile.app.ui.theme.WorkSans
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.White80
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
@@ -159,7 +159,7 @@ private fun VerifyScreenContent(
                             fontSize = 12.sp,
                             textDecoration = TextDecoration.Underline,
                             fontWeight = W600,
-                            fontFamily = Sarabun
+                            fontFamily = WorkSans
                         )
                     ) {
                         append(resendText)
@@ -176,7 +176,7 @@ private fun VerifyScreenContent(
                 text = annotatedString,
                 style = TextStyle(
                     fontSize = 12.sp,
-                    fontFamily = Sarabun,
+                    fontFamily = WorkSans,
                     fontWeight = W500,
                     color = White
                 ),
@@ -197,7 +197,7 @@ private fun VerifyScreenContent(
             Text(
                 text = verifyOtpUiState?.remainingTimeFlow ?: "00:00",
                 color = YellowB2,
-                fontFamily = Sarabun,
+                fontFamily = WorkSans,
                 fontWeight = W500,
                 fontSize = 12.sp
             )

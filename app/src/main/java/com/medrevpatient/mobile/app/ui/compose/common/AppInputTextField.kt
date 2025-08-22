@@ -37,10 +37,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.R
-import com.medrevpatient.mobile.app.ui.theme.Gray2F
+import com.medrevpatient.mobile.app.ui.theme.Gray40
+
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.White50
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.Gray5
+import com.medrevpatient.mobile.app.ui.theme.Gray50
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun AppInputTextField(
@@ -62,30 +67,21 @@ fun AppInputTextField(
     ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderColor = when {
-        errorMessage?.isNotEmpty() == true -> MaterialTheme.colorScheme.error
-        isFocused -> White
-        else -> Gray2F // 🔘 Default state
-    }
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .background(color = Gray2F, shape = RoundedCornerShape(10))
+                .background(color = Gray5, shape = RoundedCornerShape(10))
                 .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = borderColor,
-                    shape = RoundedCornerShape(10)
-                )
                 .clip(RoundedCornerShape(10))
         ) {
             if (isLeadingIconVisible && leadingIcon != null) {
                 Image(
                     painter = painterResource(leadingIcon),
                     contentDescription = "User",
-                    modifier = Modifier.padding(start = 10.dp),
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             }
             OutlinedTextField(
@@ -97,18 +93,18 @@ fun AppInputTextField(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(15),
+                shape = RoundedCornerShape(10),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Gray2F,
-                    unfocusedIndicatorColor = Gray2F,
-                    focusedContainerColor = Gray2F,
-                    unfocusedContainerColor = Gray2F,
-                    cursorColor = White,
-                    focusedTextColor = White,
-                    unfocusedTextColor =White,
-                    disabledTextColor = White,
-                    disabledIndicatorColor = Gray2F,
-                    disabledContainerColor = Gray2F,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    cursorColor = Color(0xFF7A42F4),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    disabledTextColor = Gray40,
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
                 ),
                 maxLines = 1,
                 enabled = isEnable,
@@ -117,10 +113,9 @@ fun AppInputTextField(
                 placeholder = {
                     Text(
                         text = header,
-                        fontFamily = WorkSans,
-                        fontWeight = FontWeight.W500,
-                        fontSize = 16.sp,
-                        color = White50,
+                        fontFamily = nunito_sans_400,
+                        fontSize = 14.sp,
+                        color = Gray40,
                     )
                 }
             )
@@ -131,9 +126,8 @@ fun AppInputTextField(
                 }) {
                     Image(
                         painter = painterResource(trailingIcon),
-                        colorFilter = if(isTrailingIconClickable) ColorFilter.tint(White) else ColorFilter.tint(White50),
+                        colorFilter = if(isTrailingIconClickable) ColorFilter.tint(Color(0xFF7A42F4)) else ColorFilter.tint(Gray40),
                         contentDescription = "User",
-
                     )
                 }
             }
@@ -155,7 +149,7 @@ fun AppInputTextField(
 @Preview
 @Composable
 private fun Preview() {
-    var email by remember { mutableStateOf("asd") }
+    var email by remember { mutableStateOf("") }
     Surface(modifier = Modifier.background(color = White)) {
         AppInputTextField(
             value = email,
@@ -163,11 +157,12 @@ private fun Preview() {
             isTrailingIconVisible = true,
             isLeadingIconVisible = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
+                keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            header = stringResource(id = R.string.email),
-            leadingIcon = R.drawable.ic_app_icon,
+            header = "Email Address",
+            leadingIcon = R.drawable.ic_app_logo,
+            trailingIcon = R.drawable.ic_app_logo,
         )
     }
 }
