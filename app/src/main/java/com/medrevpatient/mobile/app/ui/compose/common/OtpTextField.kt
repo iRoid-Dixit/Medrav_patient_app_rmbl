@@ -30,20 +30,25 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.medrevpatient.mobile.app.ui.theme.Black
+import com.medrevpatient.mobile.app.ui.theme.ElectricViolet10
+import com.medrevpatient.mobile.app.ui.theme.ElectricViolet5
 import com.medrevpatient.mobile.app.ui.theme.Gray2F
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.White50
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 
 @Composable
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpCount: Int = 4,
     errorMessage: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onOtpTextChange: (String) -> Unit,
-
 
     ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,7 +86,7 @@ fun OtpTextField(
                         CharView(
                             index = index,
                             text = otpText,
-                            borderColor = if (otpText.length == index) White else Gray2F,
+                            borderColor =  ElectricViolet10,
                         )
                         if (index < otpCount - 1) {
                             Spacer(modifier = Modifier.weight(1f)) // Adjust the space as needed
@@ -90,13 +95,12 @@ fun OtpTextField(
                 }
                 errorMessage?.let { error ->
                     Text(
-                        text = error,
+                        text = errorMessage,
                         color = MaterialTheme.colorScheme.error,
-                        fontFamily = WorkSans,
-                        fontWeight = FontWeight.Normal,
+                        fontFamily = nunito_sans_600,
                         fontSize = 12.sp,
                         lineHeight = 16.sp,
-                        modifier = Modifier.padding(top = 8.dp) // Adjust padding as needed
+                        modifier = Modifier.padding(start = 15.dp, top = 10.dp)
                     )
                 }
             }
@@ -120,14 +124,14 @@ private fun CharView(
             .widthIn(50.dp)
             .heightIn(50.dp)
             .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(8.dp))
-            .background(shape = RoundedCornerShape(8.dp), color = Gray2F),
+            .background(shape = RoundedCornerShape(8.dp), color = ElectricViolet5),
         contentAlignment = Alignment.Center
     ) {
 
         if (char == "") {
-            TextOtp(char = "0", color = White50)
+            TextOtp(char = "", color = SteelGray)
         } else {
-            TextOtp(char = char, color = White)
+            TextOtp(char = char, color = SteelGray)
         }
 
     }
@@ -138,9 +142,8 @@ fun TextOtp(char: String, color: Color) {
     Text(
         text = char,
         color = color,
-        fontFamily = WorkSans,
-        fontWeight = FontWeight.W400,
-        fontSize = 20.sp
+        fontFamily = nunito_sans_700,
+        fontSize = 22.sp
     )
 }
 

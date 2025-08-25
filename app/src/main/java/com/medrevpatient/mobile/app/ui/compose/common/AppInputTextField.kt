@@ -78,8 +78,7 @@ fun AppInputTextField(
     Column {
         if (isTitleVisible) {
             Text(
-                text = title,
-                fontFamily = nunito_sans_600,
+                text = title,                fontFamily = nunito_sans_600,
                 color = SteelGray,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 10.dp)

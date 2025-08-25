@@ -186,7 +186,7 @@
     <string name="please_check_your_internet_connection_first">Please check your internet connection first!</string>
     <string name="please_enter_an_email_address">Please enter an email address</string>
     <string name="please_provide_otp_for_verification">Please, provide OTP for verification</string>
-    <string name="the_otp_filed_must_be_6_digits">The otp filed must be 6 digits</string>
+    <string name="the_otp_filed_must_be_4_digits">The otp filed must be 4 digits</string>
     <string name="please_enter_the_new_password">Please enter the new password</string>
     <string name="please_enter_the_old_password">Please enter the old password</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -205,7 +205,7 @@
     <string name="confirm_password">Confirm password</string>
     <string name="create_new_account">Create New Account</string>
     <string name="create_new_account_and_get_started_today">"Create new account and Get started Today. "</string>
-    <string name="already_have_an_account">Already have an Account?</string>
+
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="enter_email_id">Enter Email ID</string>
     <string name="please_enter_your_email_id_to_receive_an_otp_to_reset_your_password">Please enter your Email ID to receive an OTP to reset your password.</string>
@@ -399,5 +399,6 @@
     <string name="google">google</string>
     <string name="apple">apple</string>
     <string name="facebook">facebook</string>
+    <string name="log_in">Log In</string>
 
 </resources>

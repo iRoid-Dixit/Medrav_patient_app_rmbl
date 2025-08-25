@@ -129,7 +129,7 @@ private fun RegisterScreenContent(
         )
         Spacer(modifier = Modifier.height(60.dp))
         LogInSignInNavText(
-            message = stringResource(R.string.already_have_an_account),
+            message = stringResource(R.string.create_new_account),
             actionText = stringResource(id = R.string.sign_in),
             onClick = {
                 event(RegisterUiEvent.DoSignIn)

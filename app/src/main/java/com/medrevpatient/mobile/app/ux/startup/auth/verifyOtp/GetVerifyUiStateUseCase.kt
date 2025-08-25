@@ -174,12 +174,11 @@ class GetVerifyUiStateUseCase
             isSuccess = !otp.isNullOrBlank() && otp.length == 6,
             errorMsg = when {
                 otp.isNullOrBlank() -> context.getString(R.string.please_provide_otp_for_verification)
-                otp.length != 6 -> context.getString(R.string.the_otp_filed_must_be_6_digits)
+                otp.length != 6 -> context.getString(R.string.the_otp_filed_must_be_4_digits)
                 else -> null
             }
         )
     }
-
 
     private fun doResendOtp(
         coroutineScope: CoroutineScope,
