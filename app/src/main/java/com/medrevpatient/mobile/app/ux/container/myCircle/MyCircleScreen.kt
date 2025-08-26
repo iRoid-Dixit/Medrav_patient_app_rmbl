@@ -47,11 +47,8 @@ fun MyCircleScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.my_circle),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(MyCircleUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

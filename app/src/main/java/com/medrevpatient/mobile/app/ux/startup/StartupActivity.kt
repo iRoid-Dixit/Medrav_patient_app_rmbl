@@ -1,6 +1,7 @@
 package com.medrevpatient.mobile.app.ux.startup
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.model.base.BaseActivity
 import com.medrevpatient.mobile.app.ui.theme.MedrevPatientTheme
+import com.medrevpatient.mobile.app.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,23 +22,33 @@ class StartupActivity : BaseActivity<StartupViewModel>() {
 
         val bundle = intent.extras
         val reset = intent.getStringExtra(Constants.BundleKey.RESET)
-        fitSystemWindow(true)
+        fitSystemWindow(false)
         //installSplashScreen()
-        // enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
-            Surface(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-            ) {
-                MedrevPatientTheme {
+
+               /* MedrevPatientTheme {
                     StartupScreen(
                         startDestination = isComeFor,
                         bundle = bundle ?: Bundle.EMPTY,
                         restartApp = reset ?: ""
                     )
-                }
-            }
+                }*/
+           // MedrevPatientTheme {
+                //Surface(
+                //    modifier = Modifier
+                //        .statusBarsPadding()
+                //        .navigationBarsPadding(),
+                //    contentColor = White,
+                //) {
+                    StartupScreen(
+                        startDestination = isComeFor,
+                        bundle = bundle ?: Bundle.EMPTY,
+                        restartApp = reset ?: ""
+                    )
+               // }
+           // }
+
             /* GriotLegacyTheme {
                  StartupScreen(startDestination = isComeFor)
              }*/

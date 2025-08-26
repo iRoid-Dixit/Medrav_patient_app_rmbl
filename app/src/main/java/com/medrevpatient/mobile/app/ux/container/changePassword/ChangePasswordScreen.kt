@@ -52,13 +52,9 @@ fun ChangePasswordScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.change_password),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(ChangePasswordUiEvent.BackClick)
-                },
-
-                )
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
+            )
         },
         navBarData = null
     ) {

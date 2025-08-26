@@ -322,7 +322,7 @@ fun ScreenTitleComponent() {
         horizontalAlignment = Alignment.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(120.dp))
         Text(
             text = "Welcome Back!",
             fontFamily = nunito_sans_800,

@@ -71,14 +71,9 @@ fun FaqScreenScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = if (screenName == Constants.AppScreen.FQA_SCREEN) "FAQ" else "Legacy Reflection",
-                isBackVisible = true,
-                isLineVisible = true,
-                onClick = {
-                    uiState.event(ContactUsUiEvent.BackClick)
-                },
-
-                )
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
+            )
         },
         navBarData = null
     ) {

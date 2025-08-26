@@ -20,9 +20,8 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
-import com.medrevpatient.mobile.app.ux.startup.auth.forgetPassword.ForgetPasswordRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.register.RegisterRoute
-import com.medrevpatient.mobile.app.ux.startup.auth.verifyOtp.VerifyOtpRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -62,9 +61,6 @@ class GetLoginUiStateUseCase
                 isOffline.value = it
             }
         }
-
-
-
         return LoginUiState(
             loginDataFlow = loginDataFlow,
 
@@ -143,6 +139,7 @@ class GetLoginUiStateUseCase
                         if (hasErrorEmail || hasErrorPassword) {
                             return
                         }
+                        navigate(NavigationAction.Navigate(BmiRoute.createRoute()))
                     }
 
                 } else {
@@ -242,7 +239,7 @@ class GetLoginUiStateUseCase
             is LoginUiEvent.EditEmailClick -> {
                 event.scope.launch {
                     event.sheetState.hide()
-                    startCountdown(coroutineScope)
+
                 }.invokeOnCompletion {
                     loginDataFlow.update { state ->
                         state.copy(
@@ -273,7 +270,7 @@ class GetLoginUiStateUseCase
                         }
                         event.scope.launch {
                             event.sheetState.hide()
-                            startCountdown(coroutineScope)
+
                         }.invokeOnCompletion {
                             loginDataFlow.update { state ->
                                 state.copy(
@@ -348,7 +345,6 @@ class GetLoginUiStateUseCase
                         if (hasError) return
                         event.scope.launch {
                             event.sheetState.hide()
-                            startCountdown(coroutineScope)
                         }.invokeOnCompletion {
                             loginDataFlow.update { state ->
                                 state.copy(
@@ -376,12 +372,10 @@ class GetLoginUiStateUseCase
             is LoginUiEvent.ProceedClickSuccess -> {
                 event.scope.launch {
                     event.sheetState.hide()
-                    startCountdown(coroutineScope)
                 }.invokeOnCompletion {
                     loginDataFlow.update { state ->
                         state.copy(
-                            successSheetVisible = true,
-
+                            successSheetVisible = false,
                         )
 
                     }
@@ -415,7 +409,6 @@ class GetLoginUiStateUseCase
             }
         )
     }
-
     private fun doUserSignIn(
         coroutineScope: CoroutineScope,
 
@@ -476,42 +469,13 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
-
     private fun navigateToNextScreen(
         context: Context,
         navigate: (NavigationAction) -> Unit,
         coroutineScope: CoroutineScope
     ) {
-        coroutineScope.launch {
-            val userData = appPreferenceDataStore.getUserData()
-            if (userData != null) {
-                if (userData.isVerify == true) {
-                    val intent = Intent(context, MainActivity::class.java)
-                    navigate(
-                        NavigationAction.NavigateIntent(
-                            intent = intent,
-                            finishCurrentActivity = true
-                        )
-                    )
 
-                } else {
-                    navigate(
-                        NavigationAction.Navigate(
-                            VerifyOtpRoute.createRoute(
-                                email = loginDataFlow.value.email,
-                                screenName = Constants.AppScreen.REGISTER_SCREEN
-                            )
-                        )
-                    )
-
-                }
-            } else {
-                navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
-            }
-        }
     }
-
     private fun showOrHideLoader(showLoader: Boolean) {
         loginDataFlow.update { state ->
             state.copy(

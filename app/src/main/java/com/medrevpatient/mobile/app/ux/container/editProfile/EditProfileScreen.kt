@@ -86,12 +86,8 @@ fun EditProfileScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(id = R.string.edit_profile),
-                isBackVisible = true,
-                isLineVisible = true,
-                onClick = {
-                    uiState.event(EditProfileUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

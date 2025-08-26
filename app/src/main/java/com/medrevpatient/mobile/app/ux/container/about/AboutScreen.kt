@@ -64,14 +64,9 @@ fun AboutScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = titleName,
-                isLineVisible = true,
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(AboutUiEvent.BackClick)
-                },
-
-                )
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
+            )
         },
         navBarData = null
     ) {

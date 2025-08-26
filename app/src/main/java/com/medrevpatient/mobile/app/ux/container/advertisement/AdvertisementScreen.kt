@@ -90,11 +90,8 @@ fun AdvertisementScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.advertisements),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(AdvertisementUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

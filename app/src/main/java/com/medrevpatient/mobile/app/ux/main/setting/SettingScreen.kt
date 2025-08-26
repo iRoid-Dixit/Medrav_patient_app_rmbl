@@ -79,9 +79,9 @@ fun SettingScreen(
         containerColor = AppThemeColor,
         topAppBar = {
             TopBarComponent(
-                textAlign = TextAlign.Start,
-                header = "Settings",
-                )
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
+            )
         },
         navBarData = null
     ) {

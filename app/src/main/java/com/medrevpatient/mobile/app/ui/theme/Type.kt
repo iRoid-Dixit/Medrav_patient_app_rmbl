@@ -30,6 +30,10 @@ val nunito_sans_400 = FontFamily(
     Font(R.font.nunito_sans_regular)
 )
 
+val nunito_sans_500 = FontFamily(
+    Font(R.font.nunito_sans_medium)
+)
+
 val nunito_sans_600 = FontFamily(
     Font(R.font.nunito_sans_semi_bold)
 )

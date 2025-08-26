@@ -1,9 +1,6 @@
 package com.towyservice.mobile.app.ui.common.sheetContent
-
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -45,7 +42,6 @@ import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextField
 import com.medrevpatient.mobile.app.ui.compose.common.OtpTextField
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.Black
-import com.medrevpatient.mobile.app.ui.theme.Gray50
 import com.medrevpatient.mobile.app.ui.theme.Gray60
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
@@ -53,14 +49,9 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_800
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
-import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
-import com.medrevpatient.mobile.app.ux.startup.auth.verifyOtp.VerifyOtpUiEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.Locale
 import kotlin.Boolean
-
-
 @Composable
 fun ResetPasswordSheetContent(
     emailFlow: String = "",
@@ -68,8 +59,7 @@ fun ResetPasswordSheetContent(
     emailErrorFlow: String? = null,
     onProceedClick: () -> Unit = {},
     onBackToLoginClick: () -> Unit = {},
-
-    ) {
+) {
     ResetPasswordSheetWrapper(
         emailFlow = emailFlow,
         onEmailValueChange = onEmailValueChange,
@@ -79,7 +69,6 @@ fun ResetPasswordSheetContent(
 
     )
 }
-
 @Preview
 @Composable
 fun EmailVerificationSheetContent(
@@ -93,7 +82,6 @@ fun EmailVerificationSheetContent(
     onOtpValueChange: (String) -> Unit = {},
     verifyClick: () -> Unit = {},
 ) {
-
     EmailVerificationSheetWrapper(
         countDown = countDown,
         resendSendCodeClick = resendSendCodeClick,
@@ -107,7 +95,6 @@ fun EmailVerificationSheetContent(
 
     )
 }
-
 @Preview
 @Composable
 fun SetNewPasswordSheetContent(
@@ -119,7 +106,6 @@ fun SetNewPasswordSheetContent(
     onConfirmPasswordChange: (String) -> Unit = {},
     confirmClick: () -> Unit = {}
 ) {
-
     SetNewPasswordSheetWrapper(
         newPassword = newPassword,
         newPasswordError = newPasswordError,
@@ -135,9 +121,7 @@ fun SetNewPasswordSheetContent(
 @Composable
 fun SuccessSheetContent(
     proceedClick: () -> Unit = {}
-
 ) {
-
     SuccessSheetWrapper(
         proceedClick = proceedClick
     )

@@ -34,16 +34,17 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 @Composable
 fun AppButtonComponent(
     modifier: Modifier = Modifier,
-    text: String, // Changed from buttonText to text to match LoginScreen usage
+    text: String,
     fontSize: TextUnit = 16.sp,
     fontWeight: FontWeight = FontWeight.SemiBold,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
     isLoading: Boolean = false,
-    isEnabled: Boolean = true, // Added isEnabled parameter
+    isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
+    
     Button(
-        onClick = { onClick() },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent
@@ -52,7 +53,15 @@ fun AppButtonComponent(
         contentPadding = contentPadding,
         modifier = modifier
             .background(
-                brush = Brush.linearGradient(colors = listOf(AppThemeColor, SteelGray)), 
+                brush = if (isEnabled) {
+                    Brush.linearGradient(colors = listOf(AppThemeColor, SteelGray))
+                } else {
+                    Brush.linearGradient(colors = listOf(
+                        AppThemeColor.copy(alpha = 0.5f),
+                        SteelGray.copy(alpha = 0.5f)
+
+                    ))
+                },
                 shape = RoundedCornerShape(12.dp)
             ),
     ) {
@@ -63,14 +72,14 @@ fun AppButtonComponent(
             if (isLoading) {
                 CircularProgressIndicator(
                     strokeCap = StrokeCap.Round,
-                    color = White, // Changed to White for better visibility on gradient background
+                    color = White,
                     modifier = Modifier.size(18.dp)
                 )
             } else {
                 Text(
-                    text = text, // Use text parameter
+                    text = text,
                     fontFamily = nunito_sans_700,
-                    color = White, // Changed to White for better visibility on gradient background
+                    color = if (isEnabled) White else White,
                     textAlign = TextAlign.Center,
                     fontSize = fontSize,
                     fontWeight = fontWeight

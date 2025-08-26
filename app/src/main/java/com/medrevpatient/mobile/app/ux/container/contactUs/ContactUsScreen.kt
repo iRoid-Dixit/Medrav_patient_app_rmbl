@@ -48,14 +48,9 @@ fun ContactUsScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = "Contact Us",
-                isBackVisible = true,
-                isLineVisible = true,
-                onClick = {
-                    uiState.event(ContactUsUiEvent.BackClick)
-                },
-
-                )
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
+            )
         },
         navBarData = null
     ) {

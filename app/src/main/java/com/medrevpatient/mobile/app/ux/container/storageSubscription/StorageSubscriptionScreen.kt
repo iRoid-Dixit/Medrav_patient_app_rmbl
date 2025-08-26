@@ -72,12 +72,8 @@ fun StorageSubscriptionScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.storage_tiers),
-                isBackVisible = true,
-                isLineVisible = true,
-                onClick = {
-                    uiState.event(StorageUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
 

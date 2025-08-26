@@ -73,11 +73,8 @@ fun BLockListScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.block_list),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(BlockListUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = AppNavBarData(

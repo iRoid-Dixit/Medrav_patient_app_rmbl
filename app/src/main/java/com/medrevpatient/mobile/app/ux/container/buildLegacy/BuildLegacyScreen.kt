@@ -122,11 +122,8 @@ fun BuildLegacyScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.build_your_legacy),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(BuildLegacyUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

@@ -100,19 +100,8 @@ fun CreateTribeOrInnerCircleScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = if (createTribeOrInnerCircleUiState?.screen != Constants.AppScreen.CREATE_INNER_CIRCLE_OR_TRIBE) {
-                    if (createTribeOrInnerCircleUiState?.messageResponse != null) {
-                        "Group info"
-                    } else {
-                        stringResource(R.string.my_circle)
-                    }
-                } else {
-                    stringResource(R.string.create_circle)
-                },
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(CreateTribeOrInnerCircleUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

@@ -86,11 +86,8 @@ fun GroupMemberScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(id = R.string.member),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(GroupMemberUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = AppNavBarData(

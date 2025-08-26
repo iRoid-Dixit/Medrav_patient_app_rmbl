@@ -77,11 +77,8 @@ fun NotificationScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = stringResource(R.string.notifications),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(NotificationUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = AppNavBarData(

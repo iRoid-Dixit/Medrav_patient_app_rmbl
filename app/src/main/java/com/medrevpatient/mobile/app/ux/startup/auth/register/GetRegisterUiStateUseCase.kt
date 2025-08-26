@@ -24,7 +24,6 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
-import com.medrevpatient.mobile.app.ux.startup.auth.verifyOtp.VerifyOtpRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -33,7 +32,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 class GetRegisterUiStateUseCase
 @Inject constructor(
     private val validationUseCase: ValidationUseCase,
@@ -93,7 +91,6 @@ class GetRegisterUiStateUseCase
                             context.getString(R.string.please_enter_your_full_name)
                         ).errorMsg
                     )
-
                 }
             }
             is RegisterUiEvent.EmailValueChange -> {
@@ -398,15 +395,7 @@ class GetRegisterUiStateUseCase
         navigate: (NavigationAction) -> Unit,
         userAuthResponseData: UserAuthResponse?
     ) {
-        coroutineScope.launch {
-            userAuthResponseData?.let {
-                appPreferenceDataStore.saveUserData(it)
-                it.auth.let { it1 -> appPreferenceDataStore.saveUserAuthData(it1 ?: Auth()) }
-                navigate(Navigate(VerifyOtpRoute.createRoute(email = registerUiDataState.value.email, screenName = Constants.AppScreen.REGISTER_SCREEN)))
-                Log.d("TAG", "getUserData: ${appPreferenceDataStore.getUserData()}")
-                Log.d("TAG", "SaveUserData: ${appPreferenceDataStore.saveUserData(it)}")
-            }
-        }
+
     }
     private fun showOrHideLoader(showLoader: Boolean) {
         registerUiDataState.update { state ->

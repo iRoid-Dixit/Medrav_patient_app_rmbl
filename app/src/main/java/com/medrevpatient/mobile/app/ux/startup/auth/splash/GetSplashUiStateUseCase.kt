@@ -19,6 +19,8 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
 import com.medrevpatient.mobile.app.ux.main.MainActivity
+import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -76,7 +78,7 @@ class GetSplashUiStateUseCase
             delay(3000)
             if (!isOffline.value) {
                 coroutineScope.launch {
-                    navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
+                    navigate(NavigationAction.PopAndNavigate(DietChallengeRoute.createRoute()))
                     /*val userData = appPreferenceDataStore.getUserData()
                     if (userData != null) {
                         if (userData.isVerify == true) {

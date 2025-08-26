@@ -5,16 +5,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,81 +33,55 @@ import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.MineShaft
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 
 
 @Composable
 fun TopBarComponent(
     modifier: Modifier = Modifier,
-    header: String,
-    isLineVisible: Boolean = false,
-    isBackVisible: Boolean = false,
-    isTrailingIconVisible: Boolean = false,
-    @DrawableRes trailingIcon: Int? = null,
     onClick: () -> Unit = {},
-    colorsFilter: ColorFilter? = null,
-    onTrailingIconClick: () -> Unit = {},
-    textAlign: TextAlign = TextAlign.Center
-
+    icon: Int = R.drawable.ic_back,
+    titleText: String = "BMI & Health Check",
+    isBackVisible: Boolean = false,
 ) {
-    Column(
+    Box(
         modifier = modifier
-            .background(AppThemeColor)
+            .fillMaxWidth()
+            .height(100.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(AppThemeColor, SteelGray)
+                ),
+                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+            )
 
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .requiredHeight(54.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
 
-        ) {
-            if(isBackVisible){
+        if (isBackVisible){
+            IconButton(
+                onClick = onClick,
+                modifier = Modifier
+                    .padding(start = 20.dp, top = 60.dp)
+                    .size(24.dp)
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_app_icon),
-                    contentDescription = null,
-                    colorFilter = colorsFilter,
-
-                    modifier = modifier
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            onClick()
-                        }
+                    painter = painterResource(id = icon),
+                    contentDescription = "Icon",
                 )
             }
-            Text(
-                text = header,
-                color = White,
-                fontSize = 20.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = textAlign,
-                modifier = modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(horizontal = 10.dp)
-
-                    .weight(1f), fontFamily = WorkSans,
-                fontWeight = FontWeight.W500
-            )
-            if (isTrailingIconVisible && trailingIcon != null) {
-
-                    Image(
-                        painter = painterResource(id = trailingIcon),
-                        contentDescription = null,
-                        modifier = modifier
-                            .align(Alignment.CenterVertically)
-                            .clickable {
-                                onTrailingIconClick()
-                            }
-                    )
-            }
         }
-        if (isLineVisible) {
-            HorizontalDivider(thickness = 1.dp, color = MineShaft)
-        }
+        Text(
+            text = titleText,
+            color = White,
+            fontSize = 20.sp,
+            fontFamily = nunito_sans_700,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 60.dp)
+        )
     }
 }
 
@@ -108,9 +89,11 @@ fun TopBarComponent(
 @Composable
 fun TopBarComponentPreview() {
     TopBarComponent(
-        header = "Title",
-        isLineVisible = true,
-        isTrailingIconVisible = true
+        modifier = Modifier.requiredHeight(100.dp),
+        onClick = {},
+        icon = R.drawable.ic_back,
+        titleText = "BMI & Health Check",
+
     )
 }
 

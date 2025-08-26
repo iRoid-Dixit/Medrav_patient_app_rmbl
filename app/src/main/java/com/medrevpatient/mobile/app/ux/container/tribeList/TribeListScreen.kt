@@ -78,11 +78,8 @@ fun TribeListScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = tribeListUiState?.tribeName ?: "",
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(TribeListUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = AppNavBarData(

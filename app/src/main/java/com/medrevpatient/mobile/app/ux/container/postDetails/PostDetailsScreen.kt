@@ -107,12 +107,8 @@ fun PostDetailsScreenScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = postDetailsData?.albumName ?: "",
-                isBackVisible = true,
-                isLineVisible = true,
-                onClick = {
-                    uiState.event(PostDetailsUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = null

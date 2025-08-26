@@ -77,13 +77,8 @@ fun AddPeopleScreen(
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                header = if (allPeopleUiState?.screen == Constants.AppScreen.GROUP_MEMBER_SCREEN) "Add Member" else stringResource(
-                    R.string.add_people
-                ),
-                isBackVisible = true,
-                onClick = {
-                    uiState.event(AddPeopleUiEvent.BackClick)
-                },
+                onClick = { navController.popBackStack() },
+                titleText = "BMI & Health Check"
             )
         },
         navBarData = AppNavBarData(
