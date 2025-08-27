@@ -574,7 +574,7 @@ private fun StatCard(
         colors = CardDefaults.cardColors(containerColor = White),
         shape = RoundedCornerShape(12.dp), // Rounded corners
         modifier = Modifier
-            .weight(1f) // Make equal width for both cards
+
     ) {
         Column(
             modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
