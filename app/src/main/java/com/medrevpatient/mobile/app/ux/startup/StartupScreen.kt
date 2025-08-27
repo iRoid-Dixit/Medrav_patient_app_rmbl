@@ -28,7 +28,7 @@ fun StartupScreen(
     val systemUi = rememberSystemUiController()
     val window = (context as Activity).window
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         WindowInsetsControllerCompat(window, window.decorView).apply {
             show(WindowInsetsCompat.Type.statusBars())
@@ -42,7 +42,7 @@ fun StartupScreen(
             color = Color.White, // ✅ Use standard `Color.Black`
             darkIcons = true
         )
-    }
+    }*/
     AppStartUpGraph(
         navController = navController,
         startDestination = startDestination,

@@ -209,6 +209,9 @@ dependencies {
     //   Socket
     implementation(libs.socket.io.client)
 
+    //chart
+    implementation (libs.compose.charts)
+
 
 
 

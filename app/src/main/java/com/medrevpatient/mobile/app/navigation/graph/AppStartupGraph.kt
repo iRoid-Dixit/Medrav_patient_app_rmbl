@@ -18,8 +18,9 @@ import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiScreen
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeScreen
 import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
-import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.DietChallengeScreen
 import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectScreen
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,7 @@ fun AppStartUpGraph(
         BmiRoute.addNavigationRoute(this) { BmiScreen(navController) }
         SideEffectQuestionRoute.addNavigationRoute(this) { SideEffectScreen(navController) }
         DietChallengeRoute.addNavigationRoute(this) { DietChallengeScreen(navController) }
+        WeightTrackerRoute.addNavigationRoute(this) { WeightTrackerScreen(navController) }
 
     }
 }

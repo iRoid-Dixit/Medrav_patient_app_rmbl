@@ -3,6 +3,7 @@
 agp = "8.2.2"
 
 
+composeCharts = "0.1.7"
 core = "12.1.1"
 facebookAndroidSdk = "latest.release"
 accompanistPager = "0.28.0"
@@ -60,6 +61,7 @@ firebase-bom-version = "33.7.0"
 androidyoutubeplayer-core = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:core", version.ref = "core" }
 
 
+compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }

@@ -7,6 +7,7 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
+import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -105,7 +106,7 @@ class GetBmiUiStateUseCase
                             )
                         }
                         if (hasError) return
-                        navigate(Navigate(SideEffectQuestionRoute.createRoute()))
+                        navigate(Navigate(DietChallengeRoute.createRoute()))
                     }
 
                 } else {

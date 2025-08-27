@@ -4,6 +4,7 @@ import android.content.Context
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -68,13 +69,15 @@ class GetSideEffectQuestionUiStateUseCase
             }
             
             is SideEffectQuestionUiEvent.SubmitAssessment -> {
-                val currentData = dietChallengeDataFlow.value
+                navigate(NavigationAction.Navigate(WeightTrackerRoute.createRoute()))
+
+                /*val currentData = dietChallengeDataFlow.value
                 // Check if all questions are answered
                 val allAnswered = currentData.selectedAnswers.all { it != -1 }
                 if (allAnswered) {
                     dietChallengeDataFlow.value = currentData.copy(isSubmitted = true)
                     // Here you can add logic to send data to backend or navigate to next screen
-                }
+                }*/
             }
         }
     }

@@ -19,9 +19,11 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
 import com.medrevpatient.mobile.app.ux.main.MainActivity
+import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,7 +70,6 @@ class GetSplashUiStateUseCase
             }
         )
     }
-
     private fun navigateToNextScreen(
         navigate: (NavigationAction) -> Unit,
         coroutineScope: CoroutineScope,
@@ -78,7 +79,7 @@ class GetSplashUiStateUseCase
             delay(3000)
             if (!isOffline.value) {
                 coroutineScope.launch {
-                    navigate(NavigationAction.PopAndNavigate(DietChallengeRoute.createRoute()))
+                    navigate(NavigationAction.PopAndNavigate(WeightTrackerRoute.createRoute()))
                     /*val userData = appPreferenceDataStore.getUserData()
                     if (userData != null) {
                         if (userData.isVerify == true) {
@@ -104,7 +105,6 @@ class GetSplashUiStateUseCase
             }
         }
     }
-
     private fun authEvent(
         event: SplashUiEvent,
         coroutineScope: CoroutineScope,

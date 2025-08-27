@@ -99,7 +99,7 @@ private fun SideEffectScreenContent(
             .padding(horizontal = 20.dp),
         contentPadding = PaddingValues(
             top = 25.dp,
-            bottom = 30.dp // extra bottom space for button
+            bottom = 30.dp
         )
     ) {
         // Questions
@@ -118,11 +118,8 @@ private fun SideEffectScreenContent(
                 text = "Submit Assessment",
                 isEnabled = selectedAnswers.all { it != -1 },
 
-                onClick = {
-                    Toast.makeText(context, "result", Toast.LENGTH_SHORT).show()
+                onClick = onSubmit
 
-
-                }
             )
         }
     }
@@ -174,7 +171,7 @@ private fun OptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(White)
+            .background(if (isSelected)Magnolia else White)
             .border(width = 1.dp, color = if (isSelected) AppThemeColor else SteelGray.copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp))
             .clickable { onClick() }
             .padding(vertical = 15.dp, horizontal = 20.dp)

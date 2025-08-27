@@ -1,4 +1,4 @@
-package com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge
+package com.medrevpatient.mobile.app.ux.startup.auth.weightTracker
 
 import android.content.Context
 import com.medrevpatient.mobile.app.R
@@ -7,7 +7,7 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
-import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -17,19 +17,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class GetDietChallengeUiStateUseCase
+class GetWeightTrackerUiStateUseCase
 @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val validationUseCase: ValidationUseCase,
 ) {
-    private val dietChallengeDataFlow = MutableStateFlow(DietChallengeData())
+    private val bmiDataFlow = MutableStateFlow(WeightTrackerData())
     private val isOffline = MutableStateFlow(false)
     private lateinit var context: Context
-
     operator fun invoke(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
-    ): DietChallengeUiState {
+    ): WeightTrackerUiState {
         coroutineScope.launch {
             networkMonitor.isOnline.map(Boolean::not).stateIn(
                 scope = coroutineScope,
@@ -39,31 +38,49 @@ class GetDietChallengeUiStateUseCase
                 isOffline.value = it
             }
         }
-        return DietChallengeUiState(
-            dietChallengeDataFlow = dietChallengeDataFlow,
-            event = { dietChallengeUiEvent ->
-                dietChallengeEvent(
-                    event = dietChallengeUiEvent,
+        return WeightTrackerUiState(
+            bmiDataFlow = bmiDataFlow,
+            event = { bmiUiEvent ->
+                bmiEvent(
+                    event = bmiUiEvent,
                     navigate = navigate,
                     coroutineScope = coroutineScope,
+
                 )
             }
         )
     }
-    private fun dietChallengeEvent(
-        event: DietChallengeUiEvent,
+
+    private fun bmiEvent(
+        event: WeightTrackerUiEvent,
         navigate: (NavigationAction) -> Unit,
         coroutineScope: CoroutineScope,
     ) {
         when (event) {
-            is DietChallengeUiEvent.GetContext -> {
+            is WeightTrackerUiEvent.GetContext -> {
                 this.context = event.context
             }
-            is DietChallengeUiEvent.SelectCategory -> {
-                // Handle category selection
+            is WeightTrackerUiEvent.UpdateWeight -> {
+                bmiDataFlow.update { currentData ->
+                    currentData?.copy(currentWeight = event.weight) ?: WeightTrackerData(currentWeight = event.weight)
+                }
             }
-            is DietChallengeUiEvent.ContinueChallenge -> {
-                navigate(Navigate(SideEffectQuestionRoute.createRoute()))
+            is WeightTrackerUiEvent.UpdateUnit -> {
+                bmiDataFlow.update { currentData ->
+                    currentData?.copy(weightUnit = event.unit) ?: WeightTrackerData(weightUnit = event.unit)
+                }
+            }
+            is WeightTrackerUiEvent.SubmitWeight -> {
+                // Handle weight submission
+                bmiDataFlow.update { currentData ->
+                    currentData?.copy(
+                        lastRecordedWeight = currentData.currentWeight,
+                        lastRecordedDate = "Today"
+                    ) ?: WeightTrackerData()
+                }
+            }
+            is WeightTrackerUiEvent.ScheduleCheckIn -> {
+                // Handle scheduling check-in
             }
         }
     }

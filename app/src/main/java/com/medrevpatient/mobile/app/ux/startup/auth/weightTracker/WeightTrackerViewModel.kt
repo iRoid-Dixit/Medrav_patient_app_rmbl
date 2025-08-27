@@ -1,4 +1,4 @@
-package com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge
+package com.medrevpatient.mobile.app.ux.startup.auth.weightTracker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,10 +8,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DietChallengeViewModel
+class WeightTrackerViewModel
 @Inject constructor(
-    getBmiUiStateUseCase: GetDietChallengeUiStateUseCase
+    getWeightTrackerUiStateUseCase: GetWeightTrackerUiStateUseCase
 ) : ViewModel(), ViewModelNav by ViewModelNavImpl() {
-    val uiState: DietChallengeUiState =
-        getBmiUiStateUseCase(coroutineScope = viewModelScope) { navigate(it) }
+    val uiState: WeightTrackerUiState =
+        getWeightTrackerUiStateUseCase(coroutineScope = viewModelScope) { navigate(it) }
 }

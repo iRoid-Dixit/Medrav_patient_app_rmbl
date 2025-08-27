@@ -56,7 +56,6 @@ class GetChatUiStateUseCase
         screen: String,
         navigate: (NavigationAction) -> Unit,
     ): ChatUiState {
-
         coroutineScope.launch {
             networkMonitor.isOnline.map(Boolean::not).stateIn(
                 scope = coroutineScope,
