@@ -221,7 +221,6 @@
     <string name="your_new_password_must_be_different_from_previously_used_password">Your new password must be different from previously used password.</string>
 
     <!-- Main flow and Container Flow   -->
-    <string name="edit_profile">Edit Profile</string>
     <string name="friend">Friends</string>
     <string name="invite_friend">Invite Friends</string>
     <string name="notification_on">Notification</string>
