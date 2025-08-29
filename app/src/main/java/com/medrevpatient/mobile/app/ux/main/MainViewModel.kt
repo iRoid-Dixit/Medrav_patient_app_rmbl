@@ -55,53 +55,9 @@ class MainViewModel
         }
     }
 
-    fun updateStatusToOnline(coroutineScope: CoroutineScope, context: Context) {
-        var accessToken: String
-        var senderId: String
-        coroutineScope.launch {
-            accessToken = appPreferenceDataStore.getUserAuthData()?.accessToken ?: ""
-            senderId = appPreferenceDataStore.getUserData()?.id ?: ""
-            SocketClass.getSocket(accessToken)?.let { socket ->
-                if (!socket.connected()) {
-                    SocketClass.connectSocket(accessToken)
-                }
-                socket.emit(Constants.Socket.UPDATE_STATUS_TO_ONLINE,
-                    onlineOfflineStatus(senderId = senderId),
-                    Ack { data ->
-                        Log.d("socketUpdateApi", data.toString())
-                        Log.d("socketUpdateApi", data.first().toString())
-                        val connectUser =
-                            Gson().fromJson(data.first().toString(), SocketCallback::class.java)
-                        coroutineScope.launch {
-                            when (connectUser.status) {
-                                200 -> {
 
-                                }
-                                412 -> {
-                                    showErrorMessage(context, connectUser.message)
-                                }
 
-                                404 -> {
-                                    showErrorMessage(context, connectUser.message)
-                                }
 
-                                500 -> {
-                                    showErrorMessage(context, connectUser.message)
-                                }
-                            }
-                        }
-                    })
-            }
-        }
-
-    }
-
-    private fun onlineOfflineStatus(senderId: String): JSONObject {
-        val userObject = JSONObject()
-        userObject.put(Constants.Socket.SENDER_ID, senderId)
-        Log.e("onlineOfflineStatus ", userObject.toString())
-        return userObject
-    }
 
 
 }

@@ -40,19 +40,12 @@ class MainActivity : BaseActivity<MainViewModel>() {
         fitSystemWindow(true)
         Log.d("TAG", "onCreate: $isComeFor")
         setContent {
-            Surface(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-            ) {
 
-                val context = LocalContext.current
-                MedrevPatientTheme {
-                    viewModel.updateStatusToOnline((CoroutineScope(Dispatchers.Main)), context)
+            MedrevPatientTheme {
                     MainScreen(startDestination = isComeFor)
                 }
 
-            }
+
         }
         generateFCMToken()
     }

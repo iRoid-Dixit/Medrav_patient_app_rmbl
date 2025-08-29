@@ -1,12 +1,14 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.weightTracker
 
 import android.content.Context
+import android.content.Intent
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
+import com.medrevpatient.mobile.app.ux.main.MainActivity
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,13 +73,20 @@ class GetWeightTrackerUiStateUseCase
                 }
             }
             is WeightTrackerUiEvent.SubmitWeight -> {
+                val intent = Intent(context, MainActivity::class.java)
+                navigate(
+                    NavigationAction.NavigateIntent(
+                        intent = intent,
+                        finishCurrentActivity = true
+                    )
+                )
                 // Handle weight submission
-                bmiDataFlow.update { currentData ->
+               /* bmiDataFlow.update { currentData ->
                     currentData?.copy(
                         lastRecordedWeight = currentData.currentWeight,
                         lastRecordedDate = "Today"
                     ) ?: WeightTrackerData()
-                }
+                }*/
             }
             is WeightTrackerUiEvent.ScheduleCheckIn -> {
                 // Handle scheduling check-in

@@ -79,7 +79,14 @@ class GetSplashUiStateUseCase
             delay(3000)
             if (!isOffline.value) {
                 coroutineScope.launch {
-                    navigate(NavigationAction.PopAndNavigate(WeightTrackerRoute.createRoute()))
+                    val intent = Intent(context, MainActivity::class.java)
+                    navigate(
+                        NavigationAction.NavigateIntent(
+                            intent = intent,
+                            finishCurrentActivity = true
+                        )
+                    )
+                    //navigate(NavigationAction.PopAndNavigate(BmiRoute.createRoute()))
                     /*val userData = appPreferenceDataStore.getUserData()
                     if (userData != null) {
                         if (userData.isVerify == true) {

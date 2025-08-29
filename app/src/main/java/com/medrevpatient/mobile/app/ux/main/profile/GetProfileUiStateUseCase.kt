@@ -1,4 +1,4 @@
-package com.medrevpatient.mobile.app.ux.main.message
+package com.medrevpatient.mobile.app.ux.main.profile
 
 import android.content.Context
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
@@ -8,19 +8,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-class GetMessageUiStateUseCase
+class GetProfileUiStateUseCase
 @Inject constructor(
     private val appPreferenceDataStore: AppPreferenceDataStore,
     private val apiRepository: ApiRepository,
 ) {
-    private val settingUiDataFlow = MutableStateFlow(MessageUiDataState())
+    private val settingUiDataFlow = MutableStateFlow(ProfileUiDataState())
     operator fun invoke(
         context: Context,
         @Suppress("UnusedPrivateProperty")
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
-    ): MessageUiState {
-        return MessageUiState(
+    ): ProfileUiState {
+        return ProfileUiState(
             messageUiDataFlow = settingUiDataFlow,
             event = { profileUiEvent ->
                 profileUiEvent(
@@ -34,16 +34,30 @@ class GetMessageUiStateUseCase
         )
     }
     private fun profileUiEvent(
-        event: MessageUiEvent,
+        event: ProfileUiEvent,
         context: Context,
         navigate: (NavigationAction) -> Unit,
         coroutineScope: CoroutineScope
     ) {
         when (event) {
-
-            else -> {}
+            ProfileUiEvent.EditProfile -> {
+                // Navigate to edit profile screen
+                // navigate(NavigationAction.NavigateToEditProfile)
+            }
+            ProfileUiEvent.ChangePassword -> {
+                // Navigate to change password screen
+                // navigate(NavigationAction.NavigateToChangePassword)
+            }
+            ProfileUiEvent.DeleteAccount -> {
+                // Show delete account confirmation dialog
+                // For now, just log the action
+            }
+            ProfileUiEvent.Logout -> {
+                // Handle logout logic
+                // Clear user data and navigate to login
+                // navigate(NavigationAction.NavigateToLogin)
+            }
         }
-
     }
 }
 

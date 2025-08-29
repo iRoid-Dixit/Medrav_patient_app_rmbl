@@ -1,4 +1,4 @@
-package com.medrevpatient.mobile.app.ux.main.setting
+package com.medrevpatient.mobile.app.ux.main.appointment
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -10,10 +10,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel
+class AppointmentViewModel
 @Inject constructor(
     @ApplicationContext context: Context,
-    getSettingUiStateUseCase: GetSettingUiStateUseCase
+    getAppointmentUiStateUseCase: GetAppointmentUiStateUseCase
 ) : ViewModel(), ViewModelNav by ViewModelNavImpl() {
-    val uiState: SettingUiState = getSettingUiStateUseCase(context = context, coroutineScope = viewModelScope) { navigate(it) }
+    val uiState: AppointmentsUiState =
+        getAppointmentUiStateUseCase(context = context, coroutineScope = viewModelScope) { navigate(it) }
 }

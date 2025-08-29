@@ -10,12 +10,14 @@ import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
 import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyScreen
 import com.medrevpatient.mobile.app.ux.main.home.HomeRoute
 import com.medrevpatient.mobile.app.ux.main.home.HomeScreen
+import com.medrevpatient.mobile.app.ux.main.medication.MedicationRoute
+import com.medrevpatient.mobile.app.ux.main.medication.MedicationScreen
+import com.medrevpatient.mobile.app.ux.main.appointment.AppointmentRoute
+import com.medrevpatient.mobile.app.ux.main.appointment.AppointmentScreen
 import com.medrevpatient.mobile.app.ux.main.message.MessageRoute
 import com.medrevpatient.mobile.app.ux.main.message.MessageScreen
-import com.medrevpatient.mobile.app.ux.main.search.SearchRoute
-import com.medrevpatient.mobile.app.ux.main.search.SearchScreen
-import com.medrevpatient.mobile.app.ux.main.setting.SettingRoute
-import com.medrevpatient.mobile.app.ux.main.setting.SettingScreen
+import com.medrevpatient.mobile.app.ux.main.profile.ProfileRoute
+import com.medrevpatient.mobile.app.ux.main.profile.ProfileScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,25 +35,27 @@ fun AppMainGraph(
             GriotLegacyRoute.routeDefinition.value
         }
         Constants.AppScreen.SEARCH_SCREEN -> {
-            SearchRoute.routeDefinition.value
+            AppointmentRoute.routeDefinition.value
         }
 
         Constants.AppScreen.MAIN_VILLAGE_SCREEN -> {
             HomeRoute.routeDefinition.value
         }
         Constants.AppScreen.MESSAGE_SCREEN -> {
-            MessageRoute.routeDefinition.value
+            MedicationRoute.routeDefinition.value
         }
 
         else -> {
-            GriotLegacyRoute.routeDefinition.value
+            HomeRoute.routeDefinition.value
         }
     }
     NavHost(navController = navController, startDestination = appStartDestination) {
         HomeRoute.addNavigationRoute(this) { HomeScreen(navController) }
-        SearchRoute.addNavigationRoute(this){ SearchScreen(navController) }
-        MessageRoute.addNavigationRoute(this){ MessageScreen(navController)}
-        SettingRoute.addNavigationRoute(this){ SettingScreen(navController) }
+        AppointmentRoute.addNavigationRoute(this){ AppointmentScreen(navController) }
+        MedicationRoute.addNavigationRoute(this){ MedicationScreen(navController)}
+        MessageRoute.addNavigationRoute(this){ MessageScreen(navController) }
+        ProfileRoute.addNavigationRoute(this){ ProfileScreen(navController) }
+
         GriotLegacyRoute.addNavigationRoute(this){ GriotLegacyScreen(navController) }
     }
 }

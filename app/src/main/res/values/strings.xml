@@ -238,6 +238,9 @@
     <string name="delete_account">Delete Account</string>
     <string name="logout">Logout</string>
     <string name="profile">Profile</string>
+    <string name="profile_management">Profile Management</string>
+    <string name="account_details">Account Details</string>
+    <string name="edit_profile">Edit Profile</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="change_password">Change Password</string>
     <string name="old_password">Old Password</string>
@@ -400,5 +403,11 @@
     <string name="apple">apple</string>
     <string name="facebook">facebook</string>
     <string name="log_in">Log In</string>
+
+    <string name="appointments">Appointments</string>
+    <string name="medication">Medication</string>
+    <string name="messages">Messages</string>
+
+
 
 </resources>

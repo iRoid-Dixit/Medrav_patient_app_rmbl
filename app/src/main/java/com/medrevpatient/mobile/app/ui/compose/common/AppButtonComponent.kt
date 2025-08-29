@@ -1,6 +1,9 @@
 package com.medrevpatient.mobile.app.ui.compose.common
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +33,7 @@ import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
+import com.medrevpatient.mobile.app.R
 
 
 @Composable
@@ -40,7 +45,11 @@ fun AppButtonComponent(
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
+    textColor: Color = White,
     onClick: () -> Unit,
+    @DrawableRes drawableResId: Int? = null,
+    borderColors: Color = Color.Transparent,
+    backgroundBrush: Brush = Brush.linearGradient(colors = listOf(AppThemeColor, SteelGray))
 ) {
     
     Button(
@@ -54,7 +63,7 @@ fun AppButtonComponent(
         modifier = modifier
             .background(
                 brush = if (isEnabled) {
-                    Brush.linearGradient(colors = listOf(AppThemeColor, SteelGray))
+                    backgroundBrush
                 } else {
                     Brush.linearGradient(colors = listOf(
                         AppThemeColor.copy(alpha = 0.5f),
@@ -63,7 +72,7 @@ fun AppButtonComponent(
                     ))
                 },
                 shape = RoundedCornerShape(12.dp)
-            ),
+            ).border(width = 1.dp, color =borderColors, shape = RoundedCornerShape(12.dp) ),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -76,10 +85,13 @@ fun AppButtonComponent(
                     modifier = Modifier.size(18.dp)
                 )
             } else {
+                if (drawableResId != null){
+                    Image(painter = painterResource(drawableResId), contentDescription = null)
+                }
                 Text(
                     text = text,
                     fontFamily = nunito_sans_700,
-                    color = if (isEnabled) White else White,
+                    color = textColor,
                     textAlign = TextAlign.Center,
                     fontSize = fontSize,
                     fontWeight = fontWeight
@@ -94,17 +106,20 @@ fun AppButtonComponent(
 private fun Preview() {
     Surface {
         AppButtonComponent(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 20.dp),
-            text = "Click Me", // Changed from buttonText to text
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
-            isLoading = false,
-            isEnabled = true, // Added isEnabled parameter
+            onClick = {
+            },
+            borderColors = AppThemeColor,
+            modifier = Modifier.fillMaxWidth(),
+            textColor = AppThemeColor,
+            drawableResId = R.drawable.ic_check_schedule,
+            text = "Schedule Check-in",
+            backgroundBrush = Brush.linearGradient(
+                colors = listOf(
+                    White,
+                    White
+                )
 
-            onClick = {}
+            )
         )
     }
 }

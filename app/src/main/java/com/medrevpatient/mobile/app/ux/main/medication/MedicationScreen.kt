@@ -1,83 +1,64 @@
-
-package com.medrevpatient.mobile.app.ux.main.message
-import androidx.compose.foundation.background
+package com.medrevpatient.mobile.app.ux.main.medication
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 
 @ExperimentalMaterial3Api
 @Composable
-fun MessageScreen(
-    navController: NavController,
-    viewModel: MessageViewModel = hiltViewModel()
+fun MedicationScreen(
+    navController: NavController = rememberNavController(),
+    viewModel: MedicationViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState
-    val context = LocalContext.current
-    val settingUiState by uiState.messageUiDataFlow.collectAsStateWithLifecycle()
-
     AppScaffold(
         containerColor = AppThemeColor,
         topAppBar = {
+
         },
         navBarData = null
     ) {
-
-
-        MessageScreenContent(uiState,uiState.event)
-
+        MedicationScreenContent(uiState = uiState)
     }
-
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MessageScreenContent(
-    uiState: MessageUiState,
-    event: (MessageUiEvent) -> Unit,
-
-    ) {
+private fun MedicationScreenContent(
+    uiState: MedicationUiState,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppThemeColor)
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
-
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
-        Text(text = "Message Screen")
+        Text(text = "Medication Screen")
 
     }
 }
-
 
 @Preview
 @Composable
 private fun Preview() {
+    val uiState = MedicationUiState()
     Surface {
-        MessageScreenContent(
-            uiState = MessageUiState(),
-            event = {},
-
-            )
+        MedicationScreenContent(uiState)
     }
 }

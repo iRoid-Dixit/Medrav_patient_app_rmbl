@@ -1,4 +1,4 @@
-package com.medrevpatient.mobile.app.ux.main.search
+package com.medrevpatient.mobile.app.ux.main.medication
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -10,11 +10,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel
+class MedicationViewModel
 @Inject constructor(
     @ApplicationContext context: Context,
-    getSearchUiStateUseCase: GetSearchUiStateUseCase
+    getMessageUiStateUseCase: GetMedicationUiStateUseCase
 ) : ViewModel(), ViewModelNav by ViewModelNavImpl() {
-    val uiState: SearchUiState =
-        getSearchUiStateUseCase(context = context, coroutineScope = viewModelScope) { navigate(it) }
+    val uiState: MedicationUiState = getMessageUiStateUseCase(
+        context = context,
+        coroutineScope = viewModelScope
+    ) { navigate(it) }
 }

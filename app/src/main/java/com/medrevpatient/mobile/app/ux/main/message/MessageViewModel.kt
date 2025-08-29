@@ -13,10 +13,7 @@ import javax.inject.Inject
 class MessageViewModel
 @Inject constructor(
     @ApplicationContext context: Context,
-    getMessageUiStateUseCase: GetMessageUiStateUseCase
+    getSettingUiStateUseCase: GetMessageUiStateUseCase
 ) : ViewModel(), ViewModelNav by ViewModelNavImpl() {
-    val uiState: MessageUiState = getMessageUiStateUseCase(
-        context = context,
-        coroutineScope = viewModelScope
-    ) { navigate(it) }
+    val uiState: MessageUiState = getSettingUiStateUseCase(context = context, coroutineScope = viewModelScope) { navigate(it) }
 }
