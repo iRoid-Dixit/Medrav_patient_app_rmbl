@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -37,19 +38,16 @@ class MainActivity : BaseActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
         val isComeFor =
             intent.getStringExtra(Constants.IS_COME_FOR) ?: Constants.AppScreen.PERSONALIZE_AUDIO
-        fitSystemWindow(true)
+        fitSystemWindow(false)
+        enableEdgeToEdge()
         Log.d("TAG", "onCreate: $isComeFor")
         setContent {
-
-            MedrevPatientTheme {
-                    MainScreen(startDestination = isComeFor)
-                }
+            MainScreen(startDestination = isComeFor)
 
 
         }
         generateFCMToken()
     }
-
     private fun generateFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (task.isSuccessful) {

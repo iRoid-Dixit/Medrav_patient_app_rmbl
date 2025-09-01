@@ -242,6 +242,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="change_password">Change Password</string>
+    <string name="customer_service">Customer Service</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="enter_your_message_here">Enter your message here</string>
@@ -406,7 +407,7 @@
     <string name="appointments">Appointments</string>
     <string name="medication">Medication</string>
     <string name="messages">Messages</string>
-
+    <string name="profile_picture">Profile Picture</string>
 
 
 </resources>

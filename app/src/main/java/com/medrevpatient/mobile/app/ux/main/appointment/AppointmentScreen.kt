@@ -34,8 +34,6 @@ fun AppointmentScreen(
         containerColor = White,
         topAppBar = {
 
-
-
         },
         navBarData = null
     ) {

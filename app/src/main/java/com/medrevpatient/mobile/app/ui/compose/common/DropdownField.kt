@@ -89,11 +89,11 @@ fun DropdownField(
                     color = if (selectedRole.isNotEmpty()) White else White50,
                     modifier = Modifier.weight(1f)
                 )
-                Image(
+               /* Image(
                     painter = painterResource(id = dropdownIcon),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(if (selectedRole.isNotEmpty()) White else White50),
-                )
+                )*/
                 Spacer(modifier = Modifier.width(15.dp))
             }
             if (errorMessage?.isNotEmpty() == true) {

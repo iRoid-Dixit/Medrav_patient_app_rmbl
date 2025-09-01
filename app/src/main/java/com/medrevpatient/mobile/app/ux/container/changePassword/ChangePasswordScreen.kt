@@ -36,6 +36,9 @@ import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextField
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.White
+import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 
 @ExperimentalMaterial3Api
 @Composable
@@ -48,12 +51,15 @@ fun ChangePasswordScreen(
     val changePasswordUiState by uiState.changePasswordUsDataFlow.collectAsStateWithLifecycle()
     uiState.event(ChangePasswordUiEvent.GetContext(context))
     AppScaffold(
-        containerColor = AppThemeColor,
+        containerColor = White,
         modifier = Modifier,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
-                titleText = "BMI & Health Check"
+                onClick = {
+                    uiState.event(ChangePasswordUiEvent.BackClick)
+                },
+                isBackVisible = true,
+                titleText = "Change Password"
             )
         },
         navBarData = null
@@ -77,9 +83,10 @@ private fun ChangePasswordScreenContent(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clickable {
+            .noRippleClickable{
                 keyboardController?.hide()
             }
+
             .fillMaxSize(),
     ) {
         Spacer(modifier = Modifier.height(25.dp))
@@ -90,12 +97,10 @@ private fun ChangePasswordScreenContent(
                 event(ChangePasswordUiEvent.ChangePasswordSubmit)
             },
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.submit),
+            text = stringResource(R.string.update),
         )
-
     }
 }
-
 @Composable
 fun ChangePasswordInputField(
     changePasswordUiState: ChangePasswordDataState?,
@@ -106,59 +111,55 @@ fun ChangePasswordInputField(
     var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         AppInputTextField(
-            value = changePasswordUiState?.oldPassword ?: "",
+            value = changePasswordUiState?.oldPassword?: "",
+            isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.OldPasswordValueChange(it)) },
-            isLeadingIconVisible = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-            ),
-            isTrailingIconVisible = true,
-            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            onTogglePasswordVisibility = { oldPasswordVisible = !oldPasswordVisible },
-            trailingIcon = if (oldPasswordVisible) R.drawable.ic_app_icon else R.drawable.ic_app_icon,
+            title = "Current Password",
             errorMessage = changePasswordUiState?.oldPasswordErrorMsg,
-            header = stringResource(R.string.old_password),
-            leadingIcon = R.drawable.ic_app_icon,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
+            ),
+            isTrailingIconVisible = true,
+            onTogglePasswordVisibility = { oldPasswordVisible = !oldPasswordVisible },
+            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            header = "Enter your current password",
+            trailingIcon = if (oldPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         AppInputTextField(
-            value = changePasswordUiState?.newPassword ?: "",
+            value = changePasswordUiState?.newPassword?: "",
+            isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.NewPasswordValueChange(it)) },
-            isLeadingIconVisible = true,
+            title = "New Password",
+            errorMessage = changePasswordUiState?.newPasswordErrorMsg,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
             ),
             isTrailingIconVisible = true,
-            visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             onTogglePasswordVisibility = { newPasswordVisible = !newPasswordVisible },
-            trailingIcon = if (newPasswordVisible) R.drawable.ic_app_icon else R.drawable.ic_app_icon,
-            errorMessage = changePasswordUiState?.newPasswordErrorMsg,
-            header = stringResource(R.string.new_password),
-            leadingIcon = R.drawable.ic_app_icon,
+            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            header = "Enter your new password",
+            trailingIcon = if (newPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         AppInputTextField(
-            value = changePasswordUiState?.confirmPassword ?: "",
+            value = changePasswordUiState?.confirmPassword?: "",
+            isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.ConfirmPasswordValueChange(it)) },
-            isLeadingIconVisible = true,
+            title = "Confirm Password",
+            errorMessage = changePasswordUiState?.confirmPasswordErrorMsg,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done,
-
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
             ),
             isTrailingIconVisible = true,
-            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             onTogglePasswordVisibility = { confirmPasswordVisible = !confirmPasswordVisible },
-            trailingIcon = if (confirmPasswordVisible) R.drawable.ic_app_icon else R.drawable.ic_app_icon,
-            errorMessage = changePasswordUiState?.confirmPasswordErrorMsg,
-            header = stringResource(R.string.confirm_password),
-            leadingIcon = R.drawable.ic_app_icon,
+            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            header = "Confirm your password",
+            trailingIcon = if (confirmPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
     }
 }
-
-
 @Preview
 @Composable
 fun AboutScreenContentPreview() {

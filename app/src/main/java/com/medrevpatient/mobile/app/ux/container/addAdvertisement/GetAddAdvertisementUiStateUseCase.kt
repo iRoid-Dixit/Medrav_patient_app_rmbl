@@ -11,8 +11,7 @@ import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.CountryCodePickerNew
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.allCountries
+
 import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
@@ -86,7 +85,7 @@ class GetAddAdvertisementUiStateUseCase
                         AppUtils.convertTimestampToDate(it)
                     } ?: "",
                     photo = data?.image ?: "",
-                    defaultCountryCode = allCountries.find { it.cCountryPhoneNoCode == "+1" }?.countryCode ?: "+1",
+
                     screen = screen,
                     rejectReason = data.rejectReason ?: ""
                 )
@@ -95,7 +94,7 @@ class GetAddAdvertisementUiStateUseCase
             // Empty form for add mode
             advertisementDataFlow.update { state ->
                 state.copy(
-                    defaultCountryCode = allCountries.find { it.cCountryPhoneNoCode == "+1" }?.countryCode ?: "+1",
+
                     screen = screen
                 )
             }
@@ -421,9 +420,7 @@ class GetAddAdvertisementUiStateUseCase
         map[Constants.AddAdvertisement.EMAIL] =
             advertisementDataFlow.value.email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        map[Constants.AddAdvertisement.COUNTRY_CODE] =
-            CountryCodePickerNew.getCountryPhoneCodeNew()
-                .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
 
         map[Constants.AddAdvertisement.PHONE_NUMBER] =
             advertisementDataFlow.value.mobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -523,9 +520,7 @@ class GetAddAdvertisementUiStateUseCase
         map[Constants.AddAdvertisement.EMAIL] =
             advertisementDataFlow.value.email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        map[Constants.AddAdvertisement.COUNTRY_CODE] =
-            CountryCodePickerNew.getCountryPhoneCodeNew()
-                .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
 
         map[Constants.AddAdvertisement.PHONE_NUMBER] =
             advertisementDataFlow.value.mobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())

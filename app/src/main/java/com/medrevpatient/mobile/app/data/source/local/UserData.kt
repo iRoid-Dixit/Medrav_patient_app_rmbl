@@ -1,6 +1,7 @@
 package com.medrevpatient.mobile.app.data.source.local
 
 
+import androidx.annotation.DrawableRes
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.R
 
@@ -30,7 +31,6 @@ object UserData {
         val price: String,
         val iconRes: Int
     )
-
     val settingScreenListingData = listOf(
         SettingData(title = R.string.app_name, colors = R.color.white, true),
         SettingData(title = R.string.app_name, colors = R.color.white, true),
@@ -50,14 +50,12 @@ object UserData {
         SettingData(title = R.string.app_name, R.color.red, false),
         SettingData(title = R.string.app_name, R.color.red, false),
     )
-
     // Data class for question structure
     data class Question(
         val id: Int,
         val text: String,
         val options: List<String>
     )
-
 
      var questions = listOf(
         Question(
@@ -86,7 +84,38 @@ object UserData {
             options = listOf("No", "A little", "Too much")
         )
     )
-
+    data class ProfileItem(
+        @DrawableRes val icon: Int,
+        val title: Int,
+        val isArrowVisible: Boolean = true
+    )
+    val profileItems = listOf(
+        ProfileItem(
+            icon = R.drawable.ic_edit_profile,
+            title = R.string.edit_profile,
+            isArrowVisible = true
+        ),
+        ProfileItem(
+            icon = R.drawable.ic_lock,
+            title = R.string.change_password,
+            isArrowVisible = true
+        ),
+        ProfileItem(
+            icon = R.drawable.ic_customer,
+            title = R.string.customer_service,
+            isArrowVisible = true
+        ),
+        ProfileItem(
+            icon = R.drawable.ic_delete,
+            title = R.string.delete_account,
+            isArrowVisible = true
+        ),
+        ProfileItem(
+            icon = R.drawable.ic_logout,
+            title = R.string.logout,
+            isArrowVisible = true
+        )
+    )
 }
 
 

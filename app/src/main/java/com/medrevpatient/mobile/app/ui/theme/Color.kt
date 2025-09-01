@@ -20,6 +20,7 @@ val appTextColor40 = Color(0x668A9AB0)
 val appTextColor10 = Color(0x1A8A9AB0)
 val colorDatePlayedBg = Color(0x80F3F5F8)
 val White = Color(0xFFFFFFFF)
+val PurpleHeart = Color(0xFF6B47DC)
 val White20 = Color(0x33FFFFFF)
 
 val White30 = Color(0x4DFFFFFF)

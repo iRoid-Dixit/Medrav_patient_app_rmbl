@@ -71,7 +71,8 @@ fun AppInputTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     @DrawableRes leadingIcon: Int? = null,
     isTitleVisible: Boolean = false,
-    title: String = ""
+    title: String = "",
+    modifier: Modifier= Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -87,7 +88,7 @@ fun AppInputTextField(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
+            modifier = modifier
                 .background(color = Gray5, shape = RoundedCornerShape(15))
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(15))

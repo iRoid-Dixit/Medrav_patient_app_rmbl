@@ -48,7 +48,6 @@ import com.medrevpatient.mobile.app.ui.compose.common.DateSelectComponent
 import com.medrevpatient.mobile.app.ui.compose.common.DropdownField
 import com.medrevpatient.mobile.app.ui.compose.common.LogInSignInNavText
 import com.medrevpatient.mobile.app.ui.compose.common.TermsAndConditionsText
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.CountryCodePickerComponent
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.White
@@ -171,22 +170,7 @@ fun RegisterInputField(registerUiState: RegisterUiDataState?, event: (RegisterUi
             header = stringResource(id = R.string.email),
             leadingIcon = R.drawable.ic_app_icon,
         )
-        CountryCodePickerComponent(
-            value = registerUiState?.phoneNumber ?: "",
-            onValueChange = { newValue ->
-                val filteredValue = newValue.filter { it.isDigit() }
-                event(RegisterUiEvent.PhoneNumberValueChange(filteredValue))
-            },
 
-            isLeadingIconVisible = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword,
-                imeAction = ImeAction.Next
-            ),
-            errorMessage = registerUiState?.phoneNumberErrorMsg,
-            header = stringResource(R.string.mobile_number),
-            setCountryCode = registerUiState?.defaultCountryCode
-        )
 
         DateSelectComponent(
             value = registerUiState?.dateSelected ?: "",

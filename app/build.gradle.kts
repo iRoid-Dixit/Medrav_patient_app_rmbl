@@ -156,7 +156,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
 
     //country code
-    implementation(libs.komposecountrycodepicker)
+   // implementation(libs.komposecountrycodepicker)
 
     // Logging
     implementation(libs.kermit)

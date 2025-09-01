@@ -12,8 +12,6 @@ import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.CountryCodePickerNew
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.allCountries
 import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
@@ -75,8 +73,7 @@ class GetEditProfileUiStateUseCase
                         profileImage = it.profileImage ?: "",
                         phoneNumber = it.mobileNumber ?: "",
                         dateSelected = formatDate(it.dateOfBirth),
-                        showCountryCode = allCountries.find { it.cCountryPhoneNoCode == appPreferenceDataStore.getUserData()?.countryCode }?.countryCode
-                            ?: "+1",
+
                         selectGender = Constants.getGenderLabel(
                             it.gender.toString()
                         )
@@ -136,7 +133,30 @@ class GetEditProfileUiStateUseCase
                         ).errorMsg
                     )
                 }
+            }
 
+            is EditProfileUiEvent.FirstNameValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        firstName = event.firstName,
+                        firstNameErrorMsg = validationUseCase.emptyFieldValidation(
+                            event.firstName,
+                            "Please enter your first name"
+                        ).errorMsg
+                    )
+                }
+            }
+
+            is EditProfileUiEvent.LastNameValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        lastName = event.lastName,
+                        lastNameErrorMsg = validationUseCase.emptyFieldValidation(
+                            event.lastName,
+                            "Please enter your last name"
+                        ).errorMsg
+                    )
+                }
             }
 
             is EditProfileUiEvent.OnClickOfDate -> {
@@ -260,6 +280,62 @@ class GetEditProfileUiStateUseCase
                 }
             }
 
+            // Medical Information events
+            is EditProfileUiEvent.HeightValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        height = event.height,
+                        heightErrorMsg = heightValidation(event.height, context).errorMsg
+                    )
+                }
+            }
+
+            is EditProfileUiEvent.WeightValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        weight = event.weight,
+                        weightErrorMsg = weightValidation(event.weight, context).errorMsg
+                    )
+                }
+            }
+
+            is EditProfileUiEvent.AllergiesValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        allergies = event.allergies,
+                        allergiesErrorMsg = allergiesValidation(event.allergies, context).errorMsg
+                    )
+                }
+            }
+
+            is EditProfileUiEvent.MedicalConditionsValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        medicalConditions = event.medicalConditions,
+                        medicalConditionsErrorMsg = medicalConditionsValidation(event.medicalConditions, context).errorMsg
+                    )
+                }
+            }
+
+            EditProfileUiEvent.VerifyEmailClick -> {
+                // Handle email verification
+                Log.d("TAG", "Verify email clicked")
+            }
+
+            EditProfileUiEvent.CancelClick -> {
+                navigate(NavigationAction.PopIntent)
+            }
+
+            EditProfileUiEvent.UpdateClick -> {
+                // Handle update profile
+                contactUsUiEvent(
+                    event = EditProfileUiEvent.ProfileSubmitClick,
+                    context = context,
+                    navigate = navigate,
+                    coroutineScope = coroutineScope
+                )
+            }
+
         }
     }
 
@@ -297,6 +373,34 @@ class GetEditProfileUiStateUseCase
         )
     }
 
+    private fun heightValidation(height: String, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = height.isNotBlank(),
+            errorMsg = if (height.isBlank()) "Please enter your height" else null
+        )
+    }
+
+    private fun weightValidation(weight: String, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = weight.isNotBlank(),
+            errorMsg = if (weight.isBlank()) "Please enter your weight" else null
+        )
+    }
+
+    private fun allergiesValidation(allergies: String, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = true, // Optional field
+            errorMsg = null
+        )
+    }
+
+    private fun medicalConditionsValidation(medicalConditions: String, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = true, // Optional field
+            errorMsg = null
+        )
+    }
+
     private fun callEditProfileApi(
         coroutineScope: CoroutineScope,
         navigation: (NavigationAction) -> Unit
@@ -325,8 +429,7 @@ class GetEditProfileUiStateUseCase
                 AppUtils.convertDateToTimestamp(apiDate).toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         }
 
-        if (editProfileDataFlow.value.dateSelected.isNotBlank()) map[Constants.EditProfile.COUNTRY_CODE] =
-            CountryCodePickerNew.getCountryPhoneCodeNew().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
 
 
         if (editProfileDataFlow.value.selectGender.isNotBlank()) map[Constants.EditProfile.GENDER] =

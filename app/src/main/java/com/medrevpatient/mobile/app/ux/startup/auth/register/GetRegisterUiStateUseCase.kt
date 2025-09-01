@@ -16,8 +16,7 @@ import com.medrevpatient.mobile.app.model.domain.response.auth.Auth
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.CountryCodePickerNew
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.allCountries
+
 import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
@@ -56,12 +55,7 @@ class GetRegisterUiStateUseCase
                 isOffline.value = it
             }
         }
-        registerUiDataState.update { state ->
-            state.copy(
-                defaultCountryCode = allCountries.find { it.cCountryPhoneNoCode == "+1" }?.countryCode
-                    ?: "+1"
-            )
-        }
+
         return RegisterUiState(
             registerUiDataState = registerUiDataState,
 
@@ -313,7 +307,6 @@ class GetRegisterUiStateUseCase
             val signUpReq = SignUpReq(
                 name = registerUiDataState.value.name,
                 email = registerUiDataState.value.email,
-                countryCode = CountryCodePickerNew.getCountryPhoneCodeNew(),
                 mobileNumber = registerUiDataState.value.phoneNumber,
                 dateOfBirth = AppUtils.convertDateToTimestamp(registerUiDataState.value.dateSelected),
                 gender = genderValue,

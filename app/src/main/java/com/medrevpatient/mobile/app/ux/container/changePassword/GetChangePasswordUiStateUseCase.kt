@@ -57,7 +57,6 @@ class GetChangePasswordUiStateUseCase
             }
         )
     }
-
     private fun changePasswordUiEvent(
         event: ChangePasswordUiEvent,
         context: Context,

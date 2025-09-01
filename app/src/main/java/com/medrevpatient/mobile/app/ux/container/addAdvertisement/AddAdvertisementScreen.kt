@@ -66,7 +66,7 @@ import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextFieldMultipleL
 import com.medrevpatient.mobile.app.ui.compose.common.DateSelectComponent
 import com.medrevpatient.mobile.app.ui.compose.common.FutureAndPastDatePickerWithDialog
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
-import com.medrevpatient.mobile.app.ui.compose.common.countryCode.CountryCodePickerComponent
+
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.CameraGalleryDialog
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.PermissionDialog
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
@@ -337,21 +337,7 @@ fun AddAdvertisementInputField(
             header = stringResource(R.string.email_address),
             leadingIcon = R.drawable.ic_app_icon,
         )
-        CountryCodePickerComponent(
-            value = addAdvertisementUiState?.mobileNumber ?: "",
-            onValueChange = { newValue ->
-                val filteredValue = newValue.filter { it.isDigit() }
-                uiState.event(AddAdvertisementUiEvent.MobileNumberValueChange(filteredValue))
-            },
-            isLeadingIconVisible = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword,
-                imeAction = ImeAction.Next
-            ),
-            errorMessage = addAdvertisementUiState?.mobileNumberErrorMsg,
-            header = stringResource(R.string.mobile_number),
-            setCountryCode = addAdvertisementUiState?.defaultCountryCode
-        )
+
         AppInputTextField(
             value = addAdvertisementUiState?.physicalAddress ?: "",
             onValueChange = { uiState.event(AddAdvertisementUiEvent.PhysicalAddressValueChange(it)) },

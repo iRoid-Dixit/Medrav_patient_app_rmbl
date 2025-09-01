@@ -1,6 +1,9 @@
 package com.towyservice.mobile.app.ui.common.sheetContent
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +27,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.test.isDialog
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,6 +56,8 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_800
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
+import com.towyservice.mobile.app.ui.common.sheetContent.ConfirmationBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.Boolean
@@ -117,6 +126,126 @@ fun SetNewPasswordSheetContent(
     )
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun ConfirmationSheetContent(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
+    onPositiveClick: () -> Unit = {},
+    title: String = "Logout?",
+    des: String = "Are you sure you want to logout?",
+    positiveText: String = "Yes",
+    navigateText: String = "No",
+    @DrawableRes icon: Int? = R.drawable.ic_logout,
+) {
+    ConfirmationBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        onPositiveClick=onPositiveClick,
+        title = title,
+        des = des,
+        positiveText = positiveText,
+        navigateText = navigateText,
+        icon = icon
+    )
+}
+
+@Composable
+private fun ConfirmationBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    onPositiveClick: () -> Unit = {},
+    title: String = "",
+    des: String = "",
+    positiveText: String = "",
+    navigateText: String = "",
+    @DrawableRes icon: Int? = null,
+
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(start = 18.dp, end = 18.dp, bottom = 18.dp)
+            .fillMaxWidth()
+    ) {
+        if (icon != null){
+            Image(painter = painterResource(id = icon), contentDescription = null, modifier = Modifier.size(50.dp))
+        }
+        Text(
+            text = title,
+            fontFamily = nunito_sans_800,
+            fontSize = 30.sp,
+            color = SteelGray
+        )
+        Text(
+            text = des,
+            style = TextStyle.Default.copy(
+                fontFamily = nunito_sans_400,
+                fontSize = 14.sp,
+                color = Gray60,
+                textAlign = TextAlign.Center
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp)
+
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(top = 25.dp, bottom = 10.dp)
+        ) {
+            AppButtonComponent(
+                onClick = {
+
+                    onDismissRequest()
+                },
+                modifier = Modifier.weight(1f),
+                textColor = AppThemeColor,
+                borderColors = AppThemeColor,
+                backgroundBrush = Brush.linearGradient(
+                    colors = listOf(
+                        White,
+                        White
+                    )
+
+                ),
+                text = navigateText,
+
+            )
+            AppButtonComponent(
+                onClick = {
+
+                    onPositiveClick()
+
+
+                },
+                modifier = Modifier.weight(1f),
+                text = positiveText,
+            )
+            /*Button(
+                text = navigateText,
+                onClick = onDismissRequest,
+                color = White,
+                textColors = NewAppThemeColor,
+                borderStroke = BorderStroke(1.dp, NewAppThemeColor),
+                modifier = Modifier
+                    .weight(1f),
+            )
+            BottomButtonComponent(
+                text = positiveText,
+                onClick = onHandleOfflineClick,
+                color = NewAppThemeColor,
+                modifier = Modifier
+                    .weight(1f),
+
+                )*/
+        }
+    }
+}
+
+
 @Preview
 @Composable
 fun SuccessSheetContent(
@@ -129,7 +258,6 @@ fun SuccessSheetContent(
 
 @Composable
 private fun SuccessSheetWrapper(proceedClick: () -> Unit = {}) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
@@ -161,7 +289,7 @@ private fun SuccessSheetWrapper(proceedClick: () -> Unit = {}) {
         Spacer(modifier = Modifier.height(20.dp))
         AppButtonComponent(
             onClick = proceedClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier,
             text = "Proceed",
             isLoading = false,
         )

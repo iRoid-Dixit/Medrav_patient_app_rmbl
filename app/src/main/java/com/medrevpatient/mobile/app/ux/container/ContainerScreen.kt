@@ -26,24 +26,8 @@ fun ContainerScreen(
     url: String
 ) {
     val navController = rememberNavController()
-    val context = LocalContext.current
-    val systemUi = rememberSystemUiController()
-    val window = (context as Activity).window
-    LaunchedEffect(Unit) {
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-        WindowInsetsControllerCompat(window, window.decorView).apply {
-            show(WindowInsetsCompat.Type.statusBars())
-            show(WindowInsetsCompat.Type.navigationBars())
-        }
-        systemUi.setSystemBarsColor(
-            color = Black, // ✅ Use standard `Color.Black`
-            darkIcons = false // ✅ Ensures white icons on dark background
-        )
-        systemUi.setStatusBarColor(
-            color = Color.Black, // ✅ Use standard `Color.Black`
-            darkIcons = false
-        )
-    }
+
+
     AppContainerGraph(
         navController = navController,
         startDestination = startDestination,

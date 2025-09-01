@@ -82,7 +82,6 @@ fun <T : Enum<T>> RowScope.AppBottomNavigationItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-
                         .graphicsLayer {
                             scaleX = scale
                             scaleY = scale
