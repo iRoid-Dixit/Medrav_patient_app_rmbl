@@ -28,9 +28,6 @@ class GetNotificationUiStateUseCase
     private val isOffline = MutableStateFlow(false)
     private lateinit var context: Context
     private val blockListDataFlow = MutableStateFlow(NotificationDataState())
-
-    private val notificationList =
-        MutableStateFlow<PagingData<NotificationResponse>>(PagingData.empty())
     operator fun invoke(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
@@ -44,10 +41,13 @@ class GetNotificationUiStateUseCase
                 isOffline.value = it
             }
         }
-        getNotification(coroutineScope = coroutineScope)
+        // Initialize with sample data
+        blockListDataFlow.value = NotificationDataState(
+            notifications = getSampleNotifications()
+        )
+        
         return NotificationUiState(
             notificationDataFlow = blockListDataFlow,
-            notificationList = notificationList,
             event = { aboutUsEvent ->
                 blockListUiEvent(
                     event = aboutUsEvent,
@@ -71,84 +71,61 @@ class GetNotificationUiStateUseCase
             is NotificationUiEvent.GetContext -> {
                 this.context = event.context
             }
-
-            is NotificationUiEvent.RejectNotificationClick -> {
-                acceptRejectNotificationAPICall(
-                    coroutineScope = coroutineScope,
-                    tribeId = event.tribeId,
-                    type = Constants.NotificationType.REJECT_NOTIFICATION.toString()
-                )
-            }
-
-            is NotificationUiEvent.AcceptNotificationClick -> {
-                acceptRejectNotificationAPICall(
-                    coroutineScope = coroutineScope,
-                    tribeId = event.tribeId,
-                    type = Constants.NotificationType.ACCEPT_NOTIFICATION.toString()
-                )
-            }
         }
     }
 
-    private fun getNotification(coroutineScope: CoroutineScope) {
-        coroutineScope.launch {
-            apiRepository.getNotification().cachedIn(this).collect { pagingData ->
-                notificationList.value = pagingData
-            }
-        }
-    }
-
-    private fun acceptRejectNotificationAPICall(
-        coroutineScope: CoroutineScope,
-        tribeId: String,
-        type: String
-
-    ) {
-        coroutineScope.launch {
-            apiRepository.acceptRejectNotification(type = type, tribeId = tribeId)
-                .collect {
-                    when (it) {
-                        is NetworkResult.Error -> {
-                            showOrHideLoader(false)
-                            showErrorMessage(
-                                context = context,
-                                it.message ?: "Something went wrong!"
-                            )
-                        }
-
-                        is NetworkResult.Loading -> {
-                            showOrHideLoader(true)
-                        }
-
-                        is NetworkResult.Success -> {
-                            showOrHideLoader(false)
-                            showSuccessMessage(context = context, it.data?.message ?: "")
-                            val unblockedUserId = it.data?.data?.message
-                            if (unblockedUserId != null) {
-                                notificationList.update { pagingData ->
-                                    pagingData.filter { it1 ->
-                                        it1.id != unblockedUserId
-                                    }
-                                }
-                            }
-
-                        }
-
-                        is NetworkResult.UnAuthenticated -> {
-                            showOrHideLoader(false)
-                        }
-                    }
-                }
-        }
-    }
-
-
-    private fun showOrHideLoader(showLoader: Boolean) {
-        blockListDataFlow.update { state ->
-            state.copy(
-                showLoader = showLoader
+    private fun getSampleNotifications(): List<NotificationItem> {
+        return listOf(
+            NotificationItem(
+                id = "1",
+                title = "Schedule Change",
+                description = "Your appointment has been rescheduled by your doctor. New appointment time: 04:00 PM.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
+            ),
+            NotificationItem(
+                id = "2",
+                title = "Reminder",
+                description = "It's time to take your medication. Please don't skip your dose.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
+            ),
+            NotificationItem(
+                id = "3",
+                title = "Reminder",
+                description = "It's time to take your medication. Please don't skip your dose.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
+            ),
+            NotificationItem(
+                id = "4",
+                title = "Side Effect Check-In",
+                description = "Your Side Effect Check-In is still remainging. Please give your feedback regarding your medicine.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
+            ),
+            NotificationItem(
+                id = "5",
+                title = "Daily Diet Challenge",
+                description = "your Daily Diet Challenge is remaining. Just 5 minutes to finish it.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_daily_diet_challenge
+            ),
+            NotificationItem(
+                id = "6",
+                title = "Side Effect Check-In",
+                description = "Your Side Effect Check-In is still remainging. Please give your feedback regarding your medicine.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
+            ),
+            NotificationItem(
+                id = "7",
+                title = "Appointment",
+                description = "Your video call with your doctor is in 5 mins. Get ready.",
+                timestamp = "09:13 AM",
+                iconRes = com.medrevpatient.mobile.app.R.drawable.ic_place_holder
             )
-        }
+        )
     }
 
 }

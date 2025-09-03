@@ -31,7 +31,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateReques
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
@@ -216,9 +216,9 @@ class ApiRepositoryImpl @Inject constructor(
             emit(NetworkResult.Error(cause.message))
         }
 
-    override fun sendOTP(sendOTPReq: SendOTPReq): Flow<NetworkResult<ApiResponse<Any>>> = flow {
+    override fun resendOtpOTP(sendOTPReq: ResendOTPReq): Flow<NetworkResult<ApiResponse<Any>>> = flow {
         try {
-            val response = apiServices.sendOTP(sendOTPReq)
+            val response = apiServices.resendOtp(sendOTPReq)
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()))
@@ -241,10 +241,10 @@ class ApiRepositoryImpl @Inject constructor(
         emit(NetworkResult.Error(cause.message))
     }
 
-    override fun doLogout(logoutReq: LogoutReq): Flow<NetworkResult<ApiResponse<UserAuthResponse>>> =
+    override fun doLogout(): Flow<NetworkResult<ApiResponse<UserAuthResponse>>> =
         flow {
             try {
-                val response = apiServices.doLogOut(logoutReq)
+                val response = apiServices.doLogOut()
 
                 if (response.isSuccessful && response.body() != null) {
                     emit(NetworkResult.Success(response.body()!!))

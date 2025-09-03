@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,12 +67,8 @@ fun ChangePasswordScreen(
     ) {
         ChangePasswordScreenContent(uiState, uiState.event)
     }
-    if (changePasswordUiState?.showLoader == true) {
-        CustomLoader()
-    }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun ChangePasswordScreenContent(
     uiState: ChangePasswordUiState,
@@ -83,6 +80,7 @@ private fun ChangePasswordScreenContent(
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
+            .imePadding()
             .noRippleClickable{
                 keyboardController?.hide()
             }
@@ -98,6 +96,7 @@ private fun ChangePasswordScreenContent(
             },
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.update),
+            isLoading = changePasswordUiState?.showLoader == true
         )
     }
 }

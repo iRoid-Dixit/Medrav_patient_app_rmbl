@@ -31,6 +31,12 @@ data class LoginData(
     val confirmPassword: String = "",
     val confirmPasswordErrorMsg: String? = null,
     val successSheetVisible:Boolean=false,
+    // Individual button loader states
+    val isLoginButtonLoading: Boolean = false,
+    val isProceedButtonLoading: Boolean = false,
+    val isVerifyButtonLoading: Boolean = false,
+    val isConfirmButtonLoading: Boolean = false,
+    val isResendButtonLoading: Boolean = false,
 )
 sealed interface LoginUiEvent {
     data class EmailValueChange(val email:String):LoginUiEvent

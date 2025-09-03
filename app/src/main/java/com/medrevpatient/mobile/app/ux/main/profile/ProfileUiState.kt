@@ -16,6 +16,12 @@ data class ProfileUiDataState(
     val logoutSheetVisible:Boolean=false,
     val deleteSheetVisible:Boolean=false,
     val showLoader: Boolean = false,
+    // Individual button loader states
+    val isLogoutButtonLoading: Boolean = false,
+    val isDeleteButtonLoading: Boolean = false,
+    val userName: String="",
+    val userProfile: String="",
+    val userEmail: String="",
     )
 sealed interface ProfileUiEvent {
     object EditProfile : ProfileUiEvent

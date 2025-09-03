@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -68,13 +72,15 @@ fun ResetPasswordSheetContent(
     emailErrorFlow: String? = null,
     onProceedClick: () -> Unit = {},
     onBackToLoginClick: () -> Unit = {},
+    showLoader: Boolean = false,
 ) {
     ResetPasswordSheetWrapper(
         emailFlow = emailFlow,
         onEmailValueChange = onEmailValueChange,
         emailErrorFlow = emailErrorFlow,
         onProceedClick = onProceedClick,
-        onBackToLoginClick = onBackToLoginClick
+        onBackToLoginClick = onBackToLoginClick,
+        showLoader = showLoader
 
     )
 }
@@ -90,6 +96,8 @@ fun EmailVerificationSheetContent(
     otpErrorFlow: String? = null,
     onOtpValueChange: (String) -> Unit = {},
     verifyClick: () -> Unit = {},
+    showLoader: Boolean = false,
+    isResendButtonLoading: Boolean = false,
 ) {
     EmailVerificationSheetWrapper(
         countDown = countDown,
@@ -100,7 +108,9 @@ fun EmailVerificationSheetContent(
         onOtpValueChange = onOtpValueChange,
         editEmailClick = editEmailClick,
         verifyClick = verifyClick,
-        otpErrorFlow = otpErrorFlow
+        otpErrorFlow = otpErrorFlow,
+        showLoader = showLoader,
+        isResendButtonLoading = isResendButtonLoading
 
     )
 }
@@ -113,7 +123,8 @@ fun SetNewPasswordSheetContent(
     confirmPassword: String = "",
     confirmPasswordError: String? = null,
     onConfirmPasswordChange: (String) -> Unit = {},
-    confirmClick: () -> Unit = {}
+    confirmClick: () -> Unit = {},
+    showLoader: Boolean = false,
 ) {
     SetNewPasswordSheetWrapper(
         newPassword = newPassword,
@@ -122,7 +133,8 @@ fun SetNewPasswordSheetContent(
         confirmPassword = confirmPassword,
         confirmPasswordError = confirmPasswordError,
         onConfirmPasswordChange = onConfirmPasswordChange,
-        confirmClick = confirmClick
+        confirmClick = confirmClick,
+        showLoader = showLoader
     )
 }
 @Preview(showBackground = true)
@@ -286,7 +298,7 @@ private fun SuccessSheetWrapper(proceedClick: () -> Unit = {}) {
         Spacer(modifier = Modifier.height(20.dp))
         AppButtonComponent(
             onClick = proceedClick,
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth(),
             text = "Proceed",
             isLoading = false,
         )
@@ -302,8 +314,8 @@ private fun SetNewPasswordSheetWrapper(
     confirmPassword: String,
     onConfirmPasswordChange: (String) -> Unit = {},
     confirmPasswordError: String? = null,
-    confirmClick: () -> Unit = {}
-
+    confirmClick: () -> Unit = {},
+    showLoader: Boolean = false,
 ) {
     var newPasswordVisible by rememberSaveable { mutableStateOf(false) }
     var confirmVisible by rememberSaveable { mutableStateOf(false) }
@@ -368,7 +380,7 @@ private fun SetNewPasswordSheetWrapper(
             onClick = confirmClick,
             modifier = Modifier.fillMaxWidth(),
             text = "Confirm",
-            isLoading = false,
+            isLoading = showLoader,
         )
 
     }
@@ -385,6 +397,8 @@ private fun EmailVerificationSheetWrapper(
     resendEmail: String,
     editEmailClick: () -> Unit = {},
     verifyClick: () -> Unit = {},
+    showLoader: Boolean = false,
+    isResendButtonLoading: Boolean = false,
 
     ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -449,7 +463,7 @@ private fun EmailVerificationSheetWrapper(
             onClick = verifyClick,
             modifier = Modifier.fillMaxWidth(),
             text = "Verify",
-            isLoading = false,
+            isLoading = showLoader,
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
@@ -460,16 +474,36 @@ private fun EmailVerificationSheetWrapper(
         )
         Spacer(modifier = Modifier.height(20.dp))
         if (isResendVisible == true) {
-            Text(
-                text = "Resend code",
-                fontFamily = nunito_sans_700,
-                color = AppThemeColor,
-                fontSize = 14.sp,
-                modifier = Modifier.noRippleClickable {
-                    resendSendCodeClick()
+            if (isResendButtonLoading) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = AppThemeColor,
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Sending...",
+                        fontFamily = nunito_sans_700,
+                        color = AppThemeColor,
+                        fontSize = 14.sp,
+                    )
                 }
-
-            )
+            } else {
+                Text(
+                    text = "Resend code",
+                    fontFamily = nunito_sans_700,
+                    color = AppThemeColor,
+                    fontSize = 14.sp,
+                    modifier = Modifier.noRippleClickable {
+                        resendSendCodeClick()
+                    }
+                )
+            }
         }
     }
 
@@ -484,6 +518,7 @@ private fun ResetPasswordSheetWrapper(
     emailErrorFlow: String? = null,
     onProceedClick: () -> Unit = {},
     onBackToLoginClick: () -> Unit = {},
+    showLoader: Boolean = false,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -493,7 +528,9 @@ private fun ResetPasswordSheetWrapper(
                 keyboardController?.hide()
             }
             .background(White)
-            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+            .verticalScroll(rememberScrollState())
+            .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -529,7 +566,7 @@ private fun ResetPasswordSheetWrapper(
             onClick = onProceedClick,
             modifier = Modifier.fillMaxWidth(),
             text = "Proceed",
-            isLoading = false,
+            isLoading = showLoader,
         )
         Spacer(modifier = Modifier.height(35.dp))
         Text(

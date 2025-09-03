@@ -7,13 +7,13 @@ object EndPoints {
     object Auth {
         const val SIGN_UP: String = "auth/register"
         const val LOG_IN: String = "auth/login"
-        const val OTP_VERIFY: String = "auth/verify-otp"
+        const val OTP_VERIFY: String = "auth/otp-verification"
         const val LOGOUT: String = "auth/logout"
-        const val SEND_OTP: String = "auth/resend-otp"
-        const val FORGET_PASSWORD: String = "auth/forgot-password"
+        const val RESEND_OTP: String = "auth/resend-otp"
+        const val FORGET_PASSWORD: String = "auth/resend-otp"
         const val SOCIAL_LOGIN: String = "auth/social/login"
         const val USER_UPDATE: String = "user/update"
-        const val ACCOUNT_DELETE = "user/accountDelete"
+        const val ACCOUNT_DELETE = "auth/delete-account"
         const val SINGLE_POST_DELETE = "legacy/post-single-media-delete"
         const val REFRESH_TOKEN = "auth/refresh_token"
         const val FORCE_UPDATE = "auth/version"
@@ -30,7 +30,7 @@ object EndPoints {
     object Container {
         const val HOME: String = "home"
         const val MARK_AS_PLAYED: String = "mark-as-played"
-        const val CHANGE_PASSWORD: String = "user/update-password"
+        const val CHANGE_PASSWORD: String = "auth/change-password"
         const val FQA_QUESTION: String = "user/faq"
         const val INNER_CIRCLE_BLOCK_AND_LEAVE: String =
             "friends/block-member-and-remove-member-tribe"

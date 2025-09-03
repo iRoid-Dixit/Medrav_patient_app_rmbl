@@ -3,6 +3,7 @@ package com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion
 import android.content.Context
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.navigation.NavigationAction
+import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerRoute
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +70,7 @@ class GetSideEffectQuestionUiStateUseCase
             }
             
             is SideEffectQuestionUiEvent.SubmitAssessment -> {
-                navigate(NavigationAction.Navigate(WeightTrackerRoute.createRoute()))
+                navigate(Navigate(WeightTrackerRoute.createRoute()))
 
                 /*val currentData = dietChallengeDataFlow.value
                 // Check if all questions are answered
@@ -78,6 +79,10 @@ class GetSideEffectQuestionUiStateUseCase
                     dietChallengeDataFlow.value = currentData.copy(isSubmitted = true)
                     // Here you can add logic to send data to backend or navigate to next screen
                 }*/
+            }
+
+            SideEffectQuestionUiEvent.BackClick -> {
+                navigate(PopIntent)
             }
         }
     }

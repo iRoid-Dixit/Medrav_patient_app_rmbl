@@ -55,7 +55,6 @@ fun AppMainGraph(
         MedicationRoute.addNavigationRoute(this){ MedicationScreen(navController)}
         MessageRoute.addNavigationRoute(this){ MessageScreen(navController) }
         ProfileRoute.addNavigationRoute(this){ ProfileScreen(navController) }
-
         GriotLegacyRoute.addNavigationRoute(this){ GriotLegacyScreen(navController) }
     }
 }

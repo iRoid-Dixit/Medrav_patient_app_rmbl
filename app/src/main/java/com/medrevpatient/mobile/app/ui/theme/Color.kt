@@ -56,6 +56,8 @@ val Green09 = Color(0xFF09DA46)
 val Blue05 = Color(0xFF0A55C9)
 val Blue20 = Color(0xFF206EEE)
 val GrayC0 = Color(0xFFC0C0C0)
+val Gray09 = Color(0xFFD9DBE9)
+
 val RedC9 = Color(0xFFC90A0D)
 val SteelGray = Color(0xFF2C2340)
 val Gray50 = Color(0x802C5180)

@@ -133,7 +133,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             header = stringResource(id = R.string.email),
             leadingIcon = R.drawable.ic_app_icon,
         )
-
         Spacer(modifier = Modifier.height(20.dp))
         AppInputTextField(
             value = loginUiState?.password ?: "",
@@ -152,7 +151,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             trailingIcon = if (passwordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         Spacer(modifier = Modifier.height(10.dp))
-
         Text(
             text = stringResource(R.string.forgot_your_password),
             fontFamily = nunito_sans_700,
@@ -164,7 +162,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                     event(LoginUiEvent.ResentSheetVisibility(true))
                 }
         )
-
         Spacer(modifier = Modifier.height(40.dp))
         AppButtonComponent(
             onClick = {
@@ -172,7 +169,7 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             },
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.log_in),
-            isLoading = loginUiState?.showLoader == true
+            isLoading = loginUiState?.isLoginButtonLoading == true
         )
         Spacer(modifier = Modifier.height(20.dp))
         OrDivider()
@@ -193,7 +190,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                                 context.getString(R.string.google) -> {
 
                                 }
-
                                 context.getString(R.string.facebook) -> {
 
                                     /*  AppUtils.showMessage(
@@ -211,19 +207,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(25.dp))
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            LogInSignInNavText(
-                message = "Don't have an account?",
-                actionText = "Register",
-                onClick = {
-                    uiState.event(LoginUiEvent.SignUp)
-                },
-            )
         }
         Spacer(modifier = Modifier.height(40.dp))
     }
@@ -244,7 +227,8 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             },
             onBackToLoginClick = {
                 event(LoginUiEvent.ResentSheetVisibility(false))
-            }
+            },
+            showLoader = loginUiState?.isProceedButtonLoading == true
         )
     }
     ModelSheetLauncher(
@@ -266,7 +250,8 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             confirmPasswordError = loginUiState?.confirmPasswordErrorMsg,
             confirmClick = {
                 event(LoginUiEvent.ConfirmClick(sheetState = state, scope))
-            }
+            },
+            showLoader = loginUiState?.isConfirmButtonLoading == true
         )
     }
     ModelSheetLauncher(
@@ -292,7 +277,9 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
             verifyClick = {
                 event(LoginUiEvent.VerifyClick(sheetState = state, scope = scope))
             },
-            otpErrorFlow = loginUiState?.otpErrorMsg
+            otpErrorFlow = loginUiState?.otpErrorMsg,
+            showLoader = loginUiState?.isVerifyButtonLoading == true,
+            isResendButtonLoading = loginUiState?.isResendButtonLoading == true
         )
     }
     ModelSheetLauncher(

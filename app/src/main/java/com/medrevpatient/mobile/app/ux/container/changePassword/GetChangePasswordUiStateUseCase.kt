@@ -52,7 +52,6 @@ class GetChangePasswordUiStateUseCase
                     context = context,
                     navigate = navigate,
                     coroutineScope = coroutineScope
-
                 )
             }
         )
@@ -206,11 +205,9 @@ class GetChangePasswordUiStateUseCase
             }
         )
     }
-
     private fun doChangePassword(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
-
     ) {
         coroutineScope.launch {
             val changePasswordRequest =ChangePasswordReq(
@@ -243,7 +240,6 @@ class GetChangePasswordUiStateUseCase
             }
         }
     }
-
     private fun showOrHideLoader(showLoader: Boolean) {
         changePasswordUsDataFlow.update { state ->
             state.copy(
@@ -251,8 +247,6 @@ class GetChangePasswordUiStateUseCase
             )
         }
     }
-
-
 
 
 }

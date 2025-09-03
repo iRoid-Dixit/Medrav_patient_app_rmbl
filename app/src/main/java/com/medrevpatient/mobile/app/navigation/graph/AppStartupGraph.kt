@@ -49,10 +49,7 @@ fun AppStartUpGraph(
         (SplashRoute as SimpleNavComposeRoute).addNavigationRoute(this) { SplashScreen(navController, restartApp = restartApp, bundle = bundle) }
         LoginRoute.addNavigationRoute(this) { LoginScreen(navController) }
         RegisterRoute.addNavigationRoute(this) { RegisterScreen(navController) }
-        BmiRoute.addNavigationRoute(this) { BmiScreen(navController) }
-        SideEffectQuestionRoute.addNavigationRoute(this) { SideEffectScreen(navController) }
-        DietChallengeRoute.addNavigationRoute(this) { DietChallengeScreen(navController) }
-        WeightTrackerRoute.addNavigationRoute(this) { WeightTrackerScreen(navController) }
+
 
     }
 }

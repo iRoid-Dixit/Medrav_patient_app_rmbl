@@ -43,8 +43,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
         Log.d("TAG", "onCreate: $isComeFor")
         setContent {
             MainScreen(startDestination = isComeFor)
-
-
         }
         generateFCMToken()
     }

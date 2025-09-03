@@ -37,6 +37,8 @@ object Constants {
         const val MAIN_VILLAGE_SCREEN: String = "mainVillageScreen"
         const val BLOCK_LIST_SCREEN: String = "blockListScreen"
         const val NOTIFICATION_SCREEN: String = "notificationScreen"
+        const val SIDE_EFFECT_CHECK_SCREEN: String = "sideEffectCheckScreen"
+        const val DAILY_DIET_CHALLENGE_SCREEN: String = "dailyDietChallengeScreen"
         const val USER_PROFILE: String = "userProfile"
         const val ADD_GROUP_MEMBER: String = "addGroupMember"
         const val CREATE_INNER_CIRCLE_OR_TRIBE: String = "createInnerCircleOrTribe"
@@ -68,6 +70,11 @@ object Constants {
         const val STATUS_ONLINE: String = "statusOnline"
         const val USER_BACK_TO_HOME: String = "userBackToHome"
 
+    }
+
+    object OTPType {
+        const val FORGET_PASSWORD = 2
+        const val EMAIL_VERIFICATION = 1
     }
 
     object MessageType {

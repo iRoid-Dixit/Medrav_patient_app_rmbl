@@ -14,10 +14,16 @@ data class HomeUiState(
 )
 data class HomeUiDataState(
     val showLoader: Boolean = false,
+    val userName: String="",
+    val userProfile: String=""
 
 )
 sealed interface HomeUiEvent {
 
     data class GetContext(val context: Context) : HomeUiEvent
+    object NotificationClick : HomeUiEvent
+    object SideEffectClick : HomeUiEvent
+    object DailyDietClick : HomeUiEvent
+
 
 }

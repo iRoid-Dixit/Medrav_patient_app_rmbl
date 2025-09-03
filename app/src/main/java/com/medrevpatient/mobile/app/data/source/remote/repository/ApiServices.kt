@@ -10,7 +10,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateReques
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
@@ -86,12 +86,12 @@ interface ApiServices {
         @Body forgetPasswordReq: ForgetPasswordReq
     ): Response<ApiResponse<UserAuthResponse>>
 
-    @POST(EndPoints.Auth.SEND_OTP)
-    suspend fun sendOTP(
-        @Body sendOTPReq: SendOTPReq
+    @POST(EndPoints.Auth.RESEND_OTP)
+    suspend fun resendOtp(
+        @Body resendOTPReq: ResendOTPReq
     ): Response<ApiResponse<Any>>
 
-    @PUT(EndPoints.Container.CHANGE_PASSWORD)
+    @POST(EndPoints.Container.CHANGE_PASSWORD)
     suspend fun changePassword(
         @Body changePasswordReq: ChangePasswordReq
     ): Response<ApiResponse<UserAuthResponse>>
@@ -226,7 +226,6 @@ interface ApiServices {
 
     @POST(EndPoints.Auth.LOGOUT)
     suspend fun doLogOut(
-        @Body logoutRequest: LogoutReq
     ): Response<ApiResponse<UserAuthResponse>>
 
     //Delete account

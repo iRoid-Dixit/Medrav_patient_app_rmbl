@@ -13,7 +13,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateReques
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
@@ -65,9 +65,9 @@ interface ApiRepository {
 
     fun resetPassword(resetPasswordReq: ResetPasswordReq): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
 
-    fun sendOTP(sendOTPReq: SendOTPReq): Flow<NetworkResult<ApiResponse<Any>>>
+    fun resendOtpOTP(sendOTPReq: ResendOTPReq): Flow<NetworkResult<ApiResponse<Any>>>
 
-    fun doLogout(logoutReq: LogoutReq): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
+    fun doLogout(): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
 
     fun deleteAccount(): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
 

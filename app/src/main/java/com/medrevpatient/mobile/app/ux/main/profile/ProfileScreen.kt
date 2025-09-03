@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import coil.compose.AsyncImage
 import com.medrevpatient.mobile.app.data.source.local.UserData
 import com.medrevpatient.mobile.app.data.source.local.UserData.ProfileItem
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
@@ -96,7 +97,7 @@ private fun ProfileScreenContent(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProfileHeader()
+        ProfileHeader(profileUiState)
         AccountDetailsSection(event)
         Spacer(modifier = Modifier.height(30.dp))
         Text(
@@ -141,7 +142,7 @@ private fun ProfileScreenContent(
                 event(ProfileUiEvent.LogoutAPICall)
             },
             icon = R.drawable.ic_logout,
-            isLoading = profileUiState?.showLoader == false
+            isLoading = profileUiState?.isLogoutButtonLoading == true
         )
     }
     ModelSheetLauncher(
@@ -160,22 +161,24 @@ private fun ProfileScreenContent(
             },
             onPositiveClick = {
                 event(ProfileUiEvent.DeleteAPICall)
-
             },
-            icon = R.drawable.ic_delete
+            icon = R.drawable.ic_delete,
+            isLoading = profileUiState?.isDeleteButtonLoading == true
         )
     }
 }
 @Composable
-private fun ProfileHeader() {
+private fun ProfileHeader(profileUiState: ProfileUiDataState?) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_place_holder),
+        AsyncImage(
+            model = profileUiState?.userProfile,
+            placeholder = painterResource(id = R.drawable.ic_place_holder),
+            error = painterResource(id = R.drawable.ic_place_holder),
             contentDescription = stringResource(R.string.profile_picture),
             modifier = Modifier
                 .size(90.dp)
@@ -183,14 +186,15 @@ private fun ProfileHeader() {
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(
-            text = "Sarah Johnson",
+            text = profileUiState?.userName?:"",
             color = SteelGray,
             fontSize = 20.sp,
             fontFamily = nunito_sans_600
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
-            text = "Email ID: you123@gmail.com",
+           // text = "Email ID: you123@gmail.com",
+            text = "Email ID: ${profileUiState?.userEmail?:""}",
             color = Gray40,
             fontSize = 12.sp,
             fontFamily = nunito_sans_400

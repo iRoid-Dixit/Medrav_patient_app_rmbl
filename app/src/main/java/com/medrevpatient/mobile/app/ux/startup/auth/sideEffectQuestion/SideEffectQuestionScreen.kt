@@ -60,7 +60,8 @@ fun SideEffectScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(SideEffectQuestionUiEvent.BackClick) },
+                isBackVisible = true,
                 titleText = "Side Effect Check-In",
             )
         },

@@ -60,7 +60,8 @@ fun DietChallengeScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = {  },
+                isBackVisible = true,
                 titleText = "Daily Diet Challenge",
             )
         },

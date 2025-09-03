@@ -19,4 +19,5 @@ sealed interface SideEffectQuestionUiEvent {
     data class GetContext(val context: Context) : SideEffectQuestionUiEvent
     data class UpdateAnswer(val questionIndex: Int, val answerIndex: Int) : SideEffectQuestionUiEvent
     object SubmitAssessment : SideEffectQuestionUiEvent
+    object BackClick : SideEffectQuestionUiEvent
 }

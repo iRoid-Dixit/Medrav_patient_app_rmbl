@@ -33,6 +33,16 @@ class GetProfileUiStateUseCase
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): ProfileUiState {
+        coroutineScope.launch{
+            profileUiDataFlow.update {state->
+                state.copy(
+                    userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
+                    userProfile=appPreferenceDataStore.getUserData()?.profileImage?:"",
+                    userEmail = appPreferenceDataStore.getUserData()?.email?:""
+                )
+
+            }
+        }
         return ProfileUiState(
             messageUiDataFlow = profileUiDataFlow,
             event = { profileUiEvent ->
@@ -105,8 +115,10 @@ class GetProfileUiStateUseCase
                 }
             }
             ProfileUiEvent.DeleteAPICall -> {
-                // TODO: delete api call 
-                
+                deleteAccount(
+                    coroutineScope = coroutineScope,
+                    navigate = navigate
+                )
             }
 
             is ProfileUiEvent.GetContext -> {
@@ -120,25 +132,25 @@ class GetProfileUiStateUseCase
         navigate: (NavigationAction) -> Unit
     ) {
         coroutineScope.launch {
-                val logoutReq = LogoutReq(
-                    refresh = appPreferenceDataStore.getUserAuthData()?.accessToken?:""
-                )
-                apiRepository.doLogout(logoutReq).collect {
+             /*   val logoutReq = LogoutReq(
+                    refresh = appPreferenceDataStore.getUserAuthData()?.refreshToken?:""
+                )*/
+                apiRepository.doLogout().collect {
                     when (it) {
                         is NetworkResult.Error -> {
                             showErrorMessage(
                                 context =  this@GetProfileUiStateUseCase.context,
                                 it.message ?: "Something went wrong!"
                             )
-                            showOrHideLoader(false)
+                            showOrHideLogoutButtonLoader(false)
                         }
 
                         is NetworkResult.Loading -> {
-                            showOrHideLoader(true)
+                            showOrHideLogoutButtonLoader(true)
                         }
 
                         is NetworkResult.Success -> {
-                            showOrHideLoader(false)
+                            showOrHideLogoutButtonLoader(false)
                             appPreferenceDataStore.clearAll()
                             showSuccessMessage(
                                 context = this@GetProfileUiStateUseCase.context,
@@ -163,18 +175,71 @@ class GetProfileUiStateUseCase
                                 context = this@GetProfileUiStateUseCase.context,
                                 it.message ?: "Something went wrong!"
                             )
-                            showOrHideLoader(false)
+                            showOrHideLogoutButtonLoader(false)
                         }
                     }
                 }
 
         }
     }
+
+
     private fun showOrHideLoader(showLoader: Boolean) {
         profileUiDataFlow.update { state ->
             state.copy(
                 showLoader = showLoader
             )
+        }
+    }
+
+    private fun showOrHideLogoutButtonLoader(isLoading: Boolean) {
+        profileUiDataFlow.update { state ->
+            state.copy(
+                isLogoutButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun showOrHideDeleteButtonLoader(isLoading: Boolean) {
+        profileUiDataFlow.update { state ->
+            state.copy(
+                isDeleteButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun deleteAccount(
+        coroutineScope: CoroutineScope,
+        navigate: (NavigationAction) -> Unit
+    ) {
+        coroutineScope.launch {
+            // TODO: Replace with actual delete account API call
+            // For now, simulate API call
+            showOrHideDeleteButtonLoader(true)
+            
+            // Simulate network delay
+            delay(2000)
+            
+            // Simulate success response
+            showOrHideDeleteButtonLoader(false)
+            showSuccessMessage(
+                context = this@GetProfileUiStateUseCase.context,
+                "Account deleted successfully"
+            )
+            
+            // Navigate to startup screen
+            coroutineScope.launch {
+                delay(1000)
+                appPreferenceDataStore.clearAll()
+                val intent = Intent(context, StartupActivity::class.java)
+                intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
+                navigate(
+                    NavigationAction.NavigateIntent(
+                        intent,
+                        finishCurrentActivity = true
+                    ),
+                )
+            }
         }
     }
 

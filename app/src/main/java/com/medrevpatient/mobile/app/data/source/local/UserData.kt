@@ -31,6 +31,11 @@ object UserData {
         val price: String,
         val iconRes: Int
     )
+    data class RecentActivity(
+        val title: String,
+        val timestamp: String,
+        val iconRes: Int,
+    )
     val settingScreenListingData = listOf(
         SettingData(title = R.string.app_name, colors = R.color.white, true),
         SettingData(title = R.string.app_name, colors = R.color.white, true),

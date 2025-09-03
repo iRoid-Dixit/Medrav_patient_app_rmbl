@@ -43,6 +43,18 @@ class GetHomeUiStateUseCase
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): HomeUiState {
+        coroutineScope.launch{
+            homeUiDataFlow.update {state->
+                state.copy(
+                    userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
+                    userProfile=appPreferenceDataStore.getUserData()?.profileImage?:""
+                )
+
+            }
+        }
+        coroutineScope.launch{
+            Log.d("TAG", "lastName: ${appPreferenceDataStore.getUserData()?.firstName},${appPreferenceDataStore.getUserData()?.lastName}")
+        }
         return HomeUiState(
             homeUiDataFlow = homeUiDataFlow,
             event = { homeUiEvent ->
@@ -64,6 +76,27 @@ class GetHomeUiStateUseCase
             is HomeUiEvent.GetContext -> {
                 this.context = event.context
             }
+
+            HomeUiEvent.NotificationClick ->{
+                navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.NOTIFICATION_SCREEN)
+            }
+
+            HomeUiEvent.DailyDietClick -> {
+                navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.DAILY_DIET_CHALLENGE_SCREEN)
+            }
+            HomeUiEvent.SideEffectClick -> {
+                navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.SIDE_EFFECT_CHECK_SCREEN)
+            }
         }
+    }
+
+    private fun navigateToContainerScreens(
+        context: Context,
+        navigate: (NavigationAction) -> Unit,
+        screenName: String
+    ) {
+        val intent = Intent(context, ContainerActivity::class.java)
+        intent.putExtra(Constants.IS_COME_FOR, screenName)
+        navigate(NavigateIntent(intent = intent, finishCurrentActivity = false))
     }
 }

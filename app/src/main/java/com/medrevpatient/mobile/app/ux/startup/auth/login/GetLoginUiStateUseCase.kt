@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
 import com.medrevpatient.mobile.app.model.domain.response.auth.Auth
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
@@ -185,7 +190,8 @@ class GetLoginUiStateUseCase
             }
 
             is LoginUiEvent.ResendCode -> {
-                startCountdown(coroutineScope)
+                doUserResendOtpIn(coroutineScope = coroutineScope)
+              //  startCountdown(coroutineScope)
 
             }
 
@@ -204,7 +210,8 @@ class GetLoginUiStateUseCase
                         if (hasErrorEmail) {
                             return
                         }
-                        event.scope.launch {
+                        doUserForgetPasswordIn(coroutineScope = coroutineScope, navigate = navigate,event)
+                       /* event.scope.launch {
                             event.sheetState.hide()
                             startCountdown(coroutineScope)
                         }.invokeOnCompletion {
@@ -215,7 +222,7 @@ class GetLoginUiStateUseCase
                                 )
 
                             }
-                        }
+                        }*/
                     }
 
                 } else {
@@ -263,18 +270,7 @@ class GetLoginUiStateUseCase
                         if (hasErrorOtp) {
                             return
                         }
-                        event.scope.launch {
-                            event.sheetState.hide()
-
-                        }.invokeOnCompletion {
-                            loginDataFlow.update { state ->
-                                state.copy(
-                                    emailVerificationSheetVisible = false,
-                                    setPasswordVisible = true
-                                )
-
-                            }
-                        }
+                        doUserVerifyOtpIn(coroutineScope = coroutineScope,event)
                     }
                 } else {
                     showWaringMessage(
@@ -339,7 +335,11 @@ class GetLoginUiStateUseCase
                             )
                         }
                         if (hasError) return
-                        event.scope.launch {
+                        doUserResetPasswordIn(
+                            coroutineScope = coroutineScope,
+                            event=event
+                        )
+                       /* event.scope.launch {
                             event.sheetState.hide()
                         }.invokeOnCompletion {
                             loginDataFlow.update { state ->
@@ -349,7 +349,7 @@ class GetLoginUiStateUseCase
                                 )
 
                             }
-                        }
+                        }*/
                     }
 
                 } else {
@@ -372,9 +372,14 @@ class GetLoginUiStateUseCase
                 event.scope.launch {
                     event.sheetState.hide()
                 }.invokeOnCompletion {
+
                     loginDataFlow.update { state ->
                         state.copy(
                             successSheetVisible = false,
+                            resendEmail = "",
+                            otpValue = "",
+                            newPassword = "",
+                            confirmPassword = ""
                         )
 
                     }
@@ -409,6 +414,187 @@ class GetLoginUiStateUseCase
         )
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserForgetPasswordIn(
+        coroutineScope: CoroutineScope,
+        navigate: (NavigationAction) -> Unit,
+        event: LoginUiEvent.ProceedClick
+    ) {
+        coroutineScope.launch {
+            val forgetPasswordReq = ForgetPasswordReq(
+                email = loginDataFlow.value.resendEmail
+            )
+            apiRepository.forgetPassword(forgetPasswordReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideProceedButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideProceedButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideProceedButtonLoader(false)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                        event.scope.launch {
+                            event.sheetState.hide()
+                            startCountdown(coroutineScope)
+                        }.invokeOnCompletion {
+                            loginDataFlow.update { state ->
+                                state.copy(
+                                    resetSheetVisible = false,
+                                    emailVerificationSheetVisible = true
+                                )
+
+                            }
+                        }
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideProceedButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserResendOtpIn(
+        coroutineScope: CoroutineScope,
+    ) {
+        coroutineScope.launch {
+            val resendOtpReq = ResendOTPReq(
+                email = loginDataFlow.value.resendEmail,
+                otpType = Constants.OTPType.FORGET_PASSWORD
+            )
+            apiRepository.resendOtpOTP(resendOtpReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideResendButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideResendButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideResendButtonLoader(false)
+                        startCountdown(coroutineScope)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideResendButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserVerifyOtpIn(
+        coroutineScope: CoroutineScope,
+        event: LoginUiEvent.VerifyClick,
+
+        ) {
+        coroutineScope.launch {
+            val otpVerifyReq = VerifyOTPReq(
+                email = loginDataFlow.value.resendEmail,
+                otp = loginDataFlow.value.otpValue,
+                otpType = Constants.OTPType.FORGET_PASSWORD
+            )
+            apiRepository.verifyOTP(otpVerifyReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideVerifyButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideVerifyButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideVerifyButtonLoader(false)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                        event.scope.launch {
+                            event.sheetState.hide()
+
+                        }.invokeOnCompletion {
+                            loginDataFlow.update { state ->
+                                state.copy(
+                                    emailVerificationSheetVisible = false,
+                                    setPasswordVisible = true
+                                )
+
+                            }
+                        }
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideVerifyButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserResetPasswordIn(
+        coroutineScope: CoroutineScope,
+        event: LoginUiEvent.ConfirmClick,
+
+
+        ) {
+        coroutineScope.launch {
+            val resendPasswordReq = ResetPasswordReq(
+                email = loginDataFlow.value.resendEmail,
+                newPassword = loginDataFlow.value.newPassword,
+                confirmPassword = loginDataFlow.value.confirmPassword,
+            )
+            apiRepository.resetPassword(resendPasswordReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideConfirmButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideConfirmButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideConfirmButtonLoader(false)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                        event.scope.launch {
+                            event.sheetState.hide()
+                        }.invokeOnCompletion {
+                            loginDataFlow.update { state ->
+                                state.copy(
+                                    successSheetVisible = true,
+                                    setPasswordVisible = false
+                                )
+
+                            }
+                        }
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideConfirmButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+
     private fun doUserLoginIn(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -423,15 +609,15 @@ class GetLoginUiStateUseCase
                 when (it) {
                     is NetworkResult.Error -> {
                         showErrorMessage(context = context, it.message ?: "Something went wrong!")
-                        showOrHideLoader(false)
+                        showOrHideLoginButtonLoader(false)
                     }
 
                     is NetworkResult.Loading -> {
-                        showOrHideLoader(true)
+                        showOrHideLoginButtonLoader(true)
                     }
 
                     is NetworkResult.Success -> {
-                        showOrHideLoader(false)
+                        showOrHideLoginButtonLoader(false)
                         showSuccessMessage(context = context, it.data?.message ?: "")
                         storeResponseToDataStore(
                             coroutineScope = coroutineScope,
@@ -441,7 +627,7 @@ class GetLoginUiStateUseCase
                     }
 
                     is NetworkResult.UnAuthenticated -> {
-                        showOrHideLoader(false)
+                        showOrHideLoginButtonLoader(false)
                         showErrorMessage(context = context, it.message ?: "Something went wrong!")
                     }
                 }
@@ -480,6 +666,46 @@ class GetLoginUiStateUseCase
         loginDataFlow.update { state ->
             state.copy(
                 showLoader = showLoader
+            )
+        }
+    }
+
+    private fun showOrHideLoginButtonLoader(isLoading: Boolean) {
+        loginDataFlow.update { state ->
+            state.copy(
+                isLoginButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun showOrHideProceedButtonLoader(isLoading: Boolean) {
+        loginDataFlow.update { state ->
+            state.copy(
+                isProceedButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun showOrHideVerifyButtonLoader(isLoading: Boolean) {
+        loginDataFlow.update { state ->
+            state.copy(
+                isVerifyButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun showOrHideConfirmButtonLoader(isLoading: Boolean) {
+        loginDataFlow.update { state ->
+            state.copy(
+                isConfirmButtonLoading = isLoading
+            )
+        }
+    }
+
+    private fun showOrHideResendButtonLoader(isLoading: Boolean) {
+        loginDataFlow.update { state ->
+            state.copy(
+                isResendButtonLoading = isLoading
             )
         }
     }
