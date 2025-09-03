@@ -125,8 +125,6 @@ fun SetNewPasswordSheetContent(
         confirmClick = confirmClick
     )
 }
-
-
 @Preview(showBackground = true)
 @Composable
 fun ConfirmationSheetContent(
@@ -138,6 +136,7 @@ fun ConfirmationSheetContent(
     positiveText: String = "Yes",
     navigateText: String = "No",
     @DrawableRes icon: Int? = R.drawable.ic_logout,
+    isLoading: Boolean = false,
 ) {
     ConfirmationBottomSheet(
         modifier = modifier,
@@ -147,7 +146,8 @@ fun ConfirmationSheetContent(
         des = des,
         positiveText = positiveText,
         navigateText = navigateText,
-        icon = icon
+        icon = icon,
+        isLoading = isLoading
     )
 }
 
@@ -161,6 +161,7 @@ private fun ConfirmationBottomSheet(
     positiveText: String = "",
     navigateText: String = "",
     @DrawableRes icon: Int? = null,
+    isLoading: Boolean = false,
 
 ) {
     Column(
@@ -198,7 +199,6 @@ private fun ConfirmationBottomSheet(
         ) {
             AppButtonComponent(
                 onClick = {
-
                     onDismissRequest()
                 },
                 modifier = Modifier.weight(1f),
@@ -209,20 +209,17 @@ private fun ConfirmationBottomSheet(
                         White,
                         White
                     )
-
                 ),
                 text = navigateText,
 
             )
             AppButtonComponent(
                 onClick = {
-
                     onPositiveClick()
-
-
                 },
                 modifier = Modifier.weight(1f),
                 text = positiveText,
+                isLoading = isLoading
             )
             /*Button(
                 text = navigateText,

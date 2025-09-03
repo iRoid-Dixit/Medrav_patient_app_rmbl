@@ -4,12 +4,20 @@ import android.content.Context
 import android.content.Intent
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
+import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
+import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.navigation.NavigationAction
+import com.medrevpatient.mobile.app.utils.AppUtils
+import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
+import com.medrevpatient.mobile.app.ux.startup.StartupActivity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GetProfileUiStateUseCase
@@ -18,6 +26,7 @@ class GetProfileUiStateUseCase
     private val apiRepository: ApiRepository,
 ) {
     private val profileUiDataFlow = MutableStateFlow(ProfileUiDataState())
+    private lateinit var context: Context
     operator fun invoke(
         context: Context,
         @Suppress("UnusedPrivateProperty")
@@ -37,7 +46,6 @@ class GetProfileUiStateUseCase
             }
         )
     }
-
     private fun profileUiEvent(
         event: ProfileUiEvent,
         context: Context,
@@ -84,7 +92,10 @@ class GetProfileUiStateUseCase
                 }
             }
             ProfileUiEvent.LogoutAPICall -> {
-                // TODO: logout api call
+                logout(
+                    coroutineScope = coroutineScope,
+                    navigate = navigate
+                )
             }
             is ProfileUiEvent.DeleteSheetVisibility -> {
                 profileUiDataFlow.update { state ->
@@ -97,6 +108,73 @@ class GetProfileUiStateUseCase
                 // TODO: delete api call 
                 
             }
+
+            is ProfileUiEvent.GetContext -> {
+                this.context = event.context
+            }
+        }
+    }
+
+    private fun logout(
+        coroutineScope: CoroutineScope,
+        navigate: (NavigationAction) -> Unit
+    ) {
+        coroutineScope.launch {
+                val logoutReq = LogoutReq(
+                    refresh = appPreferenceDataStore.getUserAuthData()?.accessToken?:""
+                )
+                apiRepository.doLogout(logoutReq).collect {
+                    when (it) {
+                        is NetworkResult.Error -> {
+                            showErrorMessage(
+                                context =  this@GetProfileUiStateUseCase.context,
+                                it.message ?: "Something went wrong!"
+                            )
+                            showOrHideLoader(false)
+                        }
+
+                        is NetworkResult.Loading -> {
+                            showOrHideLoader(true)
+                        }
+
+                        is NetworkResult.Success -> {
+                            showOrHideLoader(false)
+                            appPreferenceDataStore.clearAll()
+                            showSuccessMessage(
+                                context = this@GetProfileUiStateUseCase.context,
+                                it.data?.message ?: ""
+                            )
+                            coroutineScope.launch {
+                                delay(1000)
+                                appPreferenceDataStore.clearAll()
+                                val intent = Intent(context, StartupActivity::class.java)
+                                intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
+                                navigate(
+                                    NavigationAction.NavigateIntent(
+                                        intent,
+                                        finishCurrentActivity = true
+                                    ),
+                                )
+                            }
+                        }
+
+                        is NetworkResult.UnAuthenticated -> {
+                            showErrorMessage(
+                                context = this@GetProfileUiStateUseCase.context,
+                                it.message ?: "Something went wrong!"
+                            )
+                            showOrHideLoader(false)
+                        }
+                    }
+                }
+
+        }
+    }
+    private fun showOrHideLoader(showLoader: Boolean) {
+        profileUiDataFlow.update { state ->
+            state.copy(
+                showLoader = showLoader
+            )
         }
     }
 

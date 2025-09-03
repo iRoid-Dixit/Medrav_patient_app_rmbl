@@ -386,7 +386,7 @@ class GetChatUiStateUseCase
         try {
             runBlocking {
                 val token = appPreferenceDataStore.getUserData()?.id ?: ""
-                accessToken = token
+                accessToken = token.toString()
             }
         } catch (e: Exception) {
             Logger.e("exception${e.message}")

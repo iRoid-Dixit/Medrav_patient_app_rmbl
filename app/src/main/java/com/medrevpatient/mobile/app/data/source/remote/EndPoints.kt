@@ -1,18 +1,14 @@
 package com.medrevpatient.mobile.app.data.source.remote
-
 import com.medrevpatient.mobile.app.BuildConfig
-
-
 object EndPoints {
     object URLs {
         const val BASE_URL: String = BuildConfig.BASE_URL
     }
     object Auth {
         const val SIGN_UP: String = "auth/register"
-        const val SIGN_IN: String = "auth/login"
-        const val LOG_OUT: String = "auth/logout"
+        const val LOG_IN: String = "auth/login"
         const val OTP_VERIFY: String = "auth/verify-otp"
-        const val LOGOUT: String = "user/logout"
+        const val LOGOUT: String = "auth/logout"
         const val SEND_OTP: String = "auth/resend-otp"
         const val FORGET_PASSWORD: String = "auth/forgot-password"
         const val SOCIAL_LOGIN: String = "auth/social/login"
@@ -30,7 +26,6 @@ object EndPoints {
         const val HOME: String = "home"
         const val MARK_AS_PLAYED: String = "mark-as-played"
         const val NOTIFICATION_OFF_ON: String = "user/notification-on-off"
-
     }
     object Container {
         const val HOME: String = "home"
@@ -74,11 +69,9 @@ object EndPoints {
         const val ADVERTISEMENT_VIEW = "advertisement/advertisement-view"
         const val USER_TERMS = "user/terms"
     }
-
     object Archive {
         const val ARCHIVE = "archives"
     }
-
     object Friends {
         const val LIST_INNER_CIRCLE_AND_TRIBE = "friends/list-innerCircle-and-tribe"
         const val MEMBERS_INNER_CIRCLE_AND_TRIBE = "friends/members-innerCircle-or-tribe"
@@ -87,21 +80,16 @@ object EndPoints {
         const val BLOCK_MEMBER = "user/blocked-list"
         const val GROUP_MEMBER = "chat/get-members-group"
         const val ADD_GROUP_MEMBER = "chat/list-members-group"
-
-
     }
     object PersonalizeAudio {
         const val MY_GOAL = "my-goal"
         const val GOAL_STORE = "goal/store"
         const val AFFIRMATION_LIST = "affirmation/list"
         const val NAME_PRONUNCIATION = "pronaouance/name"
-
     }
-
     object Support {
         const val FEEDBACK = "feedback/store"
     }
-
     object Subscription {
         const val SUBSCRIBE = "subscription/buy-subscription"
         const val ADVERTISEMENT_SUBSCRIPTION = "advertisement/buy-advertisement"

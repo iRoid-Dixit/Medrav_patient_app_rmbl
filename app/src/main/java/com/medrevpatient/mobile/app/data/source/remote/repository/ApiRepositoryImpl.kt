@@ -32,7 +32,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordR
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SignInRequest
+import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
@@ -83,10 +83,10 @@ import javax.inject.Inject
 class ApiRepositoryImpl @Inject constructor(
     private val apiServices: ApiServices
 ) : ApiRepository {
-    override fun doLogin(signInRequest: SignInRequest): Flow<NetworkResult<ApiResponse<UserAuthResponse>>> =
+    override fun doLogin(signInRequest: LogInRequest): Flow<NetworkResult<ApiResponse<UserAuthResponse>>> =
         flow {
             try {
-                val response = apiServices.doSignIn(signInRequest)
+                val response = apiServices.doLoginIn(signInRequest)
 
                 if (response.isSuccessful && response.body() != null) {
                     emit(NetworkResult.Success(response.body()))
@@ -292,7 +292,6 @@ class ApiRepositoryImpl @Inject constructor(
     }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
         emit(NetworkResult.Error(cause.message))
     }
-
     override fun singlePostDelete(singlePostReq: SinglePostReq): Flow<NetworkResult<ApiResponse<LegacyPostResponse>>> =
         flow {
             try {

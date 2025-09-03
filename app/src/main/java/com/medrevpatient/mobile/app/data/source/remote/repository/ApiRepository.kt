@@ -14,7 +14,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordR
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SignInRequest
+import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
@@ -54,7 +54,7 @@ import okhttp3.RequestBody
 
 interface ApiRepository {
     /** Authentication flow apis */
-    fun doLogin(signInRequest: SignInRequest): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
+    fun doLogin(signInRequest: LogInRequest): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>
 
 
     fun doSignUp(signUpReq: SignUpReq): Flow<NetworkResult<ApiResponse<UserAuthResponse>>>

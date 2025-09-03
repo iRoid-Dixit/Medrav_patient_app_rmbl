@@ -1,8 +1,6 @@
 package com.medrevpatient.mobile.app.ux.main.profile
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +19,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -55,10 +52,8 @@ import com.medrevpatient.mobile.app.ui.theme.Gray60
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
-import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 import com.towyservice.mobile.app.ui.common.sheetContent.ConfirmationSheetContent
 import com.towyservice.mobile.app.ui.common.sheetContent.ModelSheetLauncher
-
 @ExperimentalMaterial3Api
 @Composable
 fun ProfileScreen(
@@ -78,11 +73,14 @@ fun ProfileScreen(
         },
         navBarData = null
     ) {
+        uiState.event(ProfileUiEvent.GetContext(context))
         ProfileScreenContent(uiState, uiState.event, profileUiState)
     }
+   /* if (profileUiState?.showLoader == true) {
+        CustomLoader()
+    }*/
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileScreenContent(
@@ -98,7 +96,6 @@ private fun ProfileScreenContent(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         ProfileHeader()
         AccountDetailsSection(event)
         Spacer(modifier = Modifier.height(30.dp))
@@ -143,7 +140,8 @@ private fun ProfileScreenContent(
             onPositiveClick = {
                 event(ProfileUiEvent.LogoutAPICall)
             },
-            icon = R.drawable.ic_logout
+            icon = R.drawable.ic_logout,
+            isLoading = profileUiState?.showLoader == false
         )
     }
     ModelSheetLauncher(
@@ -168,7 +166,6 @@ private fun ProfileScreenContent(
         )
     }
 }
-
 @Composable
 private fun ProfileHeader() {
     Column(
@@ -199,9 +196,7 @@ private fun ProfileHeader() {
             fontFamily = nunito_sans_400
         )
     }
-
 }
-
 @Composable
 private fun AccountDetailsSection(event: (ProfileUiEvent) -> Unit) {
     Column(

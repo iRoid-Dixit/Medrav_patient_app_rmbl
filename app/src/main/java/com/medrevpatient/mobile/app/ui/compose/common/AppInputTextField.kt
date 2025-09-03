@@ -49,6 +49,7 @@ import com.medrevpatient.mobile.app.ui.theme.Gray5
 import com.medrevpatient.mobile.app.ui.theme.Gray50
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import androidx.compose.ui.graphics.Color
+import com.medrevpatient.mobile.app.ui.theme.Black
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 
@@ -105,9 +106,9 @@ fun AppInputTextField(
                 value = value,
                 onValueChange = onValueChange,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = nunito_sans_400,
+                    fontFamily = nunito_sans_600,
                     fontSize = 14.sp,
-                    color = SteelGray,
+                    color = Black,
                     lineHeight = 20.sp
                 ),
                 modifier = Modifier

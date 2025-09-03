@@ -47,9 +47,6 @@ class GetFriendProfileUiStateUseCase
         navigate: (NavigationAction) -> Unit,
     ): FriendProfileUiState {
         coroutineScope.launch {
-            deepLink = appPreferenceDataStore.getUserData()?.deepLink ?: ""
-        }
-        coroutineScope.launch {
             networkMonitor.isOnline.map(Boolean::not).stateIn(
                 scope = coroutineScope,
                 started = WhileSubscribed(5_000),
@@ -58,7 +55,6 @@ class GetFriendProfileUiStateUseCase
                 isOffline.value = it
             }
         }
-
         return FriendProfileUiState(
             friendProfileDataFlow = userProfileDataFlow,
             friendInfoList = friendProfileData,
@@ -72,7 +68,6 @@ class GetFriendProfileUiStateUseCase
             }
         )
     }
-
     private fun friendProfileUiEvent(
         event: FriendProfileUiEvent,
         navigate: (NavigationAction) -> Unit,

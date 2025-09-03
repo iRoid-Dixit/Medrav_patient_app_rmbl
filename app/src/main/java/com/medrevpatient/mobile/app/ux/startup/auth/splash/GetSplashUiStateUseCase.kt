@@ -70,6 +70,7 @@ class GetSplashUiStateUseCase
             }
         )
     }
+
     private fun navigateToNextScreen(
         navigate: (NavigationAction) -> Unit,
         coroutineScope: CoroutineScope,
@@ -79,30 +80,18 @@ class GetSplashUiStateUseCase
             delay(3000)
             if (!isOffline.value) {
                 coroutineScope.launch {
-                   val intent = Intent(context, MainActivity::class.java)
-                    navigate(
-                        NavigationAction.NavigateIntent(
-                            intent = intent,
-                            finishCurrentActivity = true
-                        )
-                    )
-                  //  navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
-                    /*val userData = appPreferenceDataStore.getUserData()
+                    val userData = appPreferenceDataStore.getUserData()
                     if (userData != null) {
-                        if (userData.isVerify == true) {
-                            val intent = Intent(context, MainActivity::class.java)
-                            navigate(
-                                NavigationAction.NavigateIntent(
-                                    intent = intent,
-                                    finishCurrentActivity = true
-                                )
+                        val intent = Intent(context, MainActivity::class.java)
+                        navigate(
+                            NavigationAction.NavigateIntent(
+                                intent = intent,
+                                finishCurrentActivity = true
                             )
-                        } else {
-                            navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
-                        }
+                        )
                     } else {
                         navigate(NavigationAction.PopAndNavigate(LoginRoute.createRoute()))
-                    }*/
+                    }
                 }
             } else {
                 showWaringMessage(
@@ -112,6 +101,7 @@ class GetSplashUiStateUseCase
             }
         }
     }
+
     private fun authEvent(
         event: SplashUiEvent,
         coroutineScope: CoroutineScope,

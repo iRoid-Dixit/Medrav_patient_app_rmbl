@@ -73,7 +73,6 @@ class GetGroupMemberUiStateUseCase
             }
         )
     }
-
     @OptIn(UnstableApi::class)
     private fun groupMemberUiEvent(
         groupId: String,

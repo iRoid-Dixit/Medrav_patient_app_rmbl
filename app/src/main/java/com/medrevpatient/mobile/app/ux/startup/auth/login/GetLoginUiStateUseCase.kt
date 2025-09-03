@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
-import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SignInRequest
+import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.response.auth.Auth
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
@@ -20,7 +19,6 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
-import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.register.RegisterRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +45,6 @@ class GetLoginUiStateUseCase
     private val isOffline = MutableStateFlow(false)
     private lateinit var context: Context
     private var countdownJob: Job? = null
-
     operator fun invoke(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
@@ -115,7 +112,6 @@ class GetLoginUiStateUseCase
 
             is LoginUiEvent.SignUp -> {
                 navigate(Navigate(RegisterRoute.createRoute()))
-
             }
 
             is LoginUiEvent.DoLogin -> {
@@ -139,7 +135,11 @@ class GetLoginUiStateUseCase
                         if (hasErrorEmail || hasErrorPassword) {
                             return
                         }
-                        navigate(NavigationAction.Navigate(BmiRoute.createRoute()))
+                        doUserLoginIn(
+                            coroutineScope = coroutineScope,
+                            navigate = navigate
+                        )
+                        //navigate(NavigationAction.Navigate(BmiRoute.createRoute()))
                     }
 
                 } else {
@@ -149,7 +149,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
 
             is LoginUiEvent.ResentSheetVisibility -> {
                 loginDataFlow.update { state ->
@@ -226,7 +225,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.EmailVerificationSheetVisibility -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -235,7 +233,6 @@ class GetLoginUiStateUseCase
                 }
 
             }
-
             is LoginUiEvent.EditEmailClick -> {
                 event.scope.launch {
                     event.sheetState.hide()
@@ -250,8 +247,6 @@ class GetLoginUiStateUseCase
                     }
                 }
             }
-
-
             is LoginUiEvent.VerifyClick -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
@@ -309,6 +304,7 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
+
             is LoginUiEvent.NewPasswordValueChange -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -338,7 +334,7 @@ class GetLoginUiStateUseCase
                         // 🔹 **Update all error messages in one go**
                         loginDataFlow.update { state ->
                             state.copy(
-                                newPasswordErrorMsg = newValidationResult.errorMsg?:"",
+                                newPasswordErrorMsg = newValidationResult.errorMsg ?: "",
                                 confirmPasswordErrorMsg = confirmPasswordResult.errorMsg,
                             )
                         }
@@ -357,10 +353,13 @@ class GetLoginUiStateUseCase
                     }
 
                 } else {
-                    showWaringMessage(context,
-                        context.getString(R.string.please_check_your_internet_connection_first))
+                    showWaringMessage(
+                        context,
+                        context.getString(R.string.please_check_your_internet_connection_first)
+                    )
                 }
             }
+
             is LoginUiEvent.SuccessSheetVisibility -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -384,7 +383,6 @@ class GetLoginUiStateUseCase
         }
     }
 
-
     private fun otpValidation(otp: String?, context: Context): ValidationResult {
         return ValidationResult(
             isSuccess = !otp.isNullOrBlank() && otp.length == 4,
@@ -395,6 +393,7 @@ class GetLoginUiStateUseCase
             }
         )
     }
+
     private fun confirmPasswordValidation(
         password: String,
         confirmPassword: String,
@@ -409,18 +408,18 @@ class GetLoginUiStateUseCase
             }
         )
     }
-    private fun doUserSignIn(
-        coroutineScope: CoroutineScope,
 
+    private fun doUserLoginIn(
+        coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
     ) {
         coroutineScope.launch {
-            val signInRequest = SignInRequest(
+            val logInRequest = LogInRequest(
                 email = loginDataFlow.value.email,
-                password = loginDataFlow.value.password
-
+                password = loginDataFlow.value.password,
+                role = 1
             )
-            apiRepository.doLogin(signInRequest).collect {
+            apiRepository.doLogin(logInRequest).collect {
                 when (it) {
                     is NetworkResult.Error -> {
                         showErrorMessage(context = context, it.message ?: "Something went wrong!")
@@ -429,7 +428,6 @@ class GetLoginUiStateUseCase
 
                     is NetworkResult.Loading -> {
                         showOrHideLoader(true)
-
                     }
 
                     is NetworkResult.Success -> {
@@ -440,7 +438,6 @@ class GetLoginUiStateUseCase
                             navigate = navigate,
                             userAuthResponseData = it.data?.data
                         )
-
                     }
 
                     is NetworkResult.UnAuthenticated -> {
@@ -451,7 +448,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     private fun storeResponseToDataStore(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
@@ -460,11 +456,10 @@ class GetLoginUiStateUseCase
         coroutineScope.launch {
             userAuthResponseData?.let {
                 appPreferenceDataStore.saveUserData(it)
-                it.auth.let { it1 -> appPreferenceDataStore.saveUserAuthData(it1 ?: Auth()) }
+                it.authToken.let { it1 -> appPreferenceDataStore.saveUserAuthData(it1 ?: Auth()) }
                 navigateToNextScreen(
                     context = context,
                     navigate = navigate,
-                    coroutineScope = coroutineScope
                 )
             }
         }
@@ -472,9 +467,14 @@ class GetLoginUiStateUseCase
     private fun navigateToNextScreen(
         context: Context,
         navigate: (NavigationAction) -> Unit,
-        coroutineScope: CoroutineScope
     ) {
-
+        val intent = Intent(context, MainActivity::class.java)
+        navigate(
+            NavigateIntent(
+                intent = intent,
+                finishCurrentActivity = true
+            )
+        )
     }
     private fun showOrHideLoader(showLoader: Boolean) {
         loginDataFlow.update { state ->
@@ -483,7 +483,6 @@ class GetLoginUiStateUseCase
             )
         }
     }
-
     private fun startCountdown(coroutineScope: CoroutineScope) {
         countdownJob?.cancel()
         countdownJob = coroutineScope.launch(Dispatchers.IO) {

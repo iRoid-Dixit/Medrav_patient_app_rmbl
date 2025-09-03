@@ -68,10 +68,10 @@ class GetEditProfileUiStateUseCase
             userData?.let {
                 editProfileDataFlow.update { profileUiDataState ->
                     profileUiDataState.copy(
-                        name = it.name ?: "",
+                        name = it.firstName ?: "",
                         email = it.email ?: "",
                         profileImage = it.profileImage ?: "",
-                        phoneNumber = it.mobileNumber ?: "",
+                        phoneNumber = it.phoneNumber ?: "",
                         dateSelected = formatDate(it.dateOfBirth),
 
                         selectGender = Constants.getGenderLabel(

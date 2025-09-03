@@ -42,13 +42,13 @@ android {
             isMinifyEnabled = false
             isDebuggable = false
             buildConfigField("boolean", "EnableAnim", "true")
-            buildConfigField("String", "BASE_URL", "\"https://dev.iroidsolutions.com:4009/api/v1/\"") //please put your respective base url
+            buildConfigField("String", "BASE_URL", "\"http://157.245.106.111:8080/\"") //please put your respective base url
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
             isDebuggable = true
             buildConfigField("boolean", "EnableAnim", "true")
-            buildConfigField("String", "BASE_URL", "\"https://dev.iroidsolutions.com:4009/api/v1/\"") //please put your respective base url
+            buildConfigField("String", "BASE_URL", "\"http://157.245.106.111:8080/\"") //please put your respective base url
         }
     }
     compileOptions {

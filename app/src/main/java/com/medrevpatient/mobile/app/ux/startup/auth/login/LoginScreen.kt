@@ -72,7 +72,7 @@ fun LoginScreen(
     val uiState = viewModel.uiState
     val context = LocalContext.current
     uiState.event(LoginUiEvent.GetContext(context))
-    val loginUiState by uiState.loginDataFlow.collectAsStateWithLifecycle()
+
     AppScaffold(
         containerColor = White,
         navBarData = null
@@ -80,9 +80,7 @@ fun LoginScreen(
     ) {
         LoginScreeContent(uiState = uiState, event = uiState.event)
     }
-    if (loginUiState?.showLoader == true) {
-        CustomLoader()
-    }
+
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
 
@@ -295,8 +293,6 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                 event(LoginUiEvent.VerifyClick(sheetState = state, scope = scope))
             },
             otpErrorFlow = loginUiState?.otpErrorMsg
-
-
         )
     }
     ModelSheetLauncher(

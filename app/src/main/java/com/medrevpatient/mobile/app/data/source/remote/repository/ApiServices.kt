@@ -11,7 +11,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordR
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SendOTPReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.SignInRequest
+import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
@@ -61,9 +61,9 @@ import retrofit2.http.Query
 
 interface ApiServices {
 
-    @POST(EndPoints.Auth.SIGN_IN)
-    suspend fun doSignIn(
-        @Body signInRequest: SignInRequest
+    @POST(EndPoints.Auth.LOG_IN)
+    suspend fun doLoginIn(
+        @Body logInRequest: LogInRequest
     ): Response<ApiResponse<UserAuthResponse>>
 
     @POST(EndPoints.Auth.SIGN_UP)
@@ -197,8 +197,6 @@ interface ApiServices {
     ): Response<ApiResponse<MessageResponse>>
 
 
-
-
     @POST(EndPoints.Container.LEGACY_POST_CREATE)
     @Multipart
     suspend fun legacyCreatePost(
@@ -231,7 +229,6 @@ interface ApiServices {
         @Body logoutRequest: LogoutReq
     ): Response<ApiResponse<UserAuthResponse>>
 
-
     //Delete account
     @DELETE(EndPoints.Auth.ACCOUNT_DELETE)
     suspend fun deleteAccount(): Response<ApiResponse<UserAuthResponse>>
@@ -239,7 +236,6 @@ interface ApiServices {
     //home screen
     @GET(EndPoints.Main.HOME)
     suspend fun getHomeScreenData(): Response<ApiResponse<HomeScreenResponse>>
-
 
     @GET(EndPoints.Container.GET_NOTIFICATION)
     suspend fun getNotification(
@@ -260,7 +256,6 @@ interface ApiServices {
 
     @HTTP(method = "DELETE", path = EndPoints.Auth.DELETE_LEGACY_POST, hasBody = true)
     suspend fun deleteLegacyPost(@Query("postId") postId: String): Response<ApiResponse<MessageResponse>>
-
 
     @PUT(EndPoints.Container.NOTIFICATION_ACCEPT_AND_REJECT)
     suspend fun acceptRejectNotification(

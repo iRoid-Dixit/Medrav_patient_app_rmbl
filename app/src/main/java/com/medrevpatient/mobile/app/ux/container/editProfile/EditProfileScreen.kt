@@ -336,8 +336,6 @@ fun EditProfileInputField(
             )
 
         }
-
-        // Date of Birth
         Column {
             Text(
                 text = "Date of Birth",
@@ -355,8 +353,6 @@ fun EditProfileInputField(
                 },
             )
         }
-        
-        // Medical Information Section
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Medical Information",
@@ -364,12 +360,9 @@ fun EditProfileInputField(
             color = SteelGray,
             fontSize = 18.sp
         )
-        
-        // Height and Weight Row
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Height
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Height",
@@ -390,8 +383,6 @@ fun EditProfileInputField(
                     header = "Enter your height"
                 )
             }
-            
-            // Weight
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Weight",

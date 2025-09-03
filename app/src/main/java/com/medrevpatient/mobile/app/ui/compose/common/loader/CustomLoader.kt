@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.White
+import com.medrevpatient.mobile.app.ui.theme.White30
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
 
 
@@ -57,27 +60,29 @@ fun CustomLoader() {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .background(Color.DarkGray, RoundedCornerShape(10.dp))
-                .padding(20.dp)
+                .background(White, RoundedCornerShape(16.dp)) // clean white card look
+                .padding(24.dp)
         ) {
-            // Image (background icon)
-            Image(
-                painter = painterResource(id = R.drawable.ic_app_icon),
-                contentDescription = "loading",
-                modifier = Modifier
-                    .size(55.dp) // Adjusted size so it doesn't hide the loader
-                    .clip(CircleShape)
-            )
             // Circular progress (foreground)
             CircularProgressIndicator(
-                trackColor = Color.Gray,
-                color = Color.White,
                 strokeWidth = 4.dp,
-                modifier = Modifier.size(70.dp)
+                modifier = Modifier.size(60.dp),
+                color = AppThemeColor,        // Active ring → Purple
+                trackColor = White30          // Track ring → faint white
+            )
+
+            // App Logo in center
+            Image(
+                painter = painterResource(id = R.drawable.ic_app_logo),
+                contentDescription = "loading",
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
             )
         }
     }
 }
+
 
 @Preview
 @Composable
