@@ -47,6 +47,7 @@ import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
+import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
 
 @ExperimentalMaterial3Api
 @Composable
@@ -89,7 +90,7 @@ private fun NotificationScreenContent(uiState: NotificationUiState) {
     val notifications = notificationUiState?.notifications ?: emptyList()
     Column(
         modifier = Modifier
-            .clickable {
+            .noRippleClickable {
                 keyboardController?.hide()
             }
             .fillMaxSize()
@@ -112,7 +113,7 @@ private fun NotificationCard(notification: NotificationItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle notification click */ },
+            .noRippleClickable { /* Handle notification click */ },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = White

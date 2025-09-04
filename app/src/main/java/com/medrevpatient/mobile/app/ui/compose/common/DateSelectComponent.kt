@@ -29,68 +29,70 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.R
-import com.medrevpatient.mobile.app.ui.theme.Gray2F
+import com.medrevpatient.mobile.app.ui.theme.Gray5
 import com.medrevpatient.mobile.app.ui.theme.White
-import com.medrevpatient.mobile.app.ui.theme.White50
-import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.Gray40
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+
 @Composable
 fun DateSelectComponent(
     value: String,
-    valueTextColor: Color = White,
+    valueTextColor: Color = Color.Black,
     header: String? = null,
     errorMessage: String? = null,
     @DrawableRes trailingIcon: Int? = null,
     @DrawableRes leadingIcon: Int? = null,
     onClick: () -> Unit = {},
     endPadding: Dp = 0.dp,
+    isTitleVisible: Boolean = false,
+    title: String = "",
 ) {
     val borderColor = when {
         errorMessage?.isNotEmpty() == true -> MaterialTheme.colorScheme.error
-        else -> Gray2F
+        else -> Color.Transparent
     }
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Column {
+        if (isTitleVisible) {
+            Text(
+                text = title,
+                fontFamily = nunito_sans_600,
+                color = SteelGray,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .background(color = Gray2F, shape = RoundedCornerShape(10))
+                .background(color = Gray5, shape = RoundedCornerShape(15))
                 .fillMaxWidth()
                 .heightIn(56.dp)
                 .clickable { onClick() }
-                .border(
-                    width = 1.dp,
-                    color = borderColor,
-                    shape = RoundedCornerShape(10)
-                )
-                .clip(RoundedCornerShape(10))
+                .clip(RoundedCornerShape(15))
         ) {
 
             if (leadingIcon != null)
                 Image(
                     painter = painterResource(id = leadingIcon),
                     contentDescription = null,
-                    /*colorFilter = (if (errorMessage.isNullOrBlank()) null else MaterialTheme.colorScheme.error)?.let {
-                        ColorFilter.tint(
-                            it
-                        )
-                    },*/
-                    modifier = Modifier.padding(start = 15.dp)
+                    modifier = Modifier.padding(start = 16.dp)
                 )
 
             (value.ifEmpty { header })?.let {
                 Text(
                     text = it,
-                    fontSize = 16.sp,
-                    fontFamily = WorkSans,
-                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    fontFamily = if (value.isNotBlank()) nunito_sans_600 else nunito_sans_400,
+                    fontWeight = if (value.isNotBlank()) FontWeight.SemiBold else FontWeight.Normal,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (value.isNotBlank()) valueTextColor else White50,
+                    color = if (value.isNotBlank()) valueTextColor else Gray40,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 15.dp)
+                        .padding(start = 16.dp, end = 15.dp)
                 )
             }
             if (trailingIcon != null)
@@ -101,13 +103,12 @@ fun DateSelectComponent(
                     )
                 }
             Spacer(modifier = Modifier.width(endPadding))
-
         }
         if (errorMessage?.isNotEmpty() == true) {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
-                fontFamily = WorkSans,
+                fontFamily = nunito_sans_600,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
@@ -116,7 +117,6 @@ fun DateSelectComponent(
         }
     }
 }
-
 @Preview
 @Composable
 fun ClickInputComponentPreview() {

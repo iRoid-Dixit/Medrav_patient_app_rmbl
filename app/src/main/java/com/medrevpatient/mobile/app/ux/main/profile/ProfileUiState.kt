@@ -1,8 +1,6 @@
 package com.medrevpatient.mobile.app.ux.main.profile
 
 import android.content.Context
-import com.medrevpatient.mobile.app.ux.container.changePassword.ChangePasswordUiEvent
-import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -34,5 +32,6 @@ sealed interface ProfileUiEvent {
     data class LogoutSheetVisibility(val isVisible:Boolean): ProfileUiEvent
     data class DeleteSheetVisibility(val isVisible:Boolean): ProfileUiEvent
     data class GetContext(val context: Context):ProfileUiEvent
+    data object GetDataFromPref : ProfileUiEvent
 
 }

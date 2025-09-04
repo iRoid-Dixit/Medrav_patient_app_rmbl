@@ -42,6 +42,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import coil.compose.AsyncImage
 import com.medrevpatient.mobile.app.data.source.local.UserData
 import com.medrevpatient.mobile.app.data.source.local.UserData.ProfileItem
@@ -64,12 +66,14 @@ fun ProfileScreen(
     val uiState = viewModel.uiState
     val context = LocalContext.current
     val profileUiState by uiState.messageUiDataFlow.collectAsStateWithLifecycle()
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        uiState.event(ProfileUiEvent.GetDataFromPref)
+    }
     AppScaffold(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
                 titleText = "Profile Management",
-                isBackVisible = true
             )
         },
         navBarData = null

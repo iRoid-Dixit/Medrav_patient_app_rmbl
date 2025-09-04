@@ -60,8 +60,7 @@ fun DietChallengeScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = {  },
-                isBackVisible = true,
+                onClick = { navController.popBackStack() },
                 titleText = "Daily Diet Challenge",
             )
         },
@@ -136,7 +135,7 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
         item {
             AppButtonComponent(
                 onClick = {
-                  event(DietChallengeUiEvent.ContinueChallenge)
+                    event(DietChallengeUiEvent.ContinueChallenge)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 text = "Continue",

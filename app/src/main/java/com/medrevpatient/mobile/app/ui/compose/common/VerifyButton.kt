@@ -8,35 +8,51 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 
 @Composable
 fun VerifyButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    verifyButtonText: String,
+    verifyButtonBackgroundColor: Color,
+    textColors: Color,
 ) {
     Text(
-        text = text,
-        fontFamily = nunito_sans_600,
+        text = verifyButtonText,
+        fontFamily = nunito_sans_400,
         fontSize = 12.sp,
-        color = AppThemeColor,
+        color = textColors,
         modifier = modifier
             .background(
-                color = com.medrevpatient.mobile.app.ui.theme.White,
-                shape = RoundedCornerShape(8.dp)
+                color =verifyButtonBackgroundColor,
+                shape = RoundedCornerShape(16.dp)
             )
-            .border(
-                width = 1.dp,
-                color = AppThemeColor,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+
+            .padding(horizontal = 12.dp, vertical = 3.dp)
             .clickable { onClick() }
     )
+}
+
+@Preview
+@Composable
+fun VerifyButtonPreview(modifier: Modifier = Modifier) {
+    VerifyButton(
+        text = "Verify",
+        onClick = { /*TODO*/ },
+        modifier = modifier,
+        verifyButtonText = "Verify",
+        verifyButtonBackgroundColor = AppThemeColor.copy(alpha = 0.1f),
+        textColors = AppThemeColor
+    )
+
 }
 
 

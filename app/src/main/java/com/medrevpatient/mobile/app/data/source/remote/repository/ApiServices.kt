@@ -266,7 +266,6 @@ interface ApiServices {
     @GET(EndPoints.Container.USER_STORAGE)
     suspend fun userStorage(): Response<ApiResponse<StorageResponse>>
 
-
     @GET(EndPoints.Friends.BLOCK_MEMBER)
     suspend fun getBlockedMemberList(
         @Query("type") type: String,

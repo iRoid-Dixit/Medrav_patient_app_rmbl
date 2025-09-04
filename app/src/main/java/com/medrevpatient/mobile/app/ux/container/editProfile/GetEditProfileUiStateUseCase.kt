@@ -8,7 +8,6 @@ import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
-import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
@@ -62,21 +61,29 @@ class GetEditProfileUiStateUseCase
                 isOffline.value = it
             }
         }
-
+        coroutineScope.launch{
+            val userData = appPreferenceDataStore.getUserData()
+            Log.d("TAG", "dateOfBirth timestamp: ${userData?.dateOfBirth}")
+            userData?.dateOfBirth?.let { timestamp ->
+                Log.d("TAG", "Formatted date: ${formatDate(timestamp)}")
+                Log.d("TAG", "Date in milliseconds: ${timestamp * 1000}")
+            }
+        }
         coroutineScope.launch {
             userData = appPreferenceDataStore.getUserData()
             userData?.let {
                 editProfileDataFlow.update { profileUiDataState ->
                     profileUiDataState.copy(
-                        name = it.firstName ?: "",
                         email = it.email ?: "",
                         profileImage = it.profileImage ?: "",
-                        phoneNumber = it.phoneNumber ?: "",
+                        firstName = it.firstName ?: "",
                         dateSelected = formatDate(it.dateOfBirth),
-
-                        selectGender = Constants.getGenderLabel(
-                            it.gender.toString()
-                        )
+                        lastName = it.lastName ?: "",
+                        height = it.height?:"",
+                        weight = it.weight?:"",
+                        bmi = it.bmi?:"",
+                        allergies = it.knownAllergies?:"",
+                        medicalConditions = it.medicalConditions?:"",
                     )
                 }
             }
@@ -105,36 +112,17 @@ class GetEditProfileUiStateUseCase
             EditProfileUiEvent.BackClick -> {
                 navigate(NavigationAction.PopIntent)
             }
-
             is EditProfileUiEvent.GetContext -> {
                 this.context = event.context
             }
-
             is EditProfileUiEvent.EmailValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
                         email = event.email,
-                        emailErrorMsg = validationUseCase.emailValidation(
-                            emailAddress = event.email,
-                            context = context
-                        ).errorMsg
-                    )
 
-                }
-            }
-
-            is EditProfileUiEvent.NameValueChange -> {
-                editProfileDataFlow.update { state ->
-                    state.copy(
-                        name = event.name,
-                        nameErrorMsg = validationUseCase.emptyFieldValidation(
-                            event.name,
-                            context.getString(R.string.please_enter_your_full_name)
-                        ).errorMsg
                     )
                 }
             }
-
             is EditProfileUiEvent.FirstNameValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -146,7 +134,6 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
-
             is EditProfileUiEvent.LastNameValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -160,87 +147,37 @@ class GetEditProfileUiStateUseCase
             }
 
             is EditProfileUiEvent.OnClickOfDate -> {
-                // Convert the date from "dd/MM/yyyy" format to "MMMM dd, yyyy" format for display
                 Log.d("TAG", "Date picker selected: ${event.date}")
                 val formattedDate = convertDateToDisplayFormat(event.date)
-                Log.d("TAG", "Converted to display format: $formattedDate")
                 editProfileDataFlow.update { state ->
                     state.copy(
                         dateSelected = formattedDate,
-                        dateOfBirthValidationMsg = dateOfBirthValidation(
-                            formattedDate,
-                            context
-                        ).errorMsg
                     )
                 }
 
             }
 
-            is EditProfileUiEvent.PhoneNumberValueChange -> {
-                editProfileDataFlow.update { state ->
-                    state.copy(
-                        phoneNumber = event.phoneNumber,
-                        phoneNumberErrorMsg = phoneNumberValidation(
-                            event.phoneNumber,
-                            context
-                        ).errorMsg
-                    )
-                }
-
-            }
-
-            is EditProfileUiEvent.RoleDropDownExpanded -> {
-                editProfileDataFlow.update { state ->
-                    state.copy(
-                        selectGender = event.selectGender,
-                        selectGanderErrorMsg = genderValidation(
-                            event.selectGender,
-                            context = context
-                        ).errorMsg
-                    )
-
-                }
-                Log.d("TAG", "selectGender: ${editProfileDataFlow.value.selectGender}")
-
-            }
-
-            EditProfileUiEvent.ProfileSubmitClick -> {
+            EditProfileUiEvent.UpdateClick -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
-                        val nameValidationResult = emptyFieldValidation(
-                            editProfileDataFlow.value.name,
-                            context.getString(R.string.please_enter_your_full_name)
+                        val firstNameValidationResult = emptyFieldValidation(
+                            editProfileDataFlow.value.firstName,
+                            "Please enter your firstName."
                         )
-                        val emailValidationResult =
-                            emailValidation(editProfileDataFlow.value.email, context = context)
-                        val phoneValidationResult = phoneNumberValidation(
-                            editProfileDataFlow.value.phoneNumber,
-                            context
+                        val lastNameValidationResult = emptyFieldValidation(
+                            editProfileDataFlow.value.lastName,
+                            "Please enter your lastName."
                         )
-                        val dobValidationResult = dateOfBirthValidation(
-                            editProfileDataFlow.value.dateSelected,
-                            context
-                        )
-                        val genderValidationResult =
-                            genderValidation(editProfileDataFlow.value.selectGender, context)
                         val hasError = listOf(
-                            nameValidationResult,
-                            emailValidationResult,
-                            phoneValidationResult,
-                            dobValidationResult,
-                            genderValidationResult,
-
+                            firstNameValidationResult,
+                            lastNameValidationResult,
                             ).any { !it.isSuccess }
-                        // 🔹 **Update all error messages in one go**
+                        // ���� **Update all error messages in one go**
                         editProfileDataFlow.update { state ->
                             state.copy(
-                                nameErrorMsg = nameValidationResult.errorMsg,
-                                emailErrorMsg = emailValidationResult.errorMsg,
-                                phoneNumberErrorMsg = phoneValidationResult.errorMsg,
-                                dateOfBirthValidationMsg = dobValidationResult.errorMsg,
-                                selectGanderErrorMsg = genderValidationResult.errorMsg,
-
-                                )
+                                firstNameErrorMsg = firstNameValidationResult.errorMsg,
+                                lastNameErrorMsg = lastNameValidationResult.errorMsg
+                            )
                         }
                         if (hasError) return
                     }
@@ -285,7 +222,6 @@ class GetEditProfileUiStateUseCase
                 editProfileDataFlow.update { state ->
                     state.copy(
                         height = event.height,
-                        heightErrorMsg = heightValidation(event.height, context).errorMsg
                     )
                 }
             }
@@ -294,7 +230,6 @@ class GetEditProfileUiStateUseCase
                 editProfileDataFlow.update { state ->
                     state.copy(
                         weight = event.weight,
-                        weightErrorMsg = weightValidation(event.weight, context).errorMsg
                     )
                 }
             }
@@ -303,7 +238,6 @@ class GetEditProfileUiStateUseCase
                 editProfileDataFlow.update { state ->
                     state.copy(
                         allergies = event.allergies,
-                        allergiesErrorMsg = allergiesValidation(event.allergies, context).errorMsg
                     )
                 }
             }
@@ -312,130 +246,85 @@ class GetEditProfileUiStateUseCase
                 editProfileDataFlow.update { state ->
                     state.copy(
                         medicalConditions = event.medicalConditions,
-                        medicalConditionsErrorMsg = medicalConditionsValidation(event.medicalConditions, context).errorMsg
                     )
                 }
             }
 
-            EditProfileUiEvent.VerifyEmailClick -> {
-                // Handle email verification
-                Log.d("TAG", "Verify email clicked")
-            }
 
-            EditProfileUiEvent.CancelClick -> {
-                navigate(NavigationAction.PopIntent)
-            }
 
-            EditProfileUiEvent.UpdateClick -> {
-                // Handle update profile
-                contactUsUiEvent(
-                    event = EditProfileUiEvent.ProfileSubmitClick,
-                    context = context,
-                    navigate = navigate,
-                    coroutineScope = coroutineScope
-                )
-            }
 
+
+
+            is EditProfileUiEvent.BmiValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        bmi = event.bmi
+                    )
+                }
+            }
         }
     }
 
-    private fun dateOfBirthValidation(dob: String, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = dob.isNotBlank(),
-            errorMsg = if (dob.isBlank()) context.getString(R.string.please_enter_your_date_of_birth) else null
-        )
-    }
 
-    private fun genderValidation(gender: String?, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = !gender.isNullOrBlank(),
-            errorMsg = if (gender.isNullOrBlank()) context.getString(R.string.please_select_your_gender) else null
-        )
-    }
 
-    private fun showOrHideLoader(showLoader: Boolean) {
-        editProfileDataFlow.update { state ->
-            state.copy(
-                showLoader = showLoader
-            )
-        }
-    }
-    private fun phoneNumberValidation(phoneNumber: String, context: Context): ValidationResult {
-        val isValidLength = phoneNumber.length in 10..15
 
-        return ValidationResult(
-            isSuccess = isValidLength,
-            errorMsg = when {
-                phoneNumber.isBlank() -> context.getString(R.string.please_enter_a_phone_number)
-                !isValidLength -> context.getString(R.string.error_enter_valid_number)
-                else -> null
-            }
-        )
-    }
-
-    private fun heightValidation(height: String, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = height.isNotBlank(),
-            errorMsg = if (height.isBlank()) "Please enter your height" else null
-        )
-    }
-
-    private fun weightValidation(weight: String, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = weight.isNotBlank(),
-            errorMsg = if (weight.isBlank()) "Please enter your weight" else null
-        )
-    }
-
-    private fun allergiesValidation(allergies: String, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = true, // Optional field
-            errorMsg = null
-        )
-    }
-
-    private fun medicalConditionsValidation(medicalConditions: String, context: Context): ValidationResult {
-        return ValidationResult(
-            isSuccess = true, // Optional field
-            errorMsg = null
-        )
-    }
 
     private fun callEditProfileApi(
         coroutineScope: CoroutineScope,
         navigation: (NavigationAction) -> Unit
     ) {
-        val genderValue = when (editProfileDataFlow.value.selectGender) {
-            context.getString(R.string.male) -> Constants.Gender.MALE.value
-            context.getString(R.string.female) -> Constants.Gender.FEMALE.value
-            else -> Constants.Gender.NON_BINARY.value
-        }
         val map: HashMap<String, RequestBody> = hashMapOf()
-        if (editProfileDataFlow.value.name.isNotBlank()) map[Constants.EditProfile.NAME] =
-            editProfileDataFlow.value.name.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        if (editProfileDataFlow.value.firstName.isNotBlank()) map[Constants.EditProfile.FIRST_NAME] =
+            editProfileDataFlow.value.firstName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        if (editProfileDataFlow.value.lastName.isNotBlank()) map[Constants.EditProfile.LAST_NAME] =
+            editProfileDataFlow.value.lastName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
         if (editProfileDataFlow.value.email.isNotBlank()) map[Constants.EditProfile.EMAIL] =
             editProfileDataFlow.value.email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        if (editProfileDataFlow.value.phoneNumber.isNotBlank()) map[Constants.EditProfile.MOBILE_NUMBER] =
-            editProfileDataFlow.value.phoneNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
         if (editProfileDataFlow.value.dateSelected.isNotBlank()) {
-            // Convert from display format "MMMM dd, yyyy" back to "dd/MM/yyyy" for API
-            Log.d("TAG", "Display format date: ${editProfileDataFlow.value.dateSelected}")
+            // Convert display date to API format (yyyy-MM-dd)
             val apiDate = convertDisplayFormatToApiFormat(editProfileDataFlow.value.dateSelected)
-            Log.d("TAG", "API format date: $apiDate")
+            Log.d("TAG", "API date format: $apiDate")
+
             map[Constants.EditProfile.DATE_OF_BIRTH] =
-                AppUtils.convertDateToTimestamp(apiDate).toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                apiDate.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+        if (editProfileDataFlow.value.height.isNotBlank()) {
+            val heightValue = editProfileDataFlow.value.height.trim()
+            // Validate that height is a valid decimal number
+            if (isValidDecimal(heightValue)) {
+                map[Constants.EditProfile.HEIGHT] = heightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            } else {
+                Log.e("TAG", "Invalid height value: $heightValue")
+            }
+        }
+
+        if (editProfileDataFlow.value.weight.isNotBlank()) {
+            val weightValue = editProfileDataFlow.value.weight.trim()
+            // Validate that weight is a valid decimal number
+            if (isValidDecimal(weightValue)) {
+                map[Constants.EditProfile.WEIGHT] = weightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            } else {
+                Log.e("TAG", "Invalid weight value: $weightValue")
+            }
         }
 
 
+        if (editProfileDataFlow.value.allergies.isNotBlank()) map[Constants.EditProfile.KNOWN_ALLERGIES] =
+            editProfileDataFlow.value.allergies.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
+        if (editProfileDataFlow.value.medicalConditions.isNotBlank()) map[Constants.EditProfile.CURRENT_MEDICATIONS] =
+            editProfileDataFlow.value.medicalConditions.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
-        if (editProfileDataFlow.value.selectGender.isNotBlank()) map[Constants.EditProfile.GENDER] =
-            genderValue.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        // Debug logging for all values being sent to API
+        Log.d("TAG", "API Request Values:")
+        map.forEach { (key, value) ->
+            Log.d("TAG", "$key: ${value.toString()}")
+        }
 
-        Log.d("TAG", "callEditProfileApi: ${editProfileDataFlow.value.dateSelected}")
 
         val profileImage: MultipartBody.Part? =
             editProfileDataFlow.value.profileImage.let { imagePath ->
@@ -448,7 +337,7 @@ class GetEditProfileUiStateUseCase
                         // It's a local file path
                         Log.d("TAG", "Profile image is a local file, creating multipart body: $imagePath")
                         val profileImageFile = File(imagePath)
-                        createMultipartBody(profileImageFile, Constants.EditProfile.PROFILE)
+                        createMultipartBody(profileImageFile, Constants.EditProfile.PROFILE_IMAGE)
                     }
                 } else {
                     null
@@ -490,8 +379,6 @@ class GetEditProfileUiStateUseCase
                     }
                 }
             }
-
-
         } else {
             coroutineScope.launch {
                 apiRepository.editProfileDetailsWithOutImage(map).collect {
@@ -549,18 +436,26 @@ class GetEditProfileUiStateUseCase
 
     }
 
+    private fun showOrHideLoader(showLoader: Boolean) {
+        editProfileDataFlow.update { state ->
+            state.copy(
+                showLoader = showLoader
+            )
+        }
+    }
+
     private fun formatDate(timestamp: Long?): String {
         return if (timestamp != null && timestamp > 0) {
             try {
                 val outputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
-                val date = Date(timestamp)
+                // Convert seconds to milliseconds by multiplying by 1000
+                val date = Date(timestamp * 1000)
                 outputFormat.format(date)
             } catch (e: Exception) {
-                Logger.e("Return empty string if an error occurs ${e.message}")
-                "" // Return empty string if an error occurs
+                ""
             }
         } else {
-            "" // Handle null or invalid timestamps
+            ""
         }
     }
 
@@ -594,8 +489,8 @@ class GetEditProfileUiStateUseCase
             val date = inputFormat.parse(dateString)
 
             if (date != null) {
-                // Format to "dd/MM/yyyy" format for API
-                val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+                // Format to "yyyy-MM-dd" format for API
+                val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
                 outputFormat.format(date)
             } else {
                 dateString // If parsing failed
@@ -606,6 +501,42 @@ class GetEditProfileUiStateUseCase
         }
     }
 
-}
+    private fun convertDisplayDateToTimestamp(dateString: String): Long {
+        return try {
+            if (dateString.isBlank()) return 0L
 
+            // Parse the date from "MMMM dd, yyyy" format
+            val inputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
+            val date = inputFormat.parse(dateString)
+
+            if (date != null) {
+                // Convert to timestamp in seconds (not milliseconds)
+                date.time / 1000
+            } else {
+                0L
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "Error converting display date to timestamp: $dateString", e)
+            0L
+        }
+    }
+
+    private fun isValidDecimal(value: String): Boolean {
+        return try {
+            if (value.isBlank()) return false
+            // Check if it's a valid decimal number (supports both integer and decimal formats)
+            val regex = Regex("^\\d+(\\.\\d+)?$")
+            if (regex.matches(value)) {
+                // Additional check: ensure it can be parsed as a valid decimal
+                value.toDoubleOrNull() != null
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "Error validating decimal value: $value", e)
+            false
+        }
+    }
+
+}
 

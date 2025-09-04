@@ -39,7 +39,7 @@ object EndPoints {
         const val TRIBE_INNER_CIRCLE: String = "friends/list-innerCircle-and-tribe"
         const val CONTACT_US: String = "user/contact-us"
         const val RESET_PASSWORD: String = "auth/reset-password"
-        const val EDIT_PROFILE: String = "user/edit-profile"
+        const val EDIT_PROFILE: String = "api/patient/profile/update"
         const val POST_DETAILS: String = "legacy/get-post"
         const val ADD_COMMENT: String = "legacy/comment-post"
         const val LIKE_DISLIKE: String = "legacy/like-post"

@@ -89,7 +89,7 @@ private fun ChangePasswordScreenContent(
     ) {
         Spacer(modifier = Modifier.height(25.dp))
         ChangePasswordInputField(changePasswordUiState, event)
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(100.dp))
         AppButtonComponent(
             onClick = {
                 event(ChangePasswordUiEvent.ChangePasswordSubmit)

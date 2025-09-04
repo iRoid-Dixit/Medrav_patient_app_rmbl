@@ -10,7 +10,6 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,12 +20,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -56,6 +54,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -64,22 +65,20 @@ import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.AppInputTextField
-import com.medrevpatient.mobile.app.ui.compose.common.BmiTag
 import com.medrevpatient.mobile.app.ui.compose.common.DatePickerWithDialog
 import com.medrevpatient.mobile.app.ui.compose.common.DateSelectComponent
-import com.medrevpatient.mobile.app.ui.compose.common.DropdownField
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
-import com.medrevpatient.mobile.app.ui.compose.common.VerifyButton
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.CameraGalleryDialog
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.PermissionDialog
 import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.compose.common.permission.PhotoPickerManager
-import com.medrevpatient.mobile.app.ui.theme.Mercury
 import com.medrevpatient.mobile.app.ui.theme.PurpleHeart
-import com.medrevpatient.mobile.app.ui.theme.Scorpion
+import com.medrevpatient.mobile.app.ui.theme.RedE4
+import com.medrevpatient.mobile.app.ui.theme.RedF8
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
 
 @ExperimentalMaterial3Api
 @Composable
@@ -107,9 +106,6 @@ fun EditProfileScreen(
     ) {
         EditProfileScreenContent(uiState, uiState.event)
     }
-    if (changePasswordUiState?.showLoader == true) {
-        CustomLoader()
-    }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
 
@@ -125,21 +121,18 @@ private fun EditProfileScreenContent(
             .padding(horizontal = 20.dp)
             .verticalScroll(rememberScrollState())
             .imePadding()
-            .clickable {
+            .noRippleClickable {
                 keyboardController?.hide()
             }
             .fillMaxSize(),
     ) {
-        Spacer(modifier = Modifier.size(50.dp))
+        Spacer(modifier = Modifier.size(40.dp))
         ProfileHeader(editProfileUiState, uiState.event)
         Spacer(modifier = Modifier.size(30.dp))
         EditProfileInputField(
             editProfileUiState,
             event
         )
-        Spacer(modifier = Modifier.weight(1f))
-        ActionButtons(event)
-        Spacer(modifier = Modifier.size(20.dp))
     }
 }
 
@@ -251,109 +244,79 @@ fun EditProfileInputField(
     editProfileUiState: EditProfileDataState?,
     event: (EditProfileUiEvent) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var temp by rememberSaveable { mutableStateOf<Long?>(null) }
     var showDatePickerDialog by remember { mutableStateOf(false) }
-    
+    var selectedDateMillis by rememberSaveable { mutableStateOf<Long?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        // Personal Information Section
         Text(
             text = "Personal Information",
             fontFamily = nunito_sans_600,
             color = SteelGray,
             fontSize = 18.sp
         )
-        
-        // First Name and Last Name Row
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             // First Name
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "First Name",
-                    fontFamily = nunito_sans_600,
-                    color = SteelGray,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
                 AppInputTextField(
                     value = editProfileUiState?.firstName ?: "",
                     onValueChange = { event(EditProfileUiEvent.FirstNameValueChange(it)) },
+                    title = "First Name",
+                    isTitleVisible = true,
                     isLeadingIconVisible = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Words
                     ),
-                    errorMessage = editProfileUiState?.firstNameErrorMsg ?: "",
+                    errorMessage = editProfileUiState?.firstNameErrorMsg,
                     header = "Enter first name"
                 )
             }
 
             // Last Name
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Last Name",
-                    fontFamily = nunito_sans_600,
-                    color = SteelGray,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+
                 AppInputTextField(
                     value = editProfileUiState?.lastName ?: "",
                     onValueChange = { event(EditProfileUiEvent.LastNameValueChange(it)) },
                     isLeadingIconVisible = true,
+                    isTitleVisible = true,
+                    title = "Last Name",
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done,
+                        imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Words
                     ),
-                    errorMessage = editProfileUiState?.lastNameErrorMsg ?: "",
+                    errorMessage = editProfileUiState?.lastNameErrorMsg,
                     header = "Enter last name"
                 )
             }
         }
-        // Email with Verify Button
-
-        Row {
-            AppInputTextField(
-                value = editProfileUiState?.email ?: "you123@gmail.com",
-                onValueChange = { event(EditProfileUiEvent.EmailValueChange(it)) },
-                isLeadingIconVisible = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                errorMessage = editProfileUiState?.emailErrorMsg ?: "",
-                header = "Email Address",
-                modifier = Modifier.weight(1f)
-            )
-
-            VerifyButton(
-                text = "Verify",
-                onClick = { event(EditProfileUiEvent.VerifyEmailClick) }
-            )
-
-        }
-        Column {
-            Text(
-                text = "Date of Birth",
-                fontFamily = nunito_sans_600,
-                color = SteelGray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            DateSelectComponent(
-                value = editProfileUiState?.dateSelected ?: "",
-                header = "Enter your DOB",
-                errorMessage = editProfileUiState?.dateOfBirthValidationMsg,
-                onClick = {
-                    showDatePickerDialog = true
-                },
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+        AppInputTextField(
+            value = editProfileUiState?.email ?: "",
+            onValueChange = { event(EditProfileUiEvent.EmailValueChange(it)) },
+            isLeadingIconVisible = true,
+            isTitleVisible = true,
+            title = "Email Address",
+            isVerifyButtonVisible = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            header = "Enter Email"
+        )
+        DateSelectComponent(
+            value = editProfileUiState?.dateSelected ?: "",
+            header = "Enter your DOB",
+            onClick = {
+                showDatePickerDialog = true
+            },
+            isTitleVisible = true,
+            title = "Date of Birth"
+        )
         Text(
             text = "Medical Information",
             fontFamily = nunito_sans_600,
@@ -361,181 +324,141 @@ fun EditProfileInputField(
             fontSize = 18.sp
         )
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
+            // First Name
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Height",
-                    fontFamily = nunito_sans_600,
-                    color = SteelGray,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
                 AppInputTextField(
                     value = editProfileUiState?.height ?: "",
                     onValueChange = { event(EditProfileUiEvent.HeightValueChange(it)) },
+                    title = "Height",
+                    isTitleVisible = true,
                     isLeadingIconVisible = true,
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
                     ),
-                    errorMessage = editProfileUiState?.heightErrorMsg ?: "",
                     header = "Enter your height"
                 )
             }
+
+            // Last Name
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Weight",
-                    fontFamily = nunito_sans_600,
-                    color = SteelGray,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
                 AppInputTextField(
                     value = editProfileUiState?.weight ?: "",
                     onValueChange = { event(EditProfileUiEvent.WeightValueChange(it)) },
                     isLeadingIconVisible = true,
+                    isTitleVisible = true,
+                    title = "Weight",
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Words
                     ),
-                    errorMessage = editProfileUiState?.weightErrorMsg ?: "",
                     header = "Enter your weight"
                 )
             }
         }
-        
-        // BMI with Tag
-        Column {
-            Text(
-                text = "BMI",
-                fontFamily = nunito_sans_600,
-                color = SteelGray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                AppInputTextField(
-                    value = editProfileUiState?.bmi ?: "26.7",
-                    onValueChange = { },
-                    isLeadingIconVisible = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    errorMessage = null,
-                    header = "BMI",
-                    modifier = Modifier.weight(1f),
-                    isReadOnly = true
-                )
-                
-                BmiTag(
-                    text = editProfileUiState?.bmiStatus ?: "Overweight"
-                )
-            }
-        }
-        
-        // Allergies
-        Column {
-            Text(
-                text = "Allergies",
-                fontFamily = nunito_sans_600,
-                color = SteelGray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            AppInputTextField(
-                value = editProfileUiState?.allergies ?: "",
-                onValueChange = { event(EditProfileUiEvent.AllergiesValueChange(it)) },
-                isLeadingIconVisible = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                errorMessage = editProfileUiState?.allergiesErrorMsg ?: "",
-                header = "Enter your allergies"
-            )
-        }
-        
-        // Medical Conditions
-        Column {
-            Text(
-                text = "Medical Conditions",
-                fontFamily = nunito_sans_600,
-                color = SteelGray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            AppInputTextField(
-                value = editProfileUiState?.medicalConditions ?: "",
-                onValueChange = { event(EditProfileUiEvent.MedicalConditionsValueChange(it)) },
-                isLeadingIconVisible = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                errorMessage = editProfileUiState?.medicalConditionsErrorMsg ?: "",
-                header = "Enter your medical conditions"
-            )
-        }
-    }
-    
-    if (showDatePickerDialog) {
-        DatePickerWithDialog(
-            onSelectedDate = temp,
-            onDateSelected = { dateString ->
-                event(EditProfileUiEvent.OnClickOfDate(dateString))
-            },
-            onDismiss = {
-                showDatePickerDialog = false
-            },
-            onDateSelectedLong = {
-                temp = it
-            }
+        AppInputTextField(
+            value = editProfileUiState?.bmi ?: "",
+            onValueChange = { event(EditProfileUiEvent.BmiValueChange(it)) },
+            isLeadingIconVisible = true,
+            isTitleVisible = true,
+            title = "BMI",
+            isVerifyButtonVisible = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            header = "Your BMI"
         )
+        AppInputTextField(
+            value = editProfileUiState?.allergies ?: "",
+            onValueChange = { event(EditProfileUiEvent.AllergiesValueChange(it)) },
+            isTitleVisible = true,
+            title = "Allergies",
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            header = "Enter your allergies"
+        )
+        AppInputTextField(
+            value = editProfileUiState?.medicalConditions ?: "",
+            onValueChange = { event(EditProfileUiEvent.MedicalConditionsValueChange(it)) },
+            isTitleVisible = true,
+            title = "Medical Conditions",
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            ),
+            header = "Enter your medical conditions"
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(top = 20.dp, bottom = 50.dp)
+        ) {
+            AppButtonComponent(
+                onClick = {
+                    event(EditProfileUiEvent.BackClick)
+
+                },
+                modifier = Modifier.weight(1f),
+                textColor = RedE4,
+                borderColors = RedF8,
+                drawableResId = R.drawable.ic_close,
+                backgroundBrush = Brush.linearGradient(
+                    colors = listOf(
+                        White,
+                        White
+                    )
+                ),
+                text = "Cancel",
+            )
+            AppButtonComponent(
+                onClick = {
+                    event(EditProfileUiEvent.UpdateClick)
+                },
+                modifier = Modifier.weight(1f),
+                text = "Update",
+                isLoading = editProfileUiState?.showLoader == true
+            )
+            if (showDatePickerDialog) {
+                DatePickerWithDialog(
+                    onSelectedDate = selectedDateMillis,
+                    onDateSelected = { dateString ->
+                        event(EditProfileUiEvent.OnClickOfDate(dateString))
+                        showDatePickerDialog = false
+                    },
+                    onDismiss = {
+                        showDatePickerDialog = false
+                    },
+                    onDateSelectedLong = {
+                        selectedDateMillis = it
+                    }
+                )
+            }
+        }
     }
 }
 
-@Composable
-fun ActionButtons(event: (EditProfileUiEvent) -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        // Cancel Button
-        AppButtonComponent(
-            onClick = { event(EditProfileUiEvent.CancelClick) },
-            modifier = Modifier.weight(1f),
-            text = "× Cancel",
-            textColor = com.medrevpatient.mobile.app.ui.theme.RedF7,
-            borderColors = com.medrevpatient.mobile.app.ui.theme.RedF7,
-            backgroundBrush = androidx.compose.ui.graphics.Brush.linearGradient(
-                colors = listOf(
-                    White,
-                    White
-                )
-            ),
-            drawableResId = R.drawable.ic_delete
-        )
+/**
+ * Converts display date format (MMMM dd, yyyy) to millis for date picker
+ */
+private fun convertDisplayDateToMillis(displayDate: String): Long? {
+    return try {
+        if (displayDate.isBlank()) return null
         
-        // Update Button
-        AppButtonComponent(
-            onClick = { event(EditProfileUiEvent.UpdateClick) },
-            modifier = Modifier.weight(1f),
-            text = "Update",
-            textColor = White,
-            backgroundBrush = androidx.compose.ui.graphics.Brush.linearGradient(
-                colors = listOf(
-                    PurpleHeart,
-                    PurpleHeart
-                )
-            )
-        )
+        val inputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
+        val date = inputFormat.parse(displayDate)
+        date?.time
+    } catch (e: Exception) {
+        null
     }
 }
 

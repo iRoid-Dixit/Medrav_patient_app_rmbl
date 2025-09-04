@@ -66,9 +66,6 @@ class GetDietChallengeUiStateUseCase
                 navigate(Navigate(SideEffectQuestionRoute.createRoute()))
             }
 
-            DietChallengeUiEvent.BackClick -> {
-                navigate(PopIntent)
-            }
         }
     }
 }

@@ -26,6 +26,4 @@ sealed interface DietChallengeUiEvent {
     data class GetContext(val context: Context) : DietChallengeUiEvent
     data class SelectCategory(val category: String) : DietChallengeUiEvent
     object ContinueChallenge : DietChallengeUiEvent
-    object BackClick : DietChallengeUiEvent
-
 }

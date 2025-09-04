@@ -93,13 +93,16 @@ object Constants {
     }
 
     object EditProfile {
-        const val NAME = "name"
+        const val FIRST_NAME = "firstName"
+        const val LAST_NAME = "lastName"
+        const val PROFILE_IMAGE = "profileImage"
         const val EMAIL = "email"
-        const val MOBILE_NUMBER = "mobileNumber"
         const val DATE_OF_BIRTH = "dateOfBirth"
-        const val COUNTRY_CODE = "countryCode"
-        const val GENDER = "gender"
-        const val PROFILE = "profileImage"
+        const val HEIGHT = "height"
+        const val WEIGHT = "weight"
+        const val BMI = "bmi"
+        const val KNOWN_ALLERGIES = "knownAllergies"
+        const val CURRENT_MEDICATIONS = "currentMedications"
 
     }
 

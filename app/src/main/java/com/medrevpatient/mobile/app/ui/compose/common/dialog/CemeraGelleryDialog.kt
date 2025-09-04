@@ -29,8 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.Black
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+
 @Preview(showBackground = true)
 @Composable
 private fun CameraGalleryDialogPreview() {
@@ -132,8 +135,8 @@ fun ActionButton(
             Box(modifier = Modifier.weight(1f)) {
                 Text(
                     text = text,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = WorkSans,
+                    fontFamily = nunito_sans_600,
+                    color = Black,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Center)

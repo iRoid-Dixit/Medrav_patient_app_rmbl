@@ -262,7 +262,6 @@ object AppUtils {
             ""
         }
     }
-
     fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
         this then Modifier.clickable(
             indication = null,
@@ -270,8 +269,6 @@ object AppUtils {
             onClick = onClick
         )
     }
-
-
     fun Context.isScreenLocked(): Boolean {
         val keyguardManager: KeyguardManager? =
             getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
