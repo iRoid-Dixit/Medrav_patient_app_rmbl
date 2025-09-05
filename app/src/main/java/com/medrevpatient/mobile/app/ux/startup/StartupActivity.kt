@@ -1,5 +1,6 @@
 package com.medrevpatient.mobile.app.ux.startup
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ class StartupActivity : BaseActivity<StartupViewModel>() {
 
         val bundle = intent.extras
         val reset = intent.getStringExtra(Constants.BundleKey.RESET)
+        Log.d("TAG", "isComeForm: $isComeFor")
         fitSystemWindow(false)
         //installSplashScreen()
         enableEdgeToEdge()

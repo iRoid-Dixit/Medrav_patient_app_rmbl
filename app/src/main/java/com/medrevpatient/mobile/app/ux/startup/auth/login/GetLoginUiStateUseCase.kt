@@ -2,6 +2,8 @@ package com.medrevpatient.mobile.app.ux.startup.auth.login
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.data.source.Constants
@@ -611,28 +613,41 @@ class GetLoginUiStateUseCase
                         showErrorMessage(context = context, it.message ?: "Something went wrong!")
                         showOrHideLoginButtonLoader(false)
                     }
-
                     is NetworkResult.Loading -> {
                         showOrHideLoginButtonLoader(true)
                     }
-
                     is NetworkResult.Success -> {
                         showOrHideLoginButtonLoader(false)
-                        showSuccessMessage(context = context, it.data?.message ?: "")
-                        storeResponseToDataStore(
-                            coroutineScope = coroutineScope,
-                            navigate = navigate,
-                            userAuthResponseData = it.data?.data
-                        )
+                        if (it.data?.data?.isLogin==true){
+                            showSuccessMessage(context = context, it.data.message)
+                            storeResponseToDataStore(
+                                coroutineScope = coroutineScope,
+                                navigate = navigate,
+                                userAuthResponseData = it.data.data
+                            )
+                        }else{
+                            showErrorMessage(context = context, it.data?.message ?: "Something went wrong!")
+                            coroutineScope.launch{
+                                delay(1000)
+                                if (it.data?.data?.registrationUrl?.isNotEmpty()==true) {
+                                    openTermsAndConditionsInBrowser(context,it.data.data?.registrationUrl?:"")
+                                }
+                            }
+                        }
                     }
-
                     is NetworkResult.UnAuthenticated -> {
                         showOrHideLoginButtonLoader(false)
-                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showErrorMessage(context = context, it.data?.message ?: "Something went wrong!")
                     }
                 }
             }
         }
+    }
+    private fun openTermsAndConditionsInBrowser(context: Context, url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this flag
+        }
+        context.startActivity(intent)
     }
     private fun storeResponseToDataStore(
         coroutineScope: CoroutineScope,

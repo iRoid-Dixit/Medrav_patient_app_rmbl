@@ -16,7 +16,7 @@ data class ProfileUiDataState(
     val showLoader: Boolean = false,
     // Individual button loader states
     val isLogoutButtonLoading: Boolean = false,
-    val isDeleteButtonLoading: Boolean = false,
+
     val userName: String="",
     val userProfile: String="",
     val userEmail: String="",

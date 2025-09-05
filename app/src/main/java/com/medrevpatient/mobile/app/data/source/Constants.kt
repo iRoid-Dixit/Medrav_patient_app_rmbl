@@ -39,6 +39,7 @@ object Constants {
         const val NOTIFICATION_SCREEN: String = "notificationScreen"
         const val SIDE_EFFECT_CHECK_SCREEN: String = "sideEffectCheckScreen"
         const val DAILY_DIET_CHALLENGE_SCREEN: String = "dailyDietChallengeScreen"
+        const val BOOK_APPOINTMENT_SCREEN: String = "bookAppointmentScreen"
         const val USER_PROFILE: String = "userProfile"
         const val ADD_GROUP_MEMBER: String = "addGroupMember"
         const val CREATE_INNER_CIRCLE_OR_TRIBE: String = "createInnerCircleOrTribe"
@@ -50,6 +51,7 @@ object Constants {
         const val MESSAGE_SCREEN: String = "messageScreen"
         const val EDIT_ADVERTISEMENT_SCREEN: String = "editAdvertisementScreen"
         const val ADD_ADVERTISEMENT_SCREEN: String = "addAdvertisementScreen"
+        const val APPOINTMENT_DETAILS_SCREEN: String = "appointmentDetailsScreen"
 
 
     }

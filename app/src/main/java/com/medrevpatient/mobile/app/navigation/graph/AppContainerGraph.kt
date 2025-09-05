@@ -15,8 +15,12 @@ import com.medrevpatient.mobile.app.ux.container.advertisement.AdvertisementRout
 import com.medrevpatient.mobile.app.ux.container.advertisement.AdvertisementScreen
 import com.medrevpatient.mobile.app.ux.container.advertisementSubscription.AdvertisementSubscriptionRoute
 import com.medrevpatient.mobile.app.ux.container.advertisementSubscription.AdvertisementSubscriptionScreen
+import com.medrevpatient.mobile.app.ux.container.appointmentViewDetails.AppointmentViewDetailsRoute
+import com.medrevpatient.mobile.app.ux.container.appointmentViewDetails.AppointmentViewDetailsScreen
 import com.medrevpatient.mobile.app.ux.container.block.BLockListScreen
 import com.medrevpatient.mobile.app.ux.container.block.BlockListRoute
+import com.medrevpatient.mobile.app.ux.container.bookAppointmen.BookAppointmentRoute
+import com.medrevpatient.mobile.app.ux.container.bookAppointmen.BookAppointmentScreen
 import com.medrevpatient.mobile.app.ux.container.buildLegacy.BuildLegacyRoute
 import com.medrevpatient.mobile.app.ux.container.buildLegacy.BuildLegacyScreen
 import com.medrevpatient.mobile.app.ux.container.changePassword.ChangePasswordRoute
@@ -152,6 +156,12 @@ fun AppContainerGraph(
         Constants.AppScreen.DAILY_DIET_CHALLENGE_SCREEN -> {
             DietChallengeRoute.routeDefinition.value
         }
+        Constants.AppScreen.BOOK_APPOINTMENT_SCREEN -> {
+            BookAppointmentRoute.routeDefinition.value
+        }
+        Constants.AppScreen.APPOINTMENT_DETAILS_SCREEN -> {
+            AppointmentViewDetailsRoute.routeDefinition.value
+        }
 
         else -> {
             BuildLegacyRoute.routeDefinition.value
@@ -184,5 +194,7 @@ fun AppContainerGraph(
         SideEffectQuestionRoute.addNavigationRoute(this) { SideEffectScreen(navController) }
         DietChallengeRoute.addNavigationRoute(this) { DietChallengeScreen(navController) }
         WeightTrackerRoute.addNavigationRoute(this) { WeightTrackerScreen(navController) }
+        BookAppointmentRoute.addNavigationRoute(this) { BookAppointmentScreen(navController) }
+        AppointmentViewDetailsRoute.addNavigationRoute(this) { AppointmentViewDetailsScreen(navController) }
     }
 }

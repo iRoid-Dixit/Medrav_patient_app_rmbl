@@ -27,6 +27,8 @@ data class UserAuthResponse(
     @SerializedName("weight") val weight: String? = null,
     @SerializedName("weightDisplay") val weightDisplay: String? = null,
     @SerializedName("bmi") val bmi: String? = null,
+    @SerializedName("registrationUrl") val registrationUrl: String? = null,
+    @SerializedName("isLogin") val isLogin: Boolean? = false,
     @SerializedName("bmiCategory") val bmiCategory: String? = null,
     @SerializedName("knownAllergies") val knownAllergies: String? = null,
     @SerializedName("currentMedications") val currentMedications: String? = null,

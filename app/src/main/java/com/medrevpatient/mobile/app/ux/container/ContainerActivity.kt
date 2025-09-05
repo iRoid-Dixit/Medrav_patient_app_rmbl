@@ -12,6 +12,7 @@ import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.model.base.BaseActivity
 import com.medrevpatient.mobile.app.ui.theme.MedrevPatientTheme
 import dagger.hilt.android.AndroidEntryPoint
+
 @AndroidEntryPoint
 class ContainerActivity : BaseActivity<ContainerViewModel>() {
     override val viewModel: ContainerViewModel by viewModels()
@@ -34,14 +35,14 @@ class ContainerActivity : BaseActivity<ContainerViewModel>() {
             mediaList = bundle.getString(Constants.BundleKey.MEDIA_LIST, "")
         }
         setContent {
-                    ContainerScreen(
-                        startDestination = isComeFor,
-                        postId = postId,
-                        messageResponse = messageResponse,
-                        userId = userId,
-                        url = url
+            ContainerScreen(
+                startDestination = isComeFor,
+                postId = postId,
+                messageResponse = messageResponse,
+                userId = userId,
+                url = url
 
-                    )
+            )
 
         }
     }

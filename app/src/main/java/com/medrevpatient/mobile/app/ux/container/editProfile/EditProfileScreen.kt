@@ -1,5 +1,4 @@
 package com.medrevpatient.mobile.app.ux.container.editProfile
-
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
@@ -12,7 +11,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -70,7 +67,6 @@ import com.medrevpatient.mobile.app.ui.compose.common.DateSelectComponent
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.CameraGalleryDialog
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.PermissionDialog
-import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.compose.common.permission.PhotoPickerManager
 import com.medrevpatient.mobile.app.ui.theme.PurpleHeart
 import com.medrevpatient.mobile.app.ui.theme.RedE4
@@ -79,7 +75,6 @@ import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
-
 @ExperimentalMaterial3Api
 @Composable
 fun EditProfileScreen(
@@ -108,7 +103,6 @@ fun EditProfileScreen(
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun EditProfileScreenContent(
     uiState: EditProfileUiState,
@@ -135,7 +129,6 @@ private fun EditProfileScreenContent(
         )
     }
 }
-
 @Composable
 fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfileUiEvent) -> Unit) {
     val context = LocalContext.current
@@ -238,7 +231,6 @@ fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfile
         )
     }
 }
-
 @Composable
 fun EditProfileInputField(
     editProfileUiState: EditProfileDataState?,
@@ -257,7 +249,6 @@ fun EditProfileInputField(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // First Name
             Column(modifier = Modifier.weight(1f)) {
                 AppInputTextField(
                     value = editProfileUiState?.firstName ?: "",
@@ -274,10 +265,7 @@ fun EditProfileInputField(
                     header = "Enter first name"
                 )
             }
-
-            // Last Name
             Column(modifier = Modifier.weight(1f)) {
-
                 AppInputTextField(
                     value = editProfileUiState?.lastName ?: "",
                     onValueChange = { event(EditProfileUiEvent.LastNameValueChange(it)) },
@@ -446,7 +434,6 @@ fun EditProfileInputField(
         }
     }
 }
-
 /**
  * Converts display date format (MMMM dd, yyyy) to millis for date picker
  */
@@ -468,8 +455,6 @@ fun AboutScreenContentPreview() {
     val uiState = EditProfileUiState()
     EditProfileScreenContent(uiState = uiState, event = uiState.event)
 }
-
-
 
 
 

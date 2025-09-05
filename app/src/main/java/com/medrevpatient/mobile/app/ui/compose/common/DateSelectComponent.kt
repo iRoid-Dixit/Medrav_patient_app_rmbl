@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.ui.theme.Gray5
-import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.Gray40
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
@@ -47,6 +46,8 @@ fun DateSelectComponent(
     onClick: () -> Unit = {},
     endPadding: Dp = 0.dp,
     isTitleVisible: Boolean = false,
+    backGroundColor: Color = Gray5,
+    borderColors: Color = Color.Transparent,
     title: String = "",
 ) {
     val borderColor = when {
@@ -67,9 +68,10 @@ fun DateSelectComponent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
-                .background(color = Gray5, shape = RoundedCornerShape(15))
+                .background(color = backGroundColor, shape = RoundedCornerShape(15))
                 .fillMaxWidth()
-                .heightIn(56.dp)
+                .border(width = 1.dp, color = borderColors, shape = RoundedCornerShape(15))
+                .heightIn(48.dp)
                 .clickable { onClick() }
                 .clip(RoundedCornerShape(15))
         ) {
@@ -86,7 +88,6 @@ fun DateSelectComponent(
                     text = it,
                     fontSize = 14.sp,
                     fontFamily = if (value.isNotBlank()) nunito_sans_600 else nunito_sans_400,
-                    fontWeight = if (value.isNotBlank()) FontWeight.SemiBold else FontWeight.Normal,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = if (value.isNotBlank()) valueTextColor else Gray40,

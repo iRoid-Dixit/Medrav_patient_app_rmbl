@@ -151,7 +151,6 @@ class GetProfileUiStateUseCase
             }
         }
     }
-
     private fun logout(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -184,14 +183,15 @@ class GetProfileUiStateUseCase
                         coroutineScope.launch {
                             delay(1000)
                             appPreferenceDataStore.clearAll()
-                            val intent = Intent(context, StartupActivity::class.java)
+                            navigateToStartupScreens(context = context, navigate = navigate, screenName = Constants.AppScreen.SIGN_IN)
+                            /*val intent = Intent(context, StartupActivity::class.java)
                             intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
                             navigate(
                                 NavigationAction.NavigateIntent(
                                     intent,
                                     finishCurrentActivity = true
                                 ),
-                            )
+                            )*/
                         }
                     }
 
@@ -207,8 +207,6 @@ class GetProfileUiStateUseCase
 
         }
     }
-
-
     private fun showOrHideLoader(showLoader: Boolean) {
         profileUiDataFlow.update { state ->
             state.copy(
@@ -216,7 +214,6 @@ class GetProfileUiStateUseCase
             )
         }
     }
-
     private fun showOrHideLogoutButtonLoader(isLoading: Boolean) {
         profileUiDataFlow.update { state ->
             state.copy(
@@ -224,8 +221,6 @@ class GetProfileUiStateUseCase
             )
         }
     }
-
-
     private fun deleteAccount(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -234,33 +229,35 @@ class GetProfileUiStateUseCase
             apiRepository.deleteAccount().collect {
                 when (it) {
                     is NetworkResult.Error -> {
-                        showErrorMessage(
-                            context = this@GetProfileUiStateUseCase.context,
-                            it.message ?: "Something went wrong!"
-                        )
-                        showOrHideLogoutButtonLoader(false)
+                        showOrHideLoader(false)
+                            showErrorMessage(
+                                context = this@GetProfileUiStateUseCase.context,
+                                it.message ?: "Something went wrong!"
+                            )
+
+
                     }
 
                     is NetworkResult.Loading -> {
-                        showOrHideLogoutButtonLoader(true)
+                        showOrHideLoader(true)
                     }
                     is NetworkResult.Success -> {
-                        showOrHideLogoutButtonLoader(false)
+                        showOrHideLoader(false)
                         coroutineScope.launch {
-                            delay(1000)
+                           delay(1000)
+                            appPreferenceDataStore.clearAll()
                             showSuccessMessage(
                                 context = this@GetProfileUiStateUseCase.context,
                                 it.data?.message ?: ""
                             )
-                            appPreferenceDataStore.clearAll()
-                            val intent = Intent(context, StartupActivity::class.java)
+                            /*val intent = Intent(context, StartupActivity::class.java)
                             intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
                             navigate(
                                 NavigationAction.NavigateIntent(
                                     intent,
                                     finishCurrentActivity = true
                                 ),
-                            )
+                            )*/
                         }
                     }
                     is NetworkResult.UnAuthenticated -> {
@@ -268,20 +265,28 @@ class GetProfileUiStateUseCase
                             context = this@GetProfileUiStateUseCase.context,
                             it.message ?: "Something went wrong!"
                         )
-                        showOrHideLogoutButtonLoader(false)
+                        showOrHideLoader(false)
                     }
                 }
             }
 
         }
     }
-
     private fun navigateToContainerScreens(
         context: Context,
         navigate: (NavigationAction) -> Unit,
         screenName: String,
     ) {
         val intent = Intent(context, ContainerActivity::class.java)
+        intent.putExtra(Constants.IS_COME_FOR, screenName)
+        navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = false))
+    }
+    private fun navigateToStartupScreens(
+        context: Context,
+        navigate: (NavigationAction) -> Unit,
+        screenName: String,
+    ) {
+        val intent = Intent(context, StartupActivity::class.java)
         intent.putExtra(Constants.IS_COME_FOR, screenName)
         navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = false))
     }

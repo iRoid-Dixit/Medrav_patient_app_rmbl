@@ -167,7 +167,7 @@ private fun ProfileScreenContent(
                 event(ProfileUiEvent.DeleteAPICall)
             },
             icon = R.drawable.ic_delete,
-            isLoading = profileUiState?.isDeleteButtonLoading == true
+            isLoading = profileUiState?.showLoader == true
         )
     }
 }
