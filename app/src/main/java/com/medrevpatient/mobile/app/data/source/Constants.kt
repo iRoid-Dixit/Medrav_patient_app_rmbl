@@ -38,6 +38,7 @@ object Constants {
         const val BLOCK_LIST_SCREEN: String = "blockListScreen"
         const val NOTIFICATION_SCREEN: String = "notificationScreen"
         const val SIDE_EFFECT_CHECK_SCREEN: String = "sideEffectCheckScreen"
+        const val CALCULATE_BMI_SCREEN: String = "calculateBMIScreen"
         const val DAILY_DIET_CHALLENGE_SCREEN: String = "dailyDietChallengeScreen"
         const val BOOK_APPOINTMENT_SCREEN: String = "bookAppointmentScreen"
         const val USER_PROFILE: String = "userProfile"
@@ -104,10 +105,9 @@ object Constants {
         const val WEIGHT = "weight"
         const val BMI = "bmi"
         const val KNOWN_ALLERGIES = "knownAllergies"
-        const val CURRENT_MEDICATIONS = "currentMedications"
+        const val CURRENT_MEDICATIONS = "medical_conditions"
 
     }
-
     object CreateInnerCircleAndTribe {
         const val NAME = "name"
         const val TYPE = "type"

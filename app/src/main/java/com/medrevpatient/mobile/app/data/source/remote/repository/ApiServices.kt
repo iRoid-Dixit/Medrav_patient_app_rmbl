@@ -15,6 +15,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.AddCommentReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ChangePasswordReq
@@ -28,6 +29,7 @@ import com.medrevpatient.mobile.app.model.domain.response.advertisement.Advertis
 import com.medrevpatient.mobile.app.model.domain.response.archive.ArchiveScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
+import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
 import com.medrevpatient.mobile.app.model.domain.response.block.BlockUserResponse
 import com.medrevpatient.mobile.app.model.domain.response.block.UnblockResponse
 import com.medrevpatient.mobile.app.model.domain.response.chat.ChatResponse
@@ -460,5 +462,10 @@ interface ApiServices {
     suspend fun checkAppUpdate(
         @Body appUpdateReq: AppUpdateRequest
     ): Response<ApiResponse<AppUpdateResponse>>
+
+    @POST(EndPoints.Auth.BMI_CALCULATE)
+    suspend fun calculateBmi(
+        @Body bmiRequest: BmiCalculateRequest
+    ): Response<ApiResponse<BmiCalculateResponse>>
 
 }

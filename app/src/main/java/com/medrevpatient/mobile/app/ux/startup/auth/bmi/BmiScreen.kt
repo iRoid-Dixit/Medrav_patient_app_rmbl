@@ -141,13 +141,36 @@ private fun BmiScreenContent(uiState: BmiUiState, event: (BmiUiEvent) -> Unit) {
                 errorMessage = bmiUiState?.weightErrorFlow
             )
             Spacer(modifier = Modifier.height(32.dp))
+            
+            // Show BMI result if available
+            bmiUiState?.bmiResult?.let { result ->
+                BmiResultCard(result = result)
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            
+            // Show error message if available
+            bmiUiState?.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    fontFamily = nunito_sans_600,
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            
             AppButtonComponent(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Calculate BMI",
+                text = if (bmiUiState?.showLoader == true) "Calculating..." else "Calculate BMI",
                 onClick = {
-                    uiState.event(BmiUiEvent.CalculateBmi)
+                    if (bmiUiState?.showLoader != true) {
+                        uiState.event(BmiUiEvent.CalculateBmi)
+                    }
                 },
-
+                isLoading = bmiUiState?.showLoader==true
             )
         }
     }
@@ -265,6 +288,61 @@ private fun HeightWeightInput(
                     .padding(start = 15.dp, top = 6.dp)
                     .align(Alignment.Start)
             )
+        }
+    }
+}
+
+@Composable
+private fun BmiResultCard(result: BmiResult) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = BlueChalk),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Your BMI Result",
+                color = SteelGray,
+                fontSize = 18.sp,
+                fontFamily = nunito_sans_700,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = String.format("%.1f", result.bmi),
+                color = AppThemeColor,
+                fontSize = 32.sp,
+                fontFamily = nunito_sans_700,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = result.categoryName,
+                color = SteelGray,
+                fontSize = 16.sp,
+                fontFamily = nunito_sans_600,
+                textAlign = TextAlign.Center
+            )
+            
+            result.message?.let { message ->
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = message,
+                    color = Gray80,
+                    fontSize = 14.sp,
+                    fontFamily = nunito_sans_400,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 18.sp
+                )
+            }
         }
     }
 }

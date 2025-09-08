@@ -281,7 +281,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.SetPasswordSheetVisibility -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -289,7 +288,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.ConfirmPasswordValueChange -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -302,7 +300,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.NewPasswordValueChange -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -314,7 +311,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.ConfirmClick -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
@@ -361,7 +357,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.SuccessSheetVisibility -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -369,7 +364,6 @@ class GetLoginUiStateUseCase
                     )
                 }
             }
-
             is LoginUiEvent.ProceedClickSuccess -> {
                 event.scope.launch {
                     event.sheetState.hide()
@@ -389,7 +383,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     private fun otpValidation(otp: String?, context: Context): ValidationResult {
         return ValidationResult(
             isSuccess = !otp.isNullOrBlank() && otp.length == 4,
@@ -400,7 +393,6 @@ class GetLoginUiStateUseCase
             }
         )
     }
-
     private fun confirmPasswordValidation(
         password: String,
         confirmPassword: String,
@@ -415,7 +407,6 @@ class GetLoginUiStateUseCase
             }
         )
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     private fun doUserForgetPasswordIn(
         coroutineScope: CoroutineScope,
@@ -462,7 +453,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     private fun doUserResendOtpIn(
         coroutineScope: CoroutineScope,
@@ -498,7 +488,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     private fun doUserVerifyOtpIn(
         coroutineScope: CoroutineScope,
@@ -547,7 +536,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     private fun doUserResetPasswordIn(
         coroutineScope: CoroutineScope,
@@ -596,7 +584,6 @@ class GetLoginUiStateUseCase
             }
         }
     }
-
     private fun doUserLoginIn(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -628,7 +615,7 @@ class GetLoginUiStateUseCase
                         }else{
                             showErrorMessage(context = context, it.data?.message ?: "Something went wrong!")
                             coroutineScope.launch{
-                                delay(1000)
+                                delay(2000)
                                 if (it.data?.data?.registrationUrl?.isNotEmpty()==true) {
                                     openTermsAndConditionsInBrowser(context,it.data.data?.registrationUrl?:"")
                                 }

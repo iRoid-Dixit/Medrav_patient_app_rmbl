@@ -75,6 +75,18 @@ val Ebony = Color(0xFF111827)
 val Magnolia = Color(0xFFF6F0FF)
 val RedF7 = Color(0xFFF74141)
 val PortGore = Color(0xFF2C2145)
+val PinkFF = Color(0xFFFFC0CB)
+val Green4C = Color(0xFF4CAF50)
+val MintGreen = Color(0xFF7FFF84)
+val Pomegranate = Color(0xFFF44336)
+val BarleyWhite = Color(0xFFFFF1CF)
+val RedB7 = Color(0xFFB71C1C)
+val Seance = Color(0xFF9C27B0)
+val TickleMePink = Color(0xFFFF748C)
+val Buttercup = Color(0xFFF59E0B)
+val CornflowerLilac = Color(0xFFFFAEA8)
+val Mauve = Color(0xFFF6C3FF)
+
 
 // Weight Tracker Colors
 val ElectricViolet = Color(0xFF9333EA)

@@ -18,7 +18,6 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 
 @Composable
 fun VerifyButton(
-    text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     verifyButtonText: String,
@@ -45,7 +44,6 @@ fun VerifyButton(
 @Composable
 fun VerifyButtonPreview(modifier: Modifier = Modifier) {
     VerifyButton(
-        text = "Verify",
         onClick = { /*TODO*/ },
         modifier = modifier,
         verifyButtonText = "Verify",

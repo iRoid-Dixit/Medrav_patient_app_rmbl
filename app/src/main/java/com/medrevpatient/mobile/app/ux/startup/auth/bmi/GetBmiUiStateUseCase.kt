@@ -1,10 +1,18 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.bmi
 
 import android.content.Context
+import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.data.source.Constants
+import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
+import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
+import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute
@@ -22,6 +30,7 @@ class GetBmiUiStateUseCase
 @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val validationUseCase: ValidationUseCase,
+    private val apiRepository: ApiRepository,
 ) {
     private val bmiDataFlow = MutableStateFlow(BmiData())
     private val isOffline = MutableStateFlow(false)
@@ -106,9 +115,11 @@ class GetBmiUiStateUseCase
                             )
                         }
                         if (hasError) return
-                        navigate(Navigate(DietChallengeRoute.createRoute()))
+                        doUserEmailVerifyIn(
+                            coroutineScope = coroutineScope,
+                            navigate = navigate
+                        )
                     }
-
                 } else {
                     showWaringMessage(
                         context,
@@ -117,10 +128,48 @@ class GetBmiUiStateUseCase
                 }
                 
             }
-
             is BmiUiEvent.GetContext -> {
                 this.context = event.context
             }
+        }
+    }
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserEmailVerifyIn(
+        coroutineScope: CoroutineScope,
+        navigate: (NavigationAction) -> Unit
+    ) {
+        coroutineScope.launch {
+            val bmiRequest = BmiCalculateRequest(
+                weightKg = bmiDataFlow.value.weightInput.toDouble(),
+                heightCm = bmiDataFlow.value.heightInput.toDouble()
+            )
+            apiRepository.calculateBmi(bmiRequest).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideLoader(false)
+                    }
+                    is NetworkResult.Loading -> {
+                        showOrHideLoader(true)
+                    }
+                    is NetworkResult.Success -> {
+                        showOrHideLoader(false)
+                        navigate(PopIntent)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                    }
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+    private fun showOrHideLoader(showLoader: Boolean) {
+        bmiDataFlow.update { state ->
+            state.copy(
+                showLoader = showLoader
+            )
         }
     }
 }

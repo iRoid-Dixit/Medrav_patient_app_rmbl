@@ -2,22 +2,26 @@ package com.medrevpatient.mobile.app.ux.container.editProfile
 
 import android.content.Context
 import android.util.Log
-import co.touchlab.kermit.Logger
+import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
+import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
-import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -47,6 +52,7 @@ class GetEditProfileUiStateUseCase
     private lateinit var context: Context
     private val isNewImage = MutableStateFlow(false)
     private val editProfileDataFlow = MutableStateFlow(EditProfileDataState())
+    private var countdownJob: Job? = null
     operator fun invoke(
         context: Context,
         coroutineScope: CoroutineScope,
@@ -75,9 +81,11 @@ class GetEditProfileUiStateUseCase
                 editProfileDataFlow.update { profileUiDataState ->
                     profileUiDataState.copy(
                         email = it.email ?: "",
+                        originalEmail = it.email ?: "",
                         profileImage = it.profileImage ?: "",
                         firstName = it.firstName ?: "",
                         dateSelected = formatDate(it.dateOfBirth),
+                        bmiCategory = it.bmiCategory?:0,
                         lastName = it.lastName ?: "",
                         height = it.height?:"",
                         weight = it.weight?:"",
@@ -102,6 +110,7 @@ class GetEditProfileUiStateUseCase
         )
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     private fun contactUsUiEvent(
         event: EditProfileUiEvent,
         context: Context,
@@ -116,10 +125,18 @@ class GetEditProfileUiStateUseCase
                 this.context = event.context
             }
             is EditProfileUiEvent.EmailValueChange -> {
+                val emailValidationResult = validationUseCase.emailValidation(
+                    emailAddress = event.email,
+                    context = context
+                )
+                val isEmailChanged = event.email != editProfileDataFlow.value.originalEmail
+                
                 editProfileDataFlow.update { state ->
                     state.copy(
                         email = event.email,
-
+                        emailErrorMsg = emailValidationResult.errorMsg,
+                        isEmailChanged = isEmailChanged,
+                        isEmailValid = emailValidationResult.isSuccess && isEmailChanged
                     )
                 }
             }
@@ -248,13 +265,8 @@ class GetEditProfileUiStateUseCase
                         medicalConditions = event.medicalConditions,
                     )
                 }
+                Log.d("TAG", "contactUsUiEvent: ${event.medicalConditions}")
             }
-
-
-
-
-
-
             is EditProfileUiEvent.BmiValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -262,7 +274,202 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
+            is EditProfileUiEvent.VerifySheetVisibility -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        verifySheetVisible = event.isVisible
+                    )
+                }
+            }
+            is EditProfileUiEvent.VerifyClick -> {
+                if (!isOffline.value) {
+                    validationUseCase.apply {
+                        val otpValidationResult = otpValidation(
+                            editProfileDataFlow.value.otpValue,
+                            context = context
+                        )
+                        val hasErrorOtp = !otpValidationResult.isSuccess
+                        editProfileDataFlow.update { state ->
+                            state.copy(
+                                otpErrorMsg = otpValidationResult.errorMsg
+                            )
+                        }
+                        if (hasErrorOtp) {
+                            return
+                        }
+                        callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
+
+                    }
+                } else {
+                    showWaringMessage(
+                        context,
+                        context.getString(R.string.please_check_your_internet_connection_first)
+                    )
+                }
+            }
+            is EditProfileUiEvent.OtpValueChange -> {
+                editProfileDataFlow.update { state ->
+                    state.copy(
+                        otpValue = event.otp,
+                        otpErrorMsg = otpValidation(event.otp, context = context).errorMsg
+                    )
+                }
+            }
+            EditProfileUiEvent.ResendCode -> {
+                doUserEmailVerifyIn(
+                    coroutineScope = coroutineScope,
+
+                    )
+            }
+            EditProfileUiEvent.VerifyEmailClick -> {
+                /*editProfileDataFlow.update {state->
+                    state.copy(
+                        verifySheetVisible=true
+                    )
+                }*/
+                doUserEmailVerifyIn(
+                    coroutineScope = coroutineScope,
+
+                )
+            }
+            is EditProfileUiEvent.EditEmailClick -> {
+                event.scope.launch {
+                    event.sheetState.hide()
+
+                }.invokeOnCompletion {
+                    editProfileDataFlow.update { state ->
+                        state.copy(
+                            verifySheetVisible=false
+                        )
+
+                    }
+                }
+
+            }
         }
+    }
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserEmailVerifyIn(
+        coroutineScope: CoroutineScope,
+    ) {
+        coroutineScope.launch {
+            val resendOtpReq = ResendOTPReq(
+                email = editProfileDataFlow.value.email,
+                otpType = Constants.OTPType.EMAIL_VERIFICATION
+            )
+            apiRepository.resendOtpOTP(resendOtpReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideResendButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideResendButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideResendButtonLoader(false)
+                        startCountdown(coroutineScope)
+                        editProfileDataFlow.update {state->
+                            state.copy(
+                                verifySheetVisible = true
+                            )
+
+                        }
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideResendButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+    private fun showOrHideProceedButtonLoader(isLoading: Boolean) {
+        editProfileDataFlow.update { state ->
+            state.copy(
+                isVerifyButtonLoading = isLoading
+            )
+        }
+    }
+    private fun showOrHideResendButtonLoader(isLoading: Boolean) {
+        editProfileDataFlow.update { state ->
+            state.copy(
+                isResendButtonLoading = isLoading
+            )
+        }
+    }
+    private fun startCountdown(coroutineScope: CoroutineScope) {
+        countdownJob?.cancel()
+        countdownJob = coroutineScope.launch(Dispatchers.IO) {
+            editProfileDataFlow.value = editProfileDataFlow.value.copy(
+                isResendVisible = false
+            )
+            for (n in 60 downTo 0) {
+                withContext(Dispatchers.Main) {
+                    editProfileDataFlow.value = editProfileDataFlow.value.copy(
+                        remainingTimeFlow = String.format(Locale.getDefault(), "00:%02d", n)
+                    )
+                }
+                delay(1000)
+            }
+            withContext(Dispatchers.Main) {
+                editProfileDataFlow.value = editProfileDataFlow.value.copy(
+                    remainingTimeFlow = "00:00",
+                    isResendVisible = true
+                )
+            }
+        }
+    }
+    /*@OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserResendOtpIn(
+        coroutineScope: CoroutineScope,
+    ) {
+        coroutineScope.launch {
+            val resendOtpReq = ResendOTPReq(
+                email = .value.resendEmail,
+                otpType = Constants.OTPType.FORGET_PASSWORD
+            )
+            apiRepository.resendOtpOTP(resendOtpReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        showOrHideResendButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideResendButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideResendButtonLoader(false)
+                        startCountdown(coroutineScope)
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideResendButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }*/
+
+    private fun otpValidation(otp: String?, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = !otp.isNullOrBlank() && otp.length == 4,
+            errorMsg = when {
+                otp.isNullOrBlank() -> context.getString(R.string.please_provide_otp_for_verification)
+                otp.length != 4 -> context.getString(R.string.the_otp_filed_must_be_4_digits)
+                else -> null
+            }
+        )
     }
 
 
@@ -316,6 +523,7 @@ class GetEditProfileUiStateUseCase
         if (editProfileDataFlow.value.allergies.isNotBlank()) map[Constants.EditProfile.KNOWN_ALLERGIES] =
             editProfileDataFlow.value.allergies.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
+        Log.d("TAG", "medicalCondition: ${editProfileDataFlow.value.medicalConditions}")
         if (editProfileDataFlow.value.medicalConditions.isNotBlank()) map[Constants.EditProfile.CURRENT_MEDICATIONS] =
             editProfileDataFlow.value.medicalConditions.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 

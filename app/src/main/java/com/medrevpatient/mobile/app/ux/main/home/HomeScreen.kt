@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ux.main.home
+
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -42,6 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.medrevpatient.mobile.app.R
@@ -62,6 +65,8 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+import com.medrevpatient.mobile.app.ux.main.profile.ProfileUiEvent
+
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
@@ -71,16 +76,19 @@ fun HomeScreen(
     val uiState = viewModel.uiState
     val context = LocalContext.current
     uiState.event(HomeUiEvent.GetContext(context))
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        uiState.event(HomeUiEvent.GetDataFromPref)
+    }
     val homeDetailsData by uiState.homeUiDataFlow.collectAsStateWithLifecycle()
     Log.d("TAG", "HomeScreen: ${homeDetailsData?.userName}")
     AppScaffold(
         containerColor = White,
         topAppBar = {
             HomeHeader(
-                userName = homeDetailsData?.userName?:"",
-                userProfileImage = homeDetailsData?.userProfile?:"",
+                userName = homeDetailsData?.userName ?: "",
+                userProfileImage = homeDetailsData?.userProfile ?: "",
                 onNotificationClick = {
-                   uiState.event(HomeUiEvent.NotificationClick)
+                    uiState.event(HomeUiEvent.NotificationClick)
                 }
             )
         }
@@ -120,7 +128,6 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
                 progress = 0.3f
             )
         }
-
         item {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -129,7 +136,7 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
                     title = "Side Effect Check-In",
                     iconRes = R.drawable.ic_side_effect_checkin,
                     onClick = {
-                       uiState.event(HomeUiEvent.SideEffectClick)
+                        uiState.event(HomeUiEvent.SideEffectClick)
                     }
                 )
                 ActionCard(
@@ -170,7 +177,7 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
                             timestamp = "Yesterday, 9:00 AM",
                             iconRes = R.drawable.ic_medication,
 
-                        ),
+                            ),
                         RecentActivity(
                             title = "Appointment with Dr. Wilson",
                             timestamp = "3 days ago",
@@ -186,7 +193,7 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
         item {
             AppButtonComponent(
                 onClick = {
-
+                    uiState.event(HomeUiEvent.CalculateBMIClick)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 text = "Calculate BMI",
@@ -195,7 +202,6 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
         }
     }
 }
-
 @Composable
 fun ActionCard(
     title: String,
@@ -235,11 +241,8 @@ fun ActionCard(
                 contentDescription = "Arrow",
             )
         }
-
-
     }
 }
-
 @Composable
 fun RecentActivityItem(
     activity: RecentActivity
@@ -273,8 +276,6 @@ fun RecentActivityItem(
         }
     }
 }
-
-
 @Composable
 fun GoalProgressCard(
     currentWeight: String = "55.6 kg",
@@ -412,9 +413,10 @@ fun GoalProgressCard(
         }
     }
 }
+
 @Composable
 fun AssignedDoctorCard(
-    doctorName: String ="",
+    doctorName: String = "",
     doctorSpecialty: String = "Weight Management Specialist",
     doctorImage: String? = null
 ) {

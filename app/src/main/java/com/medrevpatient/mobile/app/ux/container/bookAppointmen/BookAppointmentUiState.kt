@@ -1,12 +1,11 @@
 package com.medrevpatient.mobile.app.ux.container.bookAppointmen
 
 import android.content.Context
-import com.medrevpatient.mobile.app.ux.main.message.MessageUiDataState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 data class BookAppointmentUiState(
-    val messageUiDataFlow: StateFlow<MessageUiDataState?> = MutableStateFlow(null),
+    val bookAppointmentUiDataFlow: StateFlow<BookAppointmentData?> = MutableStateFlow(null),
     val event: (BookAppointmentUiEvent) -> Unit = {}
 
 )
@@ -34,7 +33,7 @@ sealed interface BookAppointmentUiEvent {
     data class SelectTime(val time: String) : BookAppointmentUiEvent
     data class SelectTimePeriod(val period: String) : BookAppointmentUiEvent
     data class UpdateNotes(val notes: String) : BookAppointmentUiEvent
-    data class ToggleDatePicker(val isVisible: Boolean) : BookAppointmentUiEvent
+    data class BookAppointmentSheetVisibility(val isVisible: Boolean) : BookAppointmentUiEvent
     data class ToggleTimePeriodDropdown(val isExpanded: Boolean) : BookAppointmentUiEvent
     object ConfirmBooking : BookAppointmentUiEvent
 }

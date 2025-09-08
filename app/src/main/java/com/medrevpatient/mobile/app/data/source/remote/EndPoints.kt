@@ -18,6 +18,7 @@ object EndPoints {
         const val REFRESH_TOKEN = "auth/refresh_token"
         const val FORCE_UPDATE = "auth/version"
         const val DELETE_LEGACY_POST = "legacy/delete-post"
+        const val BMI_CALCULATE = "api/patient/bmi/calculate"
     }
     object Notification{
         const val FCM_TOKEN = "fcmtoken/create-fcmToken"

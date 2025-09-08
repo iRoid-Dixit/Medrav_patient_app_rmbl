@@ -18,7 +18,15 @@ data class BmiData(
     val weightInput: String = "",
     val weightErrorFlow: String? = null,
     val showLoader: Boolean = false,
+    val bmiResult: BmiResult? = null,
+    val errorMessage: String? = null
+)
 
+data class BmiResult(
+    val bmi: Double,
+    val category: Int,
+    val categoryName: String,
+    val message: String? = null
 )
 
 sealed interface BmiUiEvent {

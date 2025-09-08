@@ -37,6 +37,7 @@ class GetBookAppointmentUiStateUseCase
             }
         }
         return BookAppointmentUiState(
+            bookAppointmentUiDataFlow = profileUiDataFlow,
             event = { appointmentEvent ->
                 handleEvent(
                     event = appointmentEvent,
@@ -58,25 +59,20 @@ class GetBookAppointmentUiStateUseCase
             is BookAppointmentUiEvent.SelectDate -> {
                 profileUiDataFlow.update { it.copy(selectedDate = event.date) }
             }
-
             is BookAppointmentUiEvent.SelectTime -> {
                 profileUiDataFlow.update { it.copy(selectedTime = event.time) }
             }
-
             is BookAppointmentUiEvent.SelectTimePeriod -> {
                 profileUiDataFlow.update { it.copy(selectedTimePeriod = event.period) }
             }
-
             is BookAppointmentUiEvent.UpdateNotes -> {
                 profileUiDataFlow.update { it.copy(additionalNotes = event.notes) }
             }
-
-            is BookAppointmentUiEvent.ToggleDatePicker -> {
+            is BookAppointmentUiEvent.BookAppointmentSheetVisibility -> {
                 profileUiDataFlow.update { state ->
                     state.copy(isDatePickerVisible = event.isVisible)
                 }
             }
-
             is BookAppointmentUiEvent.ToggleTimePeriodDropdown -> {
                 profileUiDataFlow.update { it.copy(isTimePeriodDropdownExpanded = event.isExpanded) }
             }

@@ -63,7 +63,8 @@ class GetDietChallengeUiStateUseCase
                 // Handle category selection
             }
             is DietChallengeUiEvent.ContinueChallenge -> {
-                navigate(Navigate(SideEffectQuestionRoute.createRoute()))
+                //navigate(Navigate(SideEffectQuestionRoute.createRoute()))
+                navigate(PopIntent)
             }
 
         }

@@ -36,6 +36,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.AddCommentReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ChangePasswordReq
@@ -49,6 +50,7 @@ import com.medrevpatient.mobile.app.model.domain.response.advertisement.Advertis
 import com.medrevpatient.mobile.app.model.domain.response.archive.ArchiveScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
+import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
 import com.medrevpatient.mobile.app.model.domain.response.block.BlockUserResponse
 import com.medrevpatient.mobile.app.model.domain.response.block.UnblockResponse
 import com.medrevpatient.mobile.app.model.domain.response.chat.ChatResponse
@@ -1535,6 +1537,30 @@ class ApiRepositoryImpl @Inject constructor(
     override fun checkAppUpdate(appUpdateRequest: AppUpdateRequest): Flow<NetworkResult<ApiResponse<AppUpdateResponse>>> = flow {
         try {
             val response = apiServices.checkAppUpdate(appUpdateRequest)
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun calculateBmi(bmiRequest: BmiCalculateRequest): Flow<NetworkResult<ApiResponse<BmiCalculateResponse>>> = flow {
+        try {
+            val response = apiServices.calculateBmi(bmiRequest)
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))

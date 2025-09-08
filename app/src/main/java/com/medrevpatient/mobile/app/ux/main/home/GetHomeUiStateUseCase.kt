@@ -25,6 +25,7 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
 import com.medrevpatient.mobile.app.ux.imageDisplay.ImageDisplayActivity
 import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
+import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -86,6 +87,22 @@ class GetHomeUiStateUseCase
             }
             HomeUiEvent.SideEffectClick -> {
                 navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.SIDE_EFFECT_CHECK_SCREEN)
+            }
+
+            HomeUiEvent.CalculateBMIClick -> {
+                navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.CALCULATE_BMI_SCREEN)
+            }
+
+            HomeUiEvent.GetDataFromPref -> {
+                coroutineScope.launch{
+                    homeUiDataFlow.update {state->
+                        state.copy(
+                            userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
+                            userProfile=appPreferenceDataStore.getUserData()?.profileImage?:""
+                        )
+
+                    }
+                }
             }
         }
     }

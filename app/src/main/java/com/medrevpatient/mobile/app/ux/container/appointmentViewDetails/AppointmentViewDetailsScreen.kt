@@ -60,16 +60,13 @@ fun AppointmentViewDetailsScreen(
         uiState.event(AppointmentViewDetailsUiEvent.GetContext(context))
         AppointmentViewDetailsContent(uiState = uiState, event = uiState.event)
     }
-
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun AppointmentViewDetailsContent(uiState: AppointmentViewDetailsUiState, event: (AppointmentViewDetailsUiEvent) -> Unit) {
     val appointmentData by uiState.appointmentViewDetailsDataFlow.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val appointment = appointmentData?.appointment
-
     Column(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
@@ -183,9 +180,7 @@ private fun AppointmentOverviewCard(
                     fontFamily = nunito_sans_400
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             // Date and Time Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -250,9 +245,7 @@ private fun AppointmentOverviewCard(
                     fontFamily = nunito_sans_600
                 )
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
             // Purpose
             Text(
                 text = appointment.purpose,
@@ -326,7 +319,6 @@ private fun DoctorInformationSection(
 
                         if (doctor.isVerified) {
                             VerifyButton(
-                                text = "Verified",
                                 onClick = { },
                                 verifyButtonText = "Verified",
                                 verifyButtonBackgroundColor = Green2C.copy(alpha = 0.1f),
@@ -511,8 +503,6 @@ private fun AppointmentNotesSection(
         }
     }
 }
-
-// Post-Appointment Section Component
 @Composable
 private fun PostAppointmentSection(
     note: String,
@@ -545,9 +535,7 @@ private fun PostAppointmentSection(
                     tint = Gray94,
                     modifier = Modifier.size(24.dp)
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
                     text = note,
                     color = Gray94,
@@ -560,7 +548,6 @@ private fun PostAppointmentSection(
     }
 }
 
-// Need Help Section Component
 @Composable
 private fun NeedHelpSection(
     onContactSupport: () -> Unit,
@@ -574,9 +561,7 @@ private fun NeedHelpSection(
             fontFamily = nunito_sans_700,
             fontWeight = FontWeight.Bold
         )
-
         Spacer(modifier = Modifier.height(12.dp))
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -596,7 +581,6 @@ private fun NeedHelpSection(
                     fontSize = 12.sp,
                     fontFamily = nunito_sans_400
                 )
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -618,7 +602,6 @@ private fun NeedHelpSection(
         }
     }
 }
-
 @Preview
 @Composable
 private fun AppointmentDetailsScreenPreview() {

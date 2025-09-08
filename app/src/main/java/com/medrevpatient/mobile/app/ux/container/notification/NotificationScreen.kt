@@ -99,7 +99,7 @@ private fun NotificationScreenContent(uiState: NotificationUiState) {
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(15.dp),
-            contentPadding = PaddingValues(top = 10.dp),
+            contentPadding = PaddingValues(top = 10.dp, bottom = 10.dp),
         ) {
             items(notifications) { notification ->
                 NotificationCard(notification = notification)

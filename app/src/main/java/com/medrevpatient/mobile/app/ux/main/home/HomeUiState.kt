@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.paging.PagingData
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
+import com.medrevpatient.mobile.app.ux.main.profile.ProfileUiEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -24,6 +25,8 @@ sealed interface HomeUiEvent {
     object NotificationClick : HomeUiEvent
     object SideEffectClick : HomeUiEvent
     object DailyDietClick : HomeUiEvent
+    object CalculateBMIClick : HomeUiEvent
+    data object GetDataFromPref : HomeUiEvent
 
 
 }

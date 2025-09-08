@@ -40,7 +40,6 @@ class GetProfileUiStateUseCase
                         userProfile = appPreferenceDataStore.getUserData()?.profileImage ?: "",
                         userEmail = appPreferenceDataStore.getUserData()?.email ?: ""
                     )
-
                 }
         }
         return ProfileUiState(
@@ -184,17 +183,16 @@ class GetProfileUiStateUseCase
                             delay(1000)
                             appPreferenceDataStore.clearAll()
                             navigateToStartupScreens(context = context, navigate = navigate, screenName = Constants.AppScreen.SIGN_IN)
-                            /*val intent = Intent(context, StartupActivity::class.java)
+                            val intent = Intent(context, StartupActivity::class.java)
                             intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
                             navigate(
                                 NavigationAction.NavigateIntent(
                                     intent,
                                     finishCurrentActivity = true
                                 ),
-                            )*/
+                            )
                         }
                     }
-
                     is NetworkResult.UnAuthenticated -> {
                         showErrorMessage(
                             context = this@GetProfileUiStateUseCase.context,
@@ -235,9 +233,7 @@ class GetProfileUiStateUseCase
                                 it.message ?: "Something went wrong!"
                             )
 
-
                     }
-
                     is NetworkResult.Loading -> {
                         showOrHideLoader(true)
                     }
@@ -250,14 +246,14 @@ class GetProfileUiStateUseCase
                                 context = this@GetProfileUiStateUseCase.context,
                                 it.data?.message ?: ""
                             )
-                            /*val intent = Intent(context, StartupActivity::class.java)
+                            val intent = Intent(context, StartupActivity::class.java)
                             intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
                             navigate(
                                 NavigationAction.NavigateIntent(
                                     intent,
                                     finishCurrentActivity = true
                                 ),
-                            )*/
+                            )
                         }
                     }
                     is NetworkResult.UnAuthenticated -> {

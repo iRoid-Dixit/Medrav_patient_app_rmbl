@@ -1,4 +1,3 @@
-
 package com.medrevpatient.mobile.app.ux.main.message
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,8 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
-import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
-
+import com.medrevpatient.mobile.app.ui.theme.White
 @ExperimentalMaterial3Api
 @Composable
 fun MessageScreen(
@@ -32,32 +30,25 @@ fun MessageScreen(
     val uiState = viewModel.uiState
     val context = LocalContext.current
     val settingUiState by uiState.messageUiDataFlow.collectAsStateWithLifecycle()
-
     AppScaffold(
-        containerColor = AppThemeColor,
+        containerColor = White,
         topAppBar = {
         },
         navBarData = null
     ) {
-
-
-        MessageScreenContent(uiState,uiState.event)
-
+        MessageScreenContent(uiState, uiState.event)
     }
-
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun MessageScreenContent(
     uiState: MessageUiState,
     event: (MessageUiEvent) -> Unit,
-
-    ) {
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppThemeColor)
+            .background(White)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
 

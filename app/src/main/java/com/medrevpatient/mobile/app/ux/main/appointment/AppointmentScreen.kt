@@ -44,7 +44,6 @@ import com.medrevpatient.mobile.app.ui.compose.common.AppointmentFilterTabs
 import com.medrevpatient.mobile.app.ui.compose.common.BottomNavItem
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
-import com.medrevpatient.mobile.app.ui.theme.AthensGray
 import com.medrevpatient.mobile.app.ui.theme.BlueChalk
 import com.medrevpatient.mobile.app.ui.theme.Martinique
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
@@ -245,7 +244,7 @@ fun AppointmentCard(
 
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(painter = painterResource(id = R.drawable.ic_camera), contentDescription = null)
+                Image(painter = painterResource(id = R.drawable.ic_video_icon), contentDescription = null)
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(painter = painterResource(id = R.drawable.ic_message), contentDescription = null)
                 Spacer(modifier = Modifier.weight(1f))

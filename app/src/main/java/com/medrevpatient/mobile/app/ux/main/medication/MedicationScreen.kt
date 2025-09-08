@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
+import com.medrevpatient.mobile.app.ui.theme.White
 
 @ExperimentalMaterial3Api
 @Composable
@@ -26,7 +27,7 @@ fun MedicationScreen(
 ) {
     val uiState = viewModel.uiState
     AppScaffold(
-        containerColor = AppThemeColor,
+        containerColor = White,
         topAppBar = {
 
         },
@@ -48,12 +49,9 @@ private fun MedicationScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Text(text = "Medication Screen")
-
     }
 }
-
 @Preview
 @Composable
 private fun Preview() {

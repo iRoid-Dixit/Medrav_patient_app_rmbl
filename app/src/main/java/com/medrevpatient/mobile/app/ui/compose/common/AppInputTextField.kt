@@ -66,6 +66,8 @@ fun AppInputTextField(
     isTrailingIconClickable: Boolean = false,
     isEnable: Boolean = true,
     isReadOnly: Boolean = false,
+    verifyText: String="Verify",
+    onVerifyButtonClick: () -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     @DrawableRes leadingIcon: Int? = null,
     isTitleVisible: Boolean = false,
@@ -101,6 +103,7 @@ fun AppInputTextField(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
+
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = nunito_sans_600,
                     fontSize = 14.sp,
@@ -113,6 +116,7 @@ fun AppInputTextField(
                 // .fillMaxWidth(),
                 interactionSource = interactionSource,
                 keyboardOptions = keyboardOptions,
+                readOnly=isReadOnly,
                 visualTransformation = visualTransformation,
                 enabled = isEnable,
                 singleLine = true
@@ -121,6 +125,7 @@ fun AppInputTextField(
                     value = value,
                     innerTextField = it,
                     singleLine = true,
+
                     enabled = isEnable,
                     isError = !errorMessage.isNullOrBlank(),
                     visualTransformation = visualTransformation,
@@ -158,8 +163,7 @@ fun AppInputTextField(
             }
             if (isVerifyButtonVisible) {
                 VerifyButton(
-                    text = "Verify",
-                    onClick = {},
+                    onClick = onVerifyButtonClick,
                     textColors=textColors,
                     verifyButtonBackgroundColor=verifyButtonBackgroundColor,
                     verifyButtonText = verifyButtonText,

@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ux.container.editProfile
+
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
@@ -68,13 +69,29 @@ import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.CameraGalleryDialog
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.PermissionDialog
 import com.medrevpatient.mobile.app.ui.compose.common.permission.PhotoPickerManager
+import com.medrevpatient.mobile.app.ui.theme.BarleyWhite
+import com.medrevpatient.mobile.app.ui.theme.Buttercup
+import com.medrevpatient.mobile.app.ui.theme.CornflowerLilac
+import com.medrevpatient.mobile.app.ui.theme.Green4C
+import com.medrevpatient.mobile.app.ui.theme.Mauve
+import com.medrevpatient.mobile.app.ui.theme.MintGreen
+import com.medrevpatient.mobile.app.ui.theme.PinkFF
+import com.medrevpatient.mobile.app.ui.theme.Pomegranate
 import com.medrevpatient.mobile.app.ui.theme.PurpleHeart
+import com.medrevpatient.mobile.app.ui.theme.RedB7
 import com.medrevpatient.mobile.app.ui.theme.RedE4
 import com.medrevpatient.mobile.app.ui.theme.RedF8
+import com.medrevpatient.mobile.app.ui.theme.Seance
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
+import com.medrevpatient.mobile.app.ui.theme.TickleMePink
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
+import com.towyservice.mobile.app.ui.common.sheetContent.EmailVerificationSheetContent
+import com.towyservice.mobile.app.ui.common.sheetContent.ModelSheetLauncher
+import com.towyservice.mobile.app.ui.common.sheetContent.ResetPasswordSheetContent
+
 @ExperimentalMaterial3Api
 @Composable
 fun EditProfileScreen(
@@ -103,6 +120,7 @@ fun EditProfileScreen(
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
+
 @Composable
 private fun EditProfileScreenContent(
     uiState: EditProfileUiState,
@@ -129,6 +147,7 @@ private fun EditProfileScreenContent(
         )
     }
 }
+
 @Composable
 fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfileUiEvent) -> Unit) {
     val context = LocalContext.current
@@ -231,6 +250,8 @@ fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfile
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileInputField(
     editProfileUiState: EditProfileDataState?,
@@ -238,6 +259,30 @@ fun EditProfileInputField(
 ) {
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDateMillis by rememberSaveable { mutableStateOf<Long?>(null) }
+    val bmiCategoryText = when (editProfileUiState?.bmiCategory) {
+        1 -> "Underweight"
+        2 -> "Normal"
+        3 -> "Overweight"
+        4 -> "Obese 1"
+        5 -> "Obese 2"
+        else -> "Obese 3"
+    }
+    val bmiCategoryBackGroundColors = when (editProfileUiState?.bmiCategory) {
+        1 -> PinkFF
+        2 -> Green4C
+        3 -> BarleyWhite
+        4 -> Pomegranate
+        5 -> RedB7
+        else -> Seance
+    }
+    val bmiCategoryTextColors = when (editProfileUiState?.bmiCategory) {
+        1 -> TickleMePink
+        2 -> MintGreen
+        3 -> Buttercup
+        4 -> CornflowerLilac
+        5 -> CornflowerLilac
+        else -> Mauve
+    }
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Text(
             text = "Personal Information",
@@ -288,13 +333,18 @@ fun EditProfileInputField(
             isLeadingIconVisible = true,
             isTitleVisible = true,
             title = "Email Address",
-            isVerifyButtonVisible = true,
+            isVerifyButtonVisible = editProfileUiState?.isEmailValid == true,
+            verifyButtonText = "Verify",
+            onVerifyButtonClick={
+                event(EditProfileUiEvent.VerifyEmailClick)
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 capitalization = KeyboardCapitalization.Words
             ),
-            header = "Enter Email"
+            header = "Enter Email",
+            errorMessage = editProfileUiState?.emailErrorMsg
         )
         DateSelectComponent(
             value = editProfileUiState?.dateSelected ?: "",
@@ -353,8 +403,12 @@ fun EditProfileInputField(
             value = editProfileUiState?.bmi ?: "",
             onValueChange = { event(EditProfileUiEvent.BmiValueChange(it)) },
             isLeadingIconVisible = true,
+            isReadOnly = true,
             isTitleVisible = true,
+            verifyButtonBackgroundColor = bmiCategoryBackGroundColors,
+            verifyButtonText = bmiCategoryText,
             title = "BMI",
+            textColors = bmiCategoryTextColors,
             isVerifyButtonVisible = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -433,14 +487,46 @@ fun EditProfileInputField(
             }
         }
     }
+    ModelSheetLauncher(
+        shouldShowSheet = editProfileUiState?.verifySheetVisible == true,
+        onDismissRequest = {
+            event(EditProfileUiEvent.VerifySheetVisibility(false))
+        }
+    ) { state, scope ->
+        EmailVerificationSheetContent(
+            countDown = editProfileUiState?.remainingTimeFlow ?: "00:00",
+            resendSendCodeClick = {
+                event(EditProfileUiEvent.ResendCode)
+            },
+            isResendVisible = editProfileUiState?.isResendVisible,
+            resendEmail = editProfileUiState?.email ?: "",
+            otpValue = editProfileUiState?.otpValue ?: "",
+            onOtpValueChange = {
+                event(EditProfileUiEvent.OtpValueChange(it))
+            },
+            editEmailClick = {
+                event(EditProfileUiEvent.EditEmailClick(sheetState = state, scope = scope))
+            },
+            verifyClick = {
+                event(EditProfileUiEvent.VerifyClick(sheetState = state, scope = scope))
+
+
+            },
+            otpErrorFlow = editProfileUiState?.otpErrorMsg,
+            showLoader = editProfileUiState?.showLoader == true,
+            isResendButtonLoading = editProfileUiState?.isResendButtonLoading == true
+        )
+    }
+
 }
+
 /**
  * Converts display date format (MMMM dd, yyyy) to millis for date picker
  */
 private fun convertDisplayDateToMillis(displayDate: String): Long? {
     return try {
         if (displayDate.isBlank()) return null
-        
+
         val inputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
         val date = inputFormat.parse(displayDate)
         date?.time

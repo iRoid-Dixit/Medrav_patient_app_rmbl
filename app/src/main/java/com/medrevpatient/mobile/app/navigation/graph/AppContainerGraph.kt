@@ -162,6 +162,9 @@ fun AppContainerGraph(
         Constants.AppScreen.APPOINTMENT_DETAILS_SCREEN -> {
             AppointmentViewDetailsRoute.routeDefinition.value
         }
+        Constants.AppScreen.CALCULATE_BMI_SCREEN -> {
+            BmiRoute.routeDefinition.value
+        }
 
         else -> {
             BuildLegacyRoute.routeDefinition.value
