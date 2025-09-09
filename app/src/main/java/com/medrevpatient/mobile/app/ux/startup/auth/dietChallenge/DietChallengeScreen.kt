@@ -289,7 +289,6 @@ data class FoodCategory(
     val name: String,
     val icon: Int
 )
-
 private val foodCategories = listOf(
     FoodCategory("Fiber with Low Absorption rate", R.drawable.ic_leaf),
     FoodCategory("Starchy with High Absorption rate", R.drawable.ic_leaf),

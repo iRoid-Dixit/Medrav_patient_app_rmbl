@@ -43,4 +43,5 @@ sealed interface WeightTrackerUiEvent {
     data class UpdateUnit(val unit: WeightUnit) : WeightTrackerUiEvent
     object SubmitWeight : WeightTrackerUiEvent
     object ScheduleCheckIn : WeightTrackerUiEvent
+    object OnBackClick : WeightTrackerUiEvent
 }

@@ -5,6 +5,7 @@ import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDat
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepositoryImpl
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiServices
+
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitorImpl
 import dagger.Module
@@ -36,6 +37,7 @@ class AppModule {
     fun provideAppPreferenceDataStore(application: Application): AppPreferenceDataStore {
         return AppPreferenceDataStore(application)
     }
+
 
 
 }

@@ -203,7 +203,7 @@ object AppUtils {
 
     fun showWaringMessage(context: Context, message: String) {
         CookieBar.build(context as Activity)
-            .setTitle("Legacy Cache App")
+            .setTitle("Medrev Patient App")
             .setMessage(message)
             .setBackgroundColor(R.color.warning_colors)
             .setCookiePosition(CookieBar.TOP)
@@ -212,7 +212,7 @@ object AppUtils {
 
     fun showErrorMessage(context: Context, message: String) {
         CookieBar.build(context as Activity)
-            .setTitle("Legacy Cache App")
+            .setTitle("Medrev Patient App")
             .setMessage(message)
             .setBackgroundColor(R.color.error_colors)
             .setCookiePosition(CookieBar.TOP)
@@ -221,7 +221,7 @@ object AppUtils {
 
     fun showSuccessMessage(context: Context, message: String) {
         CookieBar.build(context as Activity)
-            .setTitle("Legacy Cache App")
+            .setTitle("Medrev Patient App")
             .setMessage(message)
             .setBackgroundColor(R.color.success_colors)
             .setCookiePosition(CookieBar.TOP)

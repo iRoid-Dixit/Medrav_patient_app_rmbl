@@ -69,6 +69,7 @@ fun ChangePasswordScreen(
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
+
 @Composable
 private fun ChangePasswordScreenContent(
     uiState: ChangePasswordUiState,
@@ -81,7 +82,7 @@ private fun ChangePasswordScreenContent(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .imePadding()
-            .noRippleClickable{
+            .noRippleClickable {
                 keyboardController?.hide()
             }
 
@@ -100,6 +101,7 @@ private fun ChangePasswordScreenContent(
         )
     }
 }
+
 @Composable
 fun ChangePasswordInputField(
     changePasswordUiState: ChangePasswordDataState?,
@@ -110,7 +112,7 @@ fun ChangePasswordInputField(
     var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         AppInputTextField(
-            value = changePasswordUiState?.oldPassword?: "",
+            value = changePasswordUiState?.oldPassword ?: "",
             isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.OldPasswordValueChange(it)) },
             title = "Current Password",
@@ -126,7 +128,7 @@ fun ChangePasswordInputField(
             trailingIcon = if (oldPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         AppInputTextField(
-            value = changePasswordUiState?.newPassword?: "",
+            value = changePasswordUiState?.newPassword ?: "",
             isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.NewPasswordValueChange(it)) },
             title = "New Password",
@@ -137,12 +139,12 @@ fun ChangePasswordInputField(
             ),
             isTrailingIconVisible = true,
             onTogglePasswordVisibility = { newPasswordVisible = !newPasswordVisible },
-            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             header = "Enter your new password",
             trailingIcon = if (newPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
         AppInputTextField(
-            value = changePasswordUiState?.confirmPassword?: "",
+            value = changePasswordUiState?.confirmPassword ?: "",
             isTitleVisible = true,
             onValueChange = { event(ChangePasswordUiEvent.ConfirmPasswordValueChange(it)) },
             title = "Confirm Password",
@@ -153,12 +155,13 @@ fun ChangePasswordInputField(
             ),
             isTrailingIconVisible = true,
             onTogglePasswordVisibility = { confirmPasswordVisible = !confirmPasswordVisible },
-            visualTransformation = if (oldPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             header = "Confirm your password",
             trailingIcon = if (confirmPasswordVisible) R.drawable.ic_show_password else R.drawable.ic_hide_password,
         )
     }
 }
+
 @Preview
 @Composable
 fun AboutScreenContentPreview() {

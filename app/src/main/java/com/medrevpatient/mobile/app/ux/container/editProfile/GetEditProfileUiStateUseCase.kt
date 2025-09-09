@@ -185,15 +185,49 @@ class GetEditProfileUiStateUseCase
                             editProfileDataFlow.value.lastName,
                             "Please enter your lastName."
                         )
+                        val emailValidationResult =
+                            emailValidation(editProfileDataFlow.value.email, context = context)
+                        val heightValidationResult = heightValidation(
+                            editProfileDataFlow.value.height,
+                            context = context
+                        )
+                        val weightValidationResult = weightValidation(
+                            editProfileDataFlow.value.weight,
+                            context = context
+                        )
+                        // Check if email has been changed and needs verification
+                        val isEmailChanged = editProfileDataFlow.value.isEmailChanged
+                        val isEmailVerified = !isEmailChanged || editProfileDataFlow.value.verifySheetVisible == false
+                        
                         val hasError = listOf(
                             firstNameValidationResult,
                             lastNameValidationResult,
+                            emailValidationResult,
+                            heightValidationResult,
+                            weightValidationResult
                             ).any { !it.isSuccess }
+                            
+                        // If email is changed but not verified, show error and return
+                        if (isEmailChanged && !isEmailVerified) {
+                            editProfileDataFlow.update { state ->
+                                state.copy(
+                                    firstNameErrorMsg = firstNameValidationResult.errorMsg,
+                                    lastNameErrorMsg = lastNameValidationResult.errorMsg,
+                                    emailErrorMsg = "Please verify your email address before updating",
+                                    heightErrorMsg = heightValidationResult.errorMsg,
+                                    weightErrorMsg = weightValidationResult.errorMsg
+                                )
+                            }
+                            return
+                        }
                         // ���� **Update all error messages in one go**
                         editProfileDataFlow.update { state ->
                             state.copy(
                                 firstNameErrorMsg = firstNameValidationResult.errorMsg,
-                                lastNameErrorMsg = lastNameValidationResult.errorMsg
+                                lastNameErrorMsg = lastNameValidationResult.errorMsg,
+                                emailErrorMsg = emailValidationResult.errorMsg,
+                                heightErrorMsg = heightValidationResult.errorMsg,
+                                weightErrorMsg = weightValidationResult.errorMsg
                             )
                         }
                         if (hasError) return
@@ -236,17 +270,27 @@ class GetEditProfileUiStateUseCase
 
             // Medical Information events
             is EditProfileUiEvent.HeightValueChange -> {
+                val heightValidationResult = validationUseCase.heightValidation(
+                    height = event.height,
+                    context = context
+                )
                 editProfileDataFlow.update { state ->
                     state.copy(
                         height = event.height,
+                        heightErrorMsg = heightValidationResult.errorMsg
                     )
                 }
             }
 
             is EditProfileUiEvent.WeightValueChange -> {
+                val weightValidationResult = validationUseCase.weightValidation(
+                    weight = event.weight,
+                    context = context
+                )
                 editProfileDataFlow.update { state ->
                     state.copy(
                         weight = event.weight,
+                        weightErrorMsg = weightValidationResult.errorMsg
                     )
                 }
             }
@@ -288,6 +332,7 @@ class GetEditProfileUiStateUseCase
                             editProfileDataFlow.value.otpValue,
                             context = context
                         )
+
                         val hasErrorOtp = !otpValidationResult.isSuccess
                         editProfileDataFlow.update { state ->
                             state.copy(
@@ -297,8 +342,13 @@ class GetEditProfileUiStateUseCase
                         if (hasErrorOtp) {
                             return
                         }
+                        editProfileDataFlow.update { state ->
+                            state.copy(
+                                verifySheetVisible = false,
+                                isEmailChanged = false // Reset email changed flag after verification
+                            )
+                        }
                         callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
-
                     }
                 } else {
                     showWaringMessage(
@@ -339,7 +389,10 @@ class GetEditProfileUiStateUseCase
                 }.invokeOnCompletion {
                     editProfileDataFlow.update { state ->
                         state.copy(
-                            verifySheetVisible=false
+                            verifySheetVisible=false,
+                            isEmailChanged = true, // Mark email as changed again when editing
+                            otpValue = "", // Clear OTP value
+                            otpErrorMsg = null // Clear OTP error
                         )
 
                     }
@@ -501,8 +554,8 @@ class GetEditProfileUiStateUseCase
         }
         if (editProfileDataFlow.value.height.isNotBlank()) {
             val heightValue = editProfileDataFlow.value.height.trim()
-            // Validate that height is a valid decimal number
-            if (isValidDecimal(heightValue)) {
+            // Validate that height is a valid decimal number and greater than 0
+            if (isValidDecimal(heightValue) && heightValue.toDoubleOrNull()?.let { it > 0 } == true) {
                 map[Constants.EditProfile.HEIGHT] = heightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
             } else {
                 Log.e("TAG", "Invalid height value: $heightValue")
@@ -511,8 +564,8 @@ class GetEditProfileUiStateUseCase
 
         if (editProfileDataFlow.value.weight.isNotBlank()) {
             val weightValue = editProfileDataFlow.value.weight.trim()
-            // Validate that weight is a valid decimal number
-            if (isValidDecimal(weightValue)) {
+            // Validate that weight is a valid decimal number and greater than 0
+            if (isValidDecimal(weightValue) && weightValue.toDoubleOrNull()?.let { it > 0 } == true) {
                 map[Constants.EditProfile.WEIGHT] = weightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
             } else {
                 Log.e("TAG", "Invalid weight value: $weightValue")
@@ -592,6 +645,7 @@ class GetEditProfileUiStateUseCase
                 apiRepository.editProfileDetailsWithOutImage(map).collect {
                     when (it) {
                         is NetworkResult.Error -> {
+                            Log.d("TAG", "callEditProfileApi: ${it.message}")
                             showErrorMessage(
                                 context = context,
                                 it.message ?: "Something went wrong!"

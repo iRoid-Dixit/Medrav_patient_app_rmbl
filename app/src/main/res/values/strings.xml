@@ -206,7 +206,7 @@
     <string name="create_new_account">Create New Account</string>
     <string name="create_new_account_and_get_started_today">"Create new account and Get started Today. "</string>
 
-    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="forgot_your_password">Forgot password?</string>
     <string name="enter_email_id">Enter Email ID</string>
     <string name="please_enter_your_email_id_to_receive_an_otp_to_reset_your_password">Please enter your Email ID to receive an OTP to reset your password.</string>
     <string name="forgot_password">Forgot Password</string>

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.paging.PagingData
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
+import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.ux.main.profile.ProfileUiEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,8 @@ data class HomeUiState(
 data class HomeUiDataState(
     val showLoader: Boolean = false,
     val userName: String="",
-    val userProfile: String=""
-
+    val userProfile: String="",
+    val homeScreenData: HomeScreenData? = null
 )
 sealed interface HomeUiEvent {
 

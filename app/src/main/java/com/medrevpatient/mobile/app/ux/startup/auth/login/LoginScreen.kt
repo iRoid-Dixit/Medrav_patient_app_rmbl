@@ -181,6 +181,7 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
         ) {
             listOf(
                 stringResource(R.string.google) to R.drawable.ic_google,
+                stringResource(R.string.apple) to R.drawable.ic_apple,
                 stringResource(R.string.facebook) to R.drawable.ic_facebook
             ).forEach { (provider, icon) ->
                 Box(

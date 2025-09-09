@@ -40,6 +40,7 @@ activity-compose = "1.8.2"
 compose-bom = "2024.02.00"
 media3Session = "1.4.1"
 media3Exoplayer = "1.6.0"
+coil = "2.4.0"
 komposecountrycodepicker-version = "1.0.9"
 firebase-crashlytics-ktx = "19.3.0"
 firebase-analytics-ktx = "22.1.2"
@@ -62,6 +63,7 @@ androidyoutubeplayer-core = { module = "com.pierfrancescosoffritti.androidyoutub
 
 
 compose-charts = { module = "io.github.ehsannarmani:compose-charts", version.ref = "composeCharts" }
+coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socketIoClient" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }

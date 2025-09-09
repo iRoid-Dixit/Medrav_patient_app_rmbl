@@ -211,6 +211,8 @@ dependencies {
 
     //chart
     implementation (libs.compose.charts)
+    // Svg image load
+    implementation(libs.coil.svg)
 
 
 

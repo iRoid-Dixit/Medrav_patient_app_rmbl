@@ -29,7 +29,6 @@ import com.medrevpatient.mobile.app.model.domain.request.addMember.AddMemberRequ
 import com.medrevpatient.mobile.app.model.domain.request.addMember.GroupMemberRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
@@ -38,6 +37,8 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileRe
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
+import com.medrevpatient.mobile.app.model.domain.request.sideEffect.SideEffectAnswerRequest
+import com.medrevpatient.mobile.app.model.domain.request.dietChallenge.DietChallengeSubmitRequest
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.AddCommentReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ChangePasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ContactUsReq
@@ -61,10 +62,13 @@ import com.medrevpatient.mobile.app.model.domain.response.container.friendInfo.F
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.AddImageLegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
+import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
+import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
 import com.medrevpatient.mobile.app.model.domain.response.searchPeople.SearchPeopleResponse
+import com.medrevpatient.mobile.app.model.domain.response.sideEffect.SideEffectQuestion
 import com.medrevpatient.mobile.app.model.domain.response.subscription.SubscriptionResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.MemberResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.TribeResponse
@@ -324,6 +328,32 @@ class ApiRepositoryImpl @Inject constructor(
     override fun getHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenResponse>>> = flow {
         try {
             val response = apiServices.getHomeScreenData()
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    /** Patient Home Screen */
+    override fun getPatientHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenData>>> = flow {
+        try {
+            val response = apiServices.getPatientHomeScreenData()
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))
@@ -1561,6 +1591,101 @@ class ApiRepositoryImpl @Inject constructor(
     override fun calculateBmi(bmiRequest: BmiCalculateRequest): Flow<NetworkResult<ApiResponse<BmiCalculateResponse>>> = flow {
         try {
             val response = apiServices.calculateBmi(bmiRequest)
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun getSideEffectQuestions(): Flow<NetworkResult<ApiResponseNew<SideEffectQuestion>>> = flow {
+        try {
+            val response = apiServices.getSideEffectQuestions()
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun submitSideEffectAnswers(sideEffectAnswerRequest: SideEffectAnswerRequest): Flow<NetworkResult<ApiResponse<Any>>> = flow {
+        try {
+            val response = apiServices.submitSideEffectAnswers(sideEffectAnswerRequest)
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun getDietChallenge(): Flow<NetworkResult<ApiResponse<DietChallengeResponse>>> = flow {
+        try {
+            val response = apiServices.getDietChallenge()
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+    override fun submitDietChallengeAnswer(request: DietChallengeSubmitRequest): Flow<NetworkResult<ApiResponse<DietChallengeResponse>>> = flow {
+        try {
+            val response = apiServices.submitDietChallengeAnswer(request)
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))

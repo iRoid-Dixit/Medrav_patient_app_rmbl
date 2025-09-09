@@ -70,7 +70,8 @@ fun BmiScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(BmiUiEvent.OnBackClick) },
+                isBackVisible = true,
                 titleText = "BMI & Health Check",
 
                 )

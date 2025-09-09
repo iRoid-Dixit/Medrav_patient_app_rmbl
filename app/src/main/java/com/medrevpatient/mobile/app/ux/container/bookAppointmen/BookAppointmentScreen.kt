@@ -70,7 +70,7 @@ fun BookAppointmentScreen(
         topAppBar = {
             TopBarComponent(
                 isBackVisible = true,
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(BookAppointmentUiEvent.ConfirmBooking) },
                 titleText = "Book Appointment",
 
                 )

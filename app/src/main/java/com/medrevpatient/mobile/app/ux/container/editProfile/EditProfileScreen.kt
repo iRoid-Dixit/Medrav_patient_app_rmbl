@@ -365,7 +365,7 @@ fun EditProfileInputField(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // First Name
+            // Height
             Column(modifier = Modifier.weight(1f)) {
                 AppInputTextField(
                     value = editProfileUiState?.height ?: "",
@@ -374,15 +374,15 @@ fun EditProfileInputField(
                     isTitleVisible = true,
                     isLeadingIconVisible = true,
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Words
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
                     ),
-                    header = "Enter your height"
+                    header = "Enter your height",
+                    errorMessage = editProfileUiState?.heightErrorMsg
                 )
             }
 
-            // Last Name
+            // Weight
             Column(modifier = Modifier.weight(1f)) {
                 AppInputTextField(
                     value = editProfileUiState?.weight ?: "",
@@ -391,11 +391,11 @@ fun EditProfileInputField(
                     isTitleVisible = true,
                     title = "Weight",
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Words
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
                     ),
-                    header = "Enter your weight"
+                    header = "Enter your weight",
+                    errorMessage = editProfileUiState?.weightErrorMsg
                 )
             }
         }
@@ -509,15 +509,12 @@ fun EditProfileInputField(
             },
             verifyClick = {
                 event(EditProfileUiEvent.VerifyClick(sheetState = state, scope = scope))
-
-
             },
             otpErrorFlow = editProfileUiState?.otpErrorMsg,
             showLoader = editProfileUiState?.showLoader == true,
             isResendButtonLoading = editProfileUiState?.isResendButtonLoading == true
         )
     }
-
 }
 
 /**

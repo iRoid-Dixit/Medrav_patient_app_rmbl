@@ -24,7 +24,7 @@ class GetSideEffectQuestionUiStateUseCase
     )
     private val isOffline = MutableStateFlow(false)
     private lateinit var context: Context
-    
+
     operator fun invoke(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
@@ -38,7 +38,7 @@ class GetSideEffectQuestionUiStateUseCase
                 isOffline.value = it
             }
         }
-        
+
         return SideEffectQuestionUiState(
             sideEffectQuestionDataFlow = dietChallengeDataFlow,
             event = { dietChallengeUiEvent ->
@@ -60,7 +60,7 @@ class GetSideEffectQuestionUiStateUseCase
             is SideEffectQuestionUiEvent.GetContext -> {
                 this.context = event.context
             }
-            
+
             is SideEffectQuestionUiEvent.UpdateAnswer -> {
                 val currentData = dietChallengeDataFlow.value
                 val updatedAnswers = currentData.selectedAnswers.toMutableList().apply {
@@ -68,7 +68,7 @@ class GetSideEffectQuestionUiStateUseCase
                 }
                 dietChallengeDataFlow.value = currentData.copy(selectedAnswers = updatedAnswers)
             }
-            
+
             is SideEffectQuestionUiEvent.SubmitAssessment -> {
                 navigate(Navigate(WeightTrackerRoute.createRoute()))
 

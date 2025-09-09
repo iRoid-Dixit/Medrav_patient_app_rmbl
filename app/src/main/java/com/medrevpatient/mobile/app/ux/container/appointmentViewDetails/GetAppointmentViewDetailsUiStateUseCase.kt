@@ -69,6 +69,10 @@ class GetAppointmentViewDetailsUiStateUseCase
             is AppointmentViewDetailsUiEvent.ContactSupport -> {
                 // Handle contact support
             }
+
+            AppointmentViewDetailsUiEvent.OnBackClick -> {
+                navigate(NavigationAction.PopIntent)
+            }
         }
     }
 }

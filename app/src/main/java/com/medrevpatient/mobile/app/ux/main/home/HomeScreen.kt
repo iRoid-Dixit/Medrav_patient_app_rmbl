@@ -1,5 +1,4 @@
 package com.medrevpatient.mobile.app.ux.main.home
-
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -65,8 +64,6 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
-import com.medrevpatient.mobile.app.ux.main.profile.ProfileUiEvent
-
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
@@ -81,6 +78,7 @@ fun HomeScreen(
     }
     val homeDetailsData by uiState.homeUiDataFlow.collectAsStateWithLifecycle()
     Log.d("TAG", "HomeScreen: ${homeDetailsData?.userName}")
+    Log.d("HomeLoader", "HomeScreen showLoader: ${homeDetailsData?.showLoader}")
     AppScaffold(
         containerColor = White,
         topAppBar = {

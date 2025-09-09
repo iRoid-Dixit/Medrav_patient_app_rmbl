@@ -8,7 +8,6 @@ import com.medrevpatient.mobile.app.model.domain.request.addMember.AddMemberRequ
 import com.medrevpatient.mobile.app.model.domain.request.addMember.GroupMemberRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
-import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
@@ -17,6 +16,8 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileRe
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
 import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
+import com.medrevpatient.mobile.app.model.domain.request.sideEffect.SideEffectAnswerRequest
+import com.medrevpatient.mobile.app.model.domain.request.dietChallenge.DietChallengeSubmitRequest
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.AddCommentReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ChangePasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.mainReq.ContactUsReq
@@ -40,10 +41,14 @@ import com.medrevpatient.mobile.app.model.domain.response.container.friendInfo.F
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.AddImageLegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
+import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
+
+import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
 import com.medrevpatient.mobile.app.model.domain.response.searchPeople.SearchPeopleResponse
+import com.medrevpatient.mobile.app.model.domain.response.sideEffect.SideEffectQuestion
 import com.medrevpatient.mobile.app.model.domain.response.subscription.SubscriptionResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.MemberResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.TribeResponse
@@ -237,6 +242,10 @@ interface ApiServices {
     //home screen
     @GET(EndPoints.Main.HOME)
     suspend fun getHomeScreenData(): Response<ApiResponse<HomeScreenResponse>>
+
+    //patient home screen
+    @GET(EndPoints.Main.HOME_SCREEN)
+    suspend fun getPatientHomeScreenData(): Response<ApiResponse<HomeScreenData>>
 
     @GET(EndPoints.Container.GET_NOTIFICATION)
     suspend fun getNotification(
@@ -467,5 +476,21 @@ interface ApiServices {
     suspend fun calculateBmi(
         @Body bmiRequest: BmiCalculateRequest
     ): Response<ApiResponse<BmiCalculateResponse>>
+
+    @GET(EndPoints.Auth.SIDE_EFFECT_QUESTIONS)
+    suspend fun getSideEffectQuestions(): Response<ApiResponseNew<SideEffectQuestion>>
+
+    @POST(EndPoints.Auth.SIDE_EFFECT_SUBMIT)
+    suspend fun submitSideEffectAnswers(
+        @Body sideEffectAnswerRequest: SideEffectAnswerRequest
+    ): Response<ApiResponse<Any>>
+
+    @GET(EndPoints.Auth.DIET_CHALLENGE_GET)
+    suspend fun getDietChallenge(): Response<ApiResponse<DietChallengeResponse>>
+
+    @POST(EndPoints.Auth.DIET_CHALLENGE_SUBMIT)
+    suspend fun submitDietChallengeAnswer(
+        @Body request: DietChallengeSubmitRequest
+    ): Response<ApiResponse<DietChallengeResponse>>
 
 }

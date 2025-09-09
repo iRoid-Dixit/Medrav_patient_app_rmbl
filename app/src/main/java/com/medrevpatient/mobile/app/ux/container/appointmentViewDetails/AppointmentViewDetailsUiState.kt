@@ -51,4 +51,5 @@ sealed interface AppointmentViewDetailsUiEvent {
     object RescheduleAppointment : AppointmentViewDetailsUiEvent
     object CancelAppointment : AppointmentViewDetailsUiEvent
     object ContactSupport : AppointmentViewDetailsUiEvent
+    object OnBackClick : AppointmentViewDetailsUiEvent
 }

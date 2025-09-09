@@ -14,9 +14,11 @@ import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
+import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.report.ReportUserPostReq
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
+
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
@@ -27,6 +29,7 @@ import com.medrevpatient.mobile.app.ux.imageDisplay.ImageDisplayActivity
 import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
 import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,7 +39,7 @@ class GetHomeUiStateUseCase
 @Inject constructor(
     private val appPreferenceDataStore: AppPreferenceDataStore,
     private val apiRepository: ApiRepository,
-    ) {
+) {
     private val homeUiDataFlow = MutableStateFlow(HomeUiDataState())
     private lateinit var context: Context
     operator fun invoke(
@@ -44,16 +47,19 @@ class GetHomeUiStateUseCase
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): HomeUiState {
-        coroutineScope.launch{
-            homeUiDataFlow.update {state->
+        /*getHomePatientData(
+            coroutineScope = coroutineScope,
+            navigate = navigate
+        )*/
+        coroutineScope.launch {
+            homeUiDataFlow.update { state ->
                 state.copy(
                     userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
-                    userProfile=appPreferenceDataStore.getUserData()?.profileImage?:""
+                    userProfile = appPreferenceDataStore.getUserData()?.profileImage ?: ""
                 )
-
             }
         }
-        coroutineScope.launch{
+        coroutineScope.launch {
             Log.d("TAG", "lastName: ${appPreferenceDataStore.getUserData()?.firstName},${appPreferenceDataStore.getUserData()?.lastName}")
         }
         return HomeUiState(
@@ -64,10 +70,11 @@ class GetHomeUiStateUseCase
                     event = homeUiEvent,
                     navigate = navigate,
 
-                )
+                    )
             }
         )
     }
+
     private fun homeUiEvent(
         coroutineScope: CoroutineScope,
         event: HomeUiEvent,
@@ -77,30 +84,25 @@ class GetHomeUiStateUseCase
             is HomeUiEvent.GetContext -> {
                 this.context = event.context
             }
-
-            HomeUiEvent.NotificationClick ->{
+            HomeUiEvent.NotificationClick -> {
                 navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.NOTIFICATION_SCREEN)
             }
-
             HomeUiEvent.DailyDietClick -> {
                 navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.DAILY_DIET_CHALLENGE_SCREEN)
             }
             HomeUiEvent.SideEffectClick -> {
                 navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.SIDE_EFFECT_CHECK_SCREEN)
             }
-
             HomeUiEvent.CalculateBMIClick -> {
                 navigateToContainerScreens(context, navigate, screenName = Constants.AppScreen.CALCULATE_BMI_SCREEN)
             }
-
             HomeUiEvent.GetDataFromPref -> {
-                coroutineScope.launch{
-                    homeUiDataFlow.update {state->
+                coroutineScope.launch {
+                    homeUiDataFlow.update { state ->
                         state.copy(
                             userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
-                            userProfile=appPreferenceDataStore.getUserData()?.profileImage?:""
+                            userProfile = appPreferenceDataStore.getUserData()?.profileImage ?: ""
                         )
-
                     }
                 }
             }
@@ -116,4 +118,49 @@ class GetHomeUiStateUseCase
         intent.putExtra(Constants.IS_COME_FOR, screenName)
         navigate(NavigateIntent(intent = intent, finishCurrentActivity = false))
     }
+
+    private fun getHomePatientData(
+        coroutineScope: CoroutineScope,
+        navigate: (NavigationAction) -> Unit
+    ) {
+        coroutineScope.launch {
+            try {
+                apiRepository.getPatientHomeScreenData().collect {
+                    when (it) {
+                        is NetworkResult.Error -> {
+                            showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                            showOrHideLoader(false)
+                        }
+
+                        is NetworkResult.Loading -> {
+                            showOrHideLoader(true)
+                        }
+
+                        is NetworkResult.Success -> {
+                            showOrHideLoader(false)
+                            showSuccessMessage(context = context, it.data?.message ?: "Data loaded successfully")
+                        }
+
+                        is NetworkResult.UnAuthenticated -> {
+                            showOrHideLoader(false)
+                            showErrorMessage(context = context, it.message ?: "Authentication failed!")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle any unexpected errors
+                showOrHideLoader(false)
+                showErrorMessage(context = context, "An unexpected error occurred: ${e.message}")
+            }
+        }
+    }
+
+    private fun showOrHideLoader(showLoader: Boolean) {
+        homeUiDataFlow.update { state ->
+            state.copy(
+                showLoader = showLoader
+            )
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.medrevpatient.mobile.app.ux.main.message
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,12 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
+import com.medrevpatient.mobile.app.ui.theme.Black
 import com.medrevpatient.mobile.app.ui.theme.White
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+
 @ExperimentalMaterial3Api
 @Composable
 fun MessageScreen(
@@ -52,15 +57,17 @@ private fun MessageScreenContent(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
 
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-
-        Text(text = "Message Screen")
-
+        Text(
+            text = "Under Development",
+            color = Black,
+            fontSize = 20.sp,
+            fontFamily = nunito_sans_600
+        )
     }
 }
-
-
 @Preview
 @Composable
 private fun Preview() {

@@ -75,7 +75,7 @@ class GetWeightTrackerUiStateUseCase
             is WeightTrackerUiEvent.SubmitWeight -> {
                 val intent = Intent(context, MainActivity::class.java)
                 navigate(
-                    NavigationAction.NavigateIntent(
+                    NavigateIntent(
                         intent = intent,
                         finishCurrentActivity = true
                     )
@@ -90,6 +90,10 @@ class GetWeightTrackerUiStateUseCase
             }
             is WeightTrackerUiEvent.ScheduleCheckIn -> {
                 // Handle scheduling check-in
+            }
+
+            WeightTrackerUiEvent.OnBackClick -> {
+                navigate(Pop())
             }
         }
     }

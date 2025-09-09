@@ -19,12 +19,17 @@ object EndPoints {
         const val FORCE_UPDATE = "auth/version"
         const val DELETE_LEGACY_POST = "legacy/delete-post"
         const val BMI_CALCULATE = "api/patient/bmi/calculate"
+        const val SIDE_EFFECT_QUESTIONS = "api/patient/side-effects/questions"
+        const val SIDE_EFFECT_SUBMIT = "api/patient/side-effects/submit"
+        const val DIET_CHALLENGE_GET = "api/patient/diet-challenges/get-challenge"
+        const val DIET_CHALLENGE_SUBMIT = "api/patient/diet-challenges/submit-answer"
     }
     object Notification{
         const val FCM_TOKEN = "fcmtoken/create-fcmToken"
     }
     object Main {
         const val HOME: String = "home"
+        const val HOME_SCREEN: String = "api/home-screen"
         const val MARK_AS_PLAYED: String = "mark-as-played"
         const val NOTIFICATION_OFF_ON: String = "user/notification-on-off"
     }

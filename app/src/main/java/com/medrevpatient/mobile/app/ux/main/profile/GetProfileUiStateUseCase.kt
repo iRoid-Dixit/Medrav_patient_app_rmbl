@@ -6,7 +6,6 @@ import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
-import com.medrevpatient.mobile.app.model.domain.request.authReq.LogoutReq
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
@@ -35,12 +34,12 @@ class GetProfileUiStateUseCase
     ): ProfileUiState {
         coroutineScope.launch {
             profileUiDataFlow.update { state ->
-                    state.copy(
-                        userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
-                        userProfile = appPreferenceDataStore.getUserData()?.profileImage ?: "",
-                        userEmail = appPreferenceDataStore.getUserData()?.email ?: ""
-                    )
-                }
+                state.copy(
+                    userName = "${appPreferenceDataStore.getUserData()?.firstName ?: ""} ${appPreferenceDataStore.getUserData()?.lastName ?: ""}".trim(),
+                    userProfile = appPreferenceDataStore.getUserData()?.profileImage ?: "",
+                    userEmail = appPreferenceDataStore.getUserData()?.email ?: ""
+                )
+            }
         }
         return ProfileUiState(
             messageUiDataFlow = profileUiDataFlow,
@@ -55,7 +54,6 @@ class GetProfileUiStateUseCase
             }
         )
     }
-
     private fun profileUiEvent(
         event: ProfileUiEvent,
         context: Context,
@@ -70,7 +68,6 @@ class GetProfileUiStateUseCase
                     screenName = Constants.AppScreen.EDIT_PROFILE_SCREEN
                 )
             }
-
             ProfileUiEvent.ChangePassword -> {
                 navigateToContainerScreens(
                     context = context,
@@ -94,11 +91,9 @@ class GetProfileUiStateUseCase
                     )
                 }
             }
-
             ProfileUiEvent.CustomerService -> {
-
+                AppUtils.showWaringMessage(this.context, "Under Development")
             }
-
             is ProfileUiEvent.LogoutSheetVisibility -> {
                 profileUiDataFlow.update { state ->
                     state.copy(
@@ -106,14 +101,12 @@ class GetProfileUiStateUseCase
                     )
                 }
             }
-
             ProfileUiEvent.LogoutAPICall -> {
                 logout(
                     coroutineScope = coroutineScope,
                     navigate = navigate
                 )
             }
-
             is ProfileUiEvent.DeleteSheetVisibility -> {
                 profileUiDataFlow.update { state ->
                     state.copy(
@@ -121,7 +114,6 @@ class GetProfileUiStateUseCase
                     )
                 }
             }
-
             ProfileUiEvent.DeleteAPICall -> {
                 deleteAccount(
                     coroutineScope = coroutineScope,
@@ -132,10 +124,9 @@ class GetProfileUiStateUseCase
             is ProfileUiEvent.GetContext -> {
                 this.context = event.context
             }
-
-            ProfileUiEvent.GetDataFromPref ->{
+            ProfileUiEvent.GetDataFromPref -> {
                 coroutineScope.launch {
-                    if (appPreferenceDataStore.isProfilePicUpdated()){
+                    if (appPreferenceDataStore.isProfilePicUpdated()) {
                         appPreferenceDataStore.setIsProfilePicUpdated(false)
                         profileUiDataFlow.update { state ->
                             state.copy(
@@ -150,6 +141,7 @@ class GetProfileUiStateUseCase
             }
         }
     }
+
     private fun logout(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -193,6 +185,7 @@ class GetProfileUiStateUseCase
                             )
                         }
                     }
+
                     is NetworkResult.UnAuthenticated -> {
                         showErrorMessage(
                             context = this@GetProfileUiStateUseCase.context,
@@ -205,6 +198,7 @@ class GetProfileUiStateUseCase
 
         }
     }
+
     private fun showOrHideLoader(showLoader: Boolean) {
         profileUiDataFlow.update { state ->
             state.copy(
@@ -212,6 +206,7 @@ class GetProfileUiStateUseCase
             )
         }
     }
+
     private fun showOrHideLogoutButtonLoader(isLoading: Boolean) {
         profileUiDataFlow.update { state ->
             state.copy(
@@ -219,6 +214,7 @@ class GetProfileUiStateUseCase
             )
         }
     }
+
     private fun deleteAccount(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -228,19 +224,21 @@ class GetProfileUiStateUseCase
                 when (it) {
                     is NetworkResult.Error -> {
                         showOrHideLoader(false)
-                            showErrorMessage(
-                                context = this@GetProfileUiStateUseCase.context,
-                                it.message ?: "Something went wrong!"
-                            )
+                        showErrorMessage(
+                            context = this@GetProfileUiStateUseCase.context,
+                            it.message ?: "Something went wrong!"
+                        )
 
                     }
+
                     is NetworkResult.Loading -> {
                         showOrHideLoader(true)
                     }
+
                     is NetworkResult.Success -> {
                         showOrHideLoader(false)
                         coroutineScope.launch {
-                           delay(1000)
+                            delay(1000)
                             appPreferenceDataStore.clearAll()
                             showSuccessMessage(
                                 context = this@GetProfileUiStateUseCase.context,
@@ -256,6 +254,7 @@ class GetProfileUiStateUseCase
                             )
                         }
                     }
+
                     is NetworkResult.UnAuthenticated -> {
                         showErrorMessage(
                             context = this@GetProfileUiStateUseCase.context,
@@ -268,6 +267,7 @@ class GetProfileUiStateUseCase
 
         }
     }
+
     private fun navigateToContainerScreens(
         context: Context,
         navigate: (NavigationAction) -> Unit,
@@ -277,6 +277,7 @@ class GetProfileUiStateUseCase
         intent.putExtra(Constants.IS_COME_FOR, screenName)
         navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = false))
     }
+
     private fun navigateToStartupScreens(
         context: Context,
         navigate: (NavigationAction) -> Unit,

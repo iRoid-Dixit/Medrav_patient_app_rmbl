@@ -34,5 +34,6 @@ sealed interface BmiUiEvent {
     data class WeightValueChange(val weight: String) : BmiUiEvent
     data class GetContext(val context : Context) : BmiUiEvent
     data object CalculateBmi : BmiUiEvent
+    data object OnBackClick : BmiUiEvent
 
 }

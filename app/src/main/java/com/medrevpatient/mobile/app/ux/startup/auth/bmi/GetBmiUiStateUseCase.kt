@@ -131,6 +131,10 @@ class GetBmiUiStateUseCase
             is BmiUiEvent.GetContext -> {
                 this.context = event.context
             }
+
+            BmiUiEvent.OnBackClick -> {
+                navigate(PopIntent)
+            }
         }
     }
     @OptIn(ExperimentalMaterial3Api::class)

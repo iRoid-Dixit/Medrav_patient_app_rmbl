@@ -1,7 +1,8 @@
 package com.medrevpatient.mobile.app.model.domain.response.auth
 
-
+import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import com.medrevpatient.mobile.app.util.gson.DateOrEpochSecondsAdapter
 import java.io.Serializable
 
 data class UserAuthResponse(
@@ -11,12 +12,12 @@ data class UserAuthResponse(
     @SerializedName("lastName") val lastName: String? = null,
     @SerializedName("role") val role: Int? = null,
     @SerializedName("phoneNumber") val phoneNumber: String? = null,
-    @SerializedName("dateOfBirth") val dateOfBirth: Long? = null,
+    @SerializedName("dateOfBirth") @JsonAdapter(DateOrEpochSecondsAdapter::class) val dateOfBirth: Long? = null,
     @SerializedName("gender") val gender: String? = null,
     @SerializedName("profileImage") val profileImage: String? = null,
     @SerializedName("isEmailVerified") val isEmailVerified: Boolean? = false,
-    @SerializedName("createdAt") val createdAt: Long? = null,
-    @SerializedName("passwordChangedAt") val passwordChangedAt: Long? = null,
+    @SerializedName("createdAt") @JsonAdapter(DateOrEpochSecondsAdapter::class) val createdAt: Long? = null,
+    @SerializedName("passwordChangedAt") @JsonAdapter(DateOrEpochSecondsAdapter::class) val passwordChangedAt: Long? = null,
     @SerializedName("street") val street: String? = null,
     @SerializedName("city") val city: String? = null,
     @SerializedName("state") val state: String? = null,

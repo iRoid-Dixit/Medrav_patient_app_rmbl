@@ -49,7 +49,7 @@ fun AppointmentViewDetailsScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(AppointmentViewDetailsUiEvent.OnBackClick) },
                 isBackVisible = true,
                 titleText = "Appointment Details",
 

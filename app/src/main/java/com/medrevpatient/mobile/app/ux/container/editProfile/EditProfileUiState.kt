@@ -35,7 +35,9 @@ data class EditProfileDataState(
     val showPermissionDialog:Boolean=false,
     // Medical Information fields
     val height: String = "",
+    val heightErrorMsg: String? = null,
     val weight: String = "",
+    val weightErrorMsg: String? = null,
     val bmi: String = "",
     val bmiStatus: String = "Overweight",
     val verifySheetVisible:Boolean=false,

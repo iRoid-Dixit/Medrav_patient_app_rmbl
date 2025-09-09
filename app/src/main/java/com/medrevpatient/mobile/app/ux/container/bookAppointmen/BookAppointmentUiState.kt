@@ -36,4 +36,5 @@ sealed interface BookAppointmentUiEvent {
     data class BookAppointmentSheetVisibility(val isVisible: Boolean) : BookAppointmentUiEvent
     data class ToggleTimePeriodDropdown(val isExpanded: Boolean) : BookAppointmentUiEvent
     object ConfirmBooking : BookAppointmentUiEvent
+
 }

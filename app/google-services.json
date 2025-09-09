@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "620010014992",
-    "project_id": "medrev-patient-adc56",
-    "storage_bucket": "griot-legacy-adc56.firebasestorage.app"
+    "project_number": "955042537112",
+    "project_id": "medrev-patient-app",
+    "storage_bucket": "medrev-patient-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:620010014992:android:f3df65dca58e5e6f2bbd95",
+        "mobilesdk_app_id": "1:955042537112:android:c28a929478523174713aed",
         "android_client_info": {
           "package_name": "com.medrevpatient.mobile.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC4sfU-NOZaoaj3facIOD3ZDsckhVDiMRw"
+          "current_key": "AIzaSyCfstuErrSG7P8BoDIGtln6tfZ-yuWmuHY"
         }
       ],
       "services": {

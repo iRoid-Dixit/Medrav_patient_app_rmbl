@@ -70,7 +70,8 @@ fun WeightTrackerScreen(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(WeightTrackerUiEvent.OnBackClick) },
+                isBackVisible = true,
                 titleText = "Weight Tracker",
             )
         },

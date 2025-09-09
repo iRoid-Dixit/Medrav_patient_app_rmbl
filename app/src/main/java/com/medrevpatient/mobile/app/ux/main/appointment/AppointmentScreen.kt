@@ -45,7 +45,11 @@ import com.medrevpatient.mobile.app.ui.compose.common.BottomNavItem
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.BlueChalk
+import com.medrevpatient.mobile.app.ui.theme.GrayBD
 import com.medrevpatient.mobile.app.ui.theme.Martinique
+import com.medrevpatient.mobile.app.ui.theme.RedF7
+import com.medrevpatient.mobile.app.ui.theme.RedOrange
+import com.medrevpatient.mobile.app.ui.theme.Silver
 import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
@@ -291,13 +295,13 @@ private fun StatusTag(
 ) {
     val backgroundColor = when (status) {
         AppointmentStatus.UPCOMING -> BlueChalk
-        AppointmentStatus.PAST -> BlueChalk
-        AppointmentStatus.CANCELED -> BlueChalk
+        AppointmentStatus.PAST -> Silver.copy(alpha = 0.1f)
+        AppointmentStatus.CANCELED -> RedOrange.copy(alpha = 0.1f)
     }
     val textColors = when (status) {
         AppointmentStatus.UPCOMING -> AppThemeColor
-        AppointmentStatus.PAST -> AppThemeColor
-        AppointmentStatus.CANCELED -> AppThemeColor
+        AppointmentStatus.PAST -> GrayBD
+        AppointmentStatus.CANCELED -> RedF7
     }
     Box(
         modifier = Modifier
@@ -308,7 +312,7 @@ private fun StatusTag(
             .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         Text(
-            text = status.name,
+            text = status.name.lowercase().replaceFirstChar { it.uppercase() },
             fontSize = 12.sp,
             fontFamily = nunito_sans_600,
             color = textColors,
