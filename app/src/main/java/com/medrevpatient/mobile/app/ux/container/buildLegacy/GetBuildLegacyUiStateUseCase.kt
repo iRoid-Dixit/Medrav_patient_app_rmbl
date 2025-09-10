@@ -23,7 +23,7 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
 import com.medrevpatient.mobile.app.ux.main.videoLoad.ImageVideoPlayerActivity
@@ -424,7 +424,7 @@ class GetBuildLegacyUiStateUseCase
                         crateLegacyPost(coroutineScope = coroutineScope, navigation = navigate)
                     }
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         this.context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )

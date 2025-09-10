@@ -26,6 +26,7 @@ sealed interface ProfileUiEvent {
     object ChangePassword : ProfileUiEvent
     object CustomerService : ProfileUiEvent
     object DeleteAccount : ProfileUiEvent
+    object DevelopedClick : ProfileUiEvent
     object Logout : ProfileUiEvent
     object LogoutAPICall : ProfileUiEvent
     object DeleteAPICall : ProfileUiEvent

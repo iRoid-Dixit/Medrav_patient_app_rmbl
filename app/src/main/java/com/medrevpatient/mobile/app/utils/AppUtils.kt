@@ -201,7 +201,7 @@ object AppUtils {
      */
 
 
-    fun showWaringMessage(context: Context, message: String) {
+    fun showWarningMessage(context: Context, message: String) {
         CookieBar.build(context as Activity)
             .setTitle("Medrev Patient App")
             .setMessage(message)

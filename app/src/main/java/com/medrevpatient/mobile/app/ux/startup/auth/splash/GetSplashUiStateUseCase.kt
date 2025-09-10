@@ -14,8 +14,10 @@ import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateRequest
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
+import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
 import com.medrevpatient.mobile.app.ux.main.MainActivity
@@ -94,7 +96,7 @@ class GetSplashUiStateUseCase
                     }
                 }
             } else {
-                showWaringMessage(
+               AppUtils.showWarningMessage(
                     this@GetSplashUiStateUseCase.context,
                     "Please check your internet connection!"
                 )

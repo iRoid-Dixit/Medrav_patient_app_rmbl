@@ -78,6 +78,7 @@ object Constants {
     object OTPType {
         const val FORGET_PASSWORD = 2
         const val EMAIL_VERIFICATION = 1
+        const val EMAIL_UPDATE = 4
     }
 
     object MessageType {

@@ -18,7 +18,7 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.PopResultKeyValue
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -148,7 +148,7 @@ class GetAddPeopleUiStateUseCase
                             )
                         }
                     } else {
-                        showWaringMessage(
+                        showWarningMessage(
                             context = this.context,
                             message = context.getString(R.string.please_select_at_least_one_member)
                         )
@@ -231,7 +231,7 @@ class GetAddPeopleUiStateUseCase
 
                     is NetworkResult.UnAuthenticated -> {
                         showOrHideLoader(false)
-                        showWaringMessage(
+                        showWarningMessage(
                             context = context,
                             message = it.message.toString()
                         )

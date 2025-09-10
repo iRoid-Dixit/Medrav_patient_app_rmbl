@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -144,9 +149,15 @@ private fun QuestionCard(
                 fontSize = 16.sp,
                 fontFamily = nunito_sans_600,
                 color = Ebony,
+                style = TextStyle(
+                    textAlign = TextAlign.Start,
+                    textIndent = TextIndent(
+                        firstLine = 0.sp,
+                        restLine = 18.sp
+                    )
+                ),
                 modifier = Modifier.fillMaxWidth()
             )
-
             Spacer(modifier = Modifier.height(16.dp))
             question.options.forEachIndexed { index, option ->
                 OptionRow(

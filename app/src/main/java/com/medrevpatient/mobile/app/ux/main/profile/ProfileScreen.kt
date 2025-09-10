@@ -39,6 +39,7 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -105,6 +106,9 @@ private fun ProfileScreenContent(
         AccountDetailsSection(event)
         Spacer(modifier = Modifier.height(30.dp))
         Text(
+            modifier = Modifier.noRippleClickable {
+                event(ProfileUiEvent.DevelopedClick)
+            },
             text = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
@@ -182,6 +186,7 @@ private fun ProfileHeader(profileUiState: ProfileUiDataState?) {
         AsyncImage(
             model = profileUiState?.userProfile,
             placeholder = painterResource(id = R.drawable.ic_place_holder),
+            contentScale = ContentScale.Crop,
             error = painterResource(id = R.drawable.ic_place_holder),
             contentDescription = stringResource(R.string.profile_picture),
             modifier = Modifier

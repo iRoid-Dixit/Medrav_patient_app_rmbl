@@ -6,7 +6,7 @@ import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
 import com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge.DietChallengeRoute

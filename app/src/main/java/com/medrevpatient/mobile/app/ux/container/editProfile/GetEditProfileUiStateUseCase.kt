@@ -10,14 +10,15 @@ import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.domain.validation.ValidationResult
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
-import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResendOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
+
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +68,7 @@ class GetEditProfileUiStateUseCase
                 isOffline.value = it
             }
         }
-        coroutineScope.launch{
+        coroutineScope.launch {
             val userData = appPreferenceDataStore.getUserData()
             Log.d("TAG", "dateOfBirth timestamp: ${userData?.dateOfBirth}")
             userData?.dateOfBirth?.let { timestamp ->
@@ -83,17 +84,27 @@ class GetEditProfileUiStateUseCase
                         email = it.email ?: "",
                         originalEmail = it.email ?: "",
                         profileImage = it.profileImage ?: "",
+                        originalProfileImage = it.profileImage ?: "",
                         firstName = it.firstName ?: "",
+                        originalFirstName = it.firstName ?: "",
                         dateSelected = formatDate(it.dateOfBirth),
-                        bmiCategory = it.bmiCategory?:0,
+                        originalDateSelected = formatDate(it.dateOfBirth),
+                        bmiCategory = it.bmiCategory ?: 0,
                         lastName = it.lastName ?: "",
-                        height = it.height?:"",
-                        weight = it.weight?:"",
-                        bmi = it.bmi?:"",
-                        allergies = it.knownAllergies?:"",
-                        medicalConditions = it.medicalConditions?:"",
+                        originalLastName = it.lastName ?: "",
+                        height = it.height ?: "",
+                        originalHeight = it.height ?: "",
+                        weight = it.weight ?: "",
+                        originalWeight = it.weight ?: "",
+                        bmi = it.bmi ?: "",
+                        allergies = it.knownAllergies ?: "",
+                        originalAllergies = it.knownAllergies ?: "",
+                        medicalConditions = it.medicalConditions ?: "",
+                        originalMedicalConditions = it.medicalConditions ?: "",
                     )
                 }
+                // Check form changes after initial data load
+                checkFormChanges()
             }
         }
         return EditProfileUiState(
@@ -121,46 +132,54 @@ class GetEditProfileUiStateUseCase
             EditProfileUiEvent.BackClick -> {
                 navigate(NavigationAction.PopIntent)
             }
+
             is EditProfileUiEvent.GetContext -> {
                 this.context = event.context
             }
+
             is EditProfileUiEvent.EmailValueChange -> {
+                val trimmedEmail = event.email.trim()
                 val emailValidationResult = validationUseCase.emailValidation(
-                    emailAddress = event.email,
+                    emailAddress = trimmedEmail,
                     context = context
                 )
-                val isEmailChanged = event.email != editProfileDataFlow.value.originalEmail
-                
+                val isEmailChanged = trimmedEmail != editProfileDataFlow.value.originalEmail
+
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        email = event.email,
+                        email = trimmedEmail,
                         emailErrorMsg = emailValidationResult.errorMsg,
                         isEmailChanged = isEmailChanged,
                         isEmailValid = emailValidationResult.isSuccess && isEmailChanged
                     )
                 }
+                checkFormChanges()
             }
+
             is EditProfileUiEvent.FirstNameValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        firstName = event.firstName,
+                        firstName = event.firstName.trim(),
                         firstNameErrorMsg = validationUseCase.emptyFieldValidation(
-                            event.firstName,
+                            event.firstName.trim(),
                             "Please enter your first name"
                         ).errorMsg
                     )
                 }
+                checkFormChanges()
             }
+
             is EditProfileUiEvent.LastNameValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        lastName = event.lastName,
+                        lastName = event.lastName.trim(),
                         lastNameErrorMsg = validationUseCase.emptyFieldValidation(
-                            event.lastName,
+                            event.lastName.trim(),
                             "Please enter your last name"
                         ).errorMsg
                     )
                 }
+                checkFormChanges()
             }
 
             is EditProfileUiEvent.OnClickOfDate -> {
@@ -171,7 +190,7 @@ class GetEditProfileUiStateUseCase
                         dateSelected = formattedDate,
                     )
                 }
-
+                checkFormChanges()
             }
 
             EditProfileUiEvent.UpdateClick -> {
@@ -187,6 +206,7 @@ class GetEditProfileUiStateUseCase
                         )
                         val emailValidationResult =
                             emailValidation(editProfileDataFlow.value.email, context = context)
+
                         val heightValidationResult = heightValidation(
                             editProfileDataFlow.value.height,
                             context = context
@@ -198,15 +218,15 @@ class GetEditProfileUiStateUseCase
                         // Check if email has been changed and needs verification
                         val isEmailChanged = editProfileDataFlow.value.isEmailChanged
                         val isEmailVerified = !isEmailChanged || editProfileDataFlow.value.verifySheetVisible == false
-                        
+
                         val hasError = listOf(
                             firstNameValidationResult,
                             lastNameValidationResult,
                             emailValidationResult,
                             heightValidationResult,
                             weightValidationResult
-                            ).any { !it.isSuccess }
-                            
+                        ).any { !it.isSuccess }
+
                         // If email is changed but not verified, show error and return
                         if (isEmailChanged && !isEmailVerified) {
                             editProfileDataFlow.update { state ->
@@ -231,11 +251,11 @@ class GetEditProfileUiStateUseCase
                             )
                         }
                         if (hasError) return
+                        callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
                     }
-                    callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
 
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         this.context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
@@ -250,8 +270,9 @@ class GetEditProfileUiStateUseCase
                         profileImage = event.profile
                     )
                 }
-
+                checkFormChanges()
             }
+
             is EditProfileUiEvent.ShowDialog -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -267,50 +288,56 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
-
             // Medical Information events
             is EditProfileUiEvent.HeightValueChange -> {
+                val trimmedHeight = event.height.trim()
                 val heightValidationResult = validationUseCase.heightValidation(
-                    height = event.height,
+                    height = trimmedHeight,
                     context = context
                 )
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        height = event.height,
+                        height = trimmedHeight,
                         heightErrorMsg = heightValidationResult.errorMsg
                     )
                 }
+                checkFormChanges()
             }
 
             is EditProfileUiEvent.WeightValueChange -> {
+                val trimmedWeight = event.weight.trim()
                 val weightValidationResult = validationUseCase.weightValidation(
-                    weight = event.weight,
+                    weight = trimmedWeight,
                     context = context
                 )
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        weight = event.weight,
+                        weight = trimmedWeight,
                         weightErrorMsg = weightValidationResult.errorMsg
                     )
                 }
+                checkFormChanges()
             }
 
             is EditProfileUiEvent.AllergiesValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        allergies = event.allergies,
+                        allergies = event.allergies.trim(),
                     )
                 }
+                checkFormChanges()
             }
 
             is EditProfileUiEvent.MedicalConditionsValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
-                        medicalConditions = event.medicalConditions,
+                        medicalConditions = event.medicalConditions.trim(),
                     )
                 }
+                checkFormChanges()
                 Log.d("TAG", "contactUsUiEvent: ${event.medicalConditions}")
             }
+
             is EditProfileUiEvent.BmiValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -318,6 +345,7 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
+
             is EditProfileUiEvent.VerifySheetVisibility -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -325,6 +353,7 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
+
             is EditProfileUiEvent.VerifyClick -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
@@ -342,21 +371,21 @@ class GetEditProfileUiStateUseCase
                         if (hasErrorOtp) {
                             return
                         }
-                        editProfileDataFlow.update { state ->
-                            state.copy(
-                                verifySheetVisible = false,
-                                isEmailChanged = false // Reset email changed flag after verification
-                            )
-                        }
-                        callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
+
+                        doUserVerifyEmailIn(
+                            coroutineScope = coroutineScope,
+                            event
+                        )
+                        // callEditProfileApi(coroutineScope = coroutineScope, navigation = navigate)
                     }
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
                 }
             }
+
             is EditProfileUiEvent.OtpValueChange -> {
                 editProfileDataFlow.update { state ->
                     state.copy(
@@ -365,12 +394,14 @@ class GetEditProfileUiStateUseCase
                     )
                 }
             }
+
             EditProfileUiEvent.ResendCode -> {
                 doUserEmailVerifyIn(
                     coroutineScope = coroutineScope,
 
                     )
             }
+
             EditProfileUiEvent.VerifyEmailClick -> {
                 /*editProfileDataFlow.update {state->
                     state.copy(
@@ -380,8 +411,9 @@ class GetEditProfileUiStateUseCase
                 doUserEmailVerifyIn(
                     coroutineScope = coroutineScope,
 
-                )
+                    )
             }
+
             is EditProfileUiEvent.EditEmailClick -> {
                 event.scope.launch {
                     event.sheetState.hide()
@@ -389,26 +421,85 @@ class GetEditProfileUiStateUseCase
                 }.invokeOnCompletion {
                     editProfileDataFlow.update { state ->
                         state.copy(
-                            verifySheetVisible=false,
+                            verifySheetVisible = false,
                             isEmailChanged = true, // Mark email as changed again when editing
                             otpValue = "", // Clear OTP value
                             otpErrorMsg = null // Clear OTP error
                         )
-
                     }
                 }
-
             }
         }
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun doUserVerifyEmailIn(
+        coroutineScope: CoroutineScope,
+        event: EditProfileUiEvent.VerifyClick,
+
+
+        ) {
+        coroutineScope.launch {
+            val otpVerifyReq = VerifyOTPReq(
+                newEmail = editProfileDataFlow.value.email,
+                otp = editProfileDataFlow.value.otpValue,
+                otpType = Constants.OTPType.EMAIL_UPDATE
+            )
+            apiRepository.verifyOTP(otpVerifyReq).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                        editProfileDataFlow.update { state ->
+                            state.copy(
+                                otpValue = ""
+                            )
+
+                        }
+                        showOrHideProceedButtonLoader(false)
+                    }
+
+                    is NetworkResult.Loading -> {
+                        showOrHideProceedButtonLoader(true)
+                    }
+
+                    is NetworkResult.Success -> {
+                        showOrHideProceedButtonLoader(false)
+                        coroutineScope.launch {
+                            it.data?.data?.let {
+                                appPreferenceDataStore.setIsProfilePicUpdated(true)
+                                appPreferenceDataStore.saveUserData(it)
+                            }
+                        }
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                        event.scope.launch {
+                            event.sheetState.hide()
+
+                        }.invokeOnCompletion {
+                            editProfileDataFlow.update { state ->
+                                state.copy(
+                                    verifySheetVisible = false
+                                )
+                            }
+                        }
+                    }
+
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideProceedButtonLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                }
+            }
+        }
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     private fun doUserEmailVerifyIn(
         coroutineScope: CoroutineScope,
     ) {
         coroutineScope.launch {
             val resendOtpReq = ResendOTPReq(
-                email = editProfileDataFlow.value.email,
-                otpType = Constants.OTPType.EMAIL_VERIFICATION
+                newEmail = editProfileDataFlow.value.email,
+                otpType = Constants.OTPType.EMAIL_UPDATE
             )
             apiRepository.resendOtpOTP(resendOtpReq).collect {
                 when (it) {
@@ -424,16 +515,16 @@ class GetEditProfileUiStateUseCase
                     is NetworkResult.Success -> {
                         showOrHideResendButtonLoader(false)
                         startCountdown(coroutineScope)
-                        editProfileDataFlow.update {state->
+                        editProfileDataFlow.update { state ->
                             state.copy(
-                                verifySheetVisible = true
+                                verifySheetVisible = true,
+                                otpValue = ""
                             )
 
                         }
                         showSuccessMessage(context = context, it.data?.message ?: "")
 
                     }
-
                     is NetworkResult.UnAuthenticated -> {
                         showOrHideResendButtonLoader(false)
                         showErrorMessage(context = context, it.message ?: "Something went wrong!")
@@ -442,6 +533,7 @@ class GetEditProfileUiStateUseCase
             }
         }
     }
+
     private fun showOrHideProceedButtonLoader(isLoading: Boolean) {
         editProfileDataFlow.update { state ->
             state.copy(
@@ -449,6 +541,7 @@ class GetEditProfileUiStateUseCase
             )
         }
     }
+
     private fun showOrHideResendButtonLoader(isLoading: Boolean) {
         editProfileDataFlow.update { state ->
             state.copy(
@@ -456,6 +549,7 @@ class GetEditProfileUiStateUseCase
             )
         }
     }
+
     private fun startCountdown(coroutineScope: CoroutineScope) {
         countdownJob?.cancel()
         countdownJob = coroutineScope.launch(Dispatchers.IO) {
@@ -525,65 +619,68 @@ class GetEditProfileUiStateUseCase
         )
     }
 
-
-
-
-
     private fun callEditProfileApi(
         coroutineScope: CoroutineScope,
         navigation: (NavigationAction) -> Unit
     ) {
         val map: HashMap<String, RequestBody> = hashMapOf()
 
-        if (editProfileDataFlow.value.firstName.isNotBlank()) map[Constants.EditProfile.FIRST_NAME] =
-            editProfileDataFlow.value.firstName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        if (editProfileDataFlow.value.lastName.isNotBlank()) map[Constants.EditProfile.LAST_NAME] =
-            editProfileDataFlow.value.lastName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        if (editProfileDataFlow.value.email.isNotBlank()) map[Constants.EditProfile.EMAIL] =
-            editProfileDataFlow.value.email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        // Only add fields that have non-empty values
+        if (editProfileDataFlow.value.firstName.isNotBlank()) {
+            map[Constants.EditProfile.FIRST_NAME] =
+                editProfileDataFlow.value.firstName.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+        if (editProfileDataFlow.value.lastName.isNotBlank()) {
+            map[Constants.EditProfile.LAST_NAME] =
+                editProfileDataFlow.value.lastName.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+        if (editProfileDataFlow.value.email.isNotBlank()) {
+            map[Constants.EditProfile.EMAIL] =
+                editProfileDataFlow.value.email.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+        if (editProfileDataFlow.value.email.isNotBlank()) {
+            map[Constants.EditProfile.EMAIL] =
+                editProfileDataFlow.value.email.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
 
         if (editProfileDataFlow.value.dateSelected.isNotBlank()) {
             // Convert display date to API format (yyyy-MM-dd)
             val apiDate = convertDisplayFormatToApiFormat(editProfileDataFlow.value.dateSelected)
-            Log.d("TAG", "API date format: $apiDate")
-
-            map[Constants.EditProfile.DATE_OF_BIRTH] =
-                apiDate.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            if (apiDate.isNotBlank()) {
+                map[Constants.EditProfile.DATE_OF_BIRTH] =
+                    apiDate.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            }
         }
+
         if (editProfileDataFlow.value.height.isNotBlank()) {
             val heightValue = editProfileDataFlow.value.height.trim()
-            // Validate that height is a valid decimal number and greater than 0
-            if (isValidDecimal(heightValue) && heightValue.toDoubleOrNull()?.let { it > 0 } == true) {
-                map[Constants.EditProfile.HEIGHT] = heightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-            } else {
-                Log.e("TAG", "Invalid height value: $heightValue")
-            }
+            map[Constants.EditProfile.HEIGHT] = heightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        } else {
+            map[Constants.EditProfile.HEIGHT] = "".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
         }
 
         if (editProfileDataFlow.value.weight.isNotBlank()) {
             val weightValue = editProfileDataFlow.value.weight.trim()
-            // Validate that weight is a valid decimal number and greater than 0
-            if (isValidDecimal(weightValue) && weightValue.toDoubleOrNull()?.let { it > 0 } == true) {
-                map[Constants.EditProfile.WEIGHT] = weightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-            } else {
-                Log.e("TAG", "Invalid weight value: $weightValue")
-            }
+            map[Constants.EditProfile.WEIGHT] = weightValue.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        } else {
+            map[Constants.EditProfile.WEIGHT] = "".toRequestBody("multipart/form-data".toMediaTypeOrNull())
         }
 
-
-        if (editProfileDataFlow.value.allergies.isNotBlank()) map[Constants.EditProfile.KNOWN_ALLERGIES] =
-            editProfileDataFlow.value.allergies.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        Log.d("TAG", "medicalCondition: ${editProfileDataFlow.value.medicalConditions}")
-        if (editProfileDataFlow.value.medicalConditions.isNotBlank()) map[Constants.EditProfile.CURRENT_MEDICATIONS] =
-            editProfileDataFlow.value.medicalConditions.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-        // Debug logging for all values being sent to API
-        Log.d("TAG", "API Request Values:")
-        map.forEach { (key, value) ->
-            Log.d("TAG", "$key: ${value.toString()}")
+        if (editProfileDataFlow.value.allergies.isNotBlank()) {
+            map[Constants.EditProfile.KNOWN_ALLERGIES] =
+                editProfileDataFlow.value.allergies.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        } else {
+            map[Constants.EditProfile.KNOWN_ALLERGIES] =
+                "".trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+        if (editProfileDataFlow.value.medicalConditions.isNotBlank()) {
+            map[Constants.EditProfile.CURRENT_MEDICATIONS] =
+                editProfileDataFlow.value.medicalConditions.trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        } else {
+            map[Constants.EditProfile.CURRENT_MEDICATIONS] =
+                "".trim().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         }
 
 
@@ -591,11 +688,9 @@ class GetEditProfileUiStateUseCase
             editProfileDataFlow.value.profileImage.let { imagePath ->
                 if (imagePath.isNotEmpty()) {
                     if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-                        // It's a URL, don't include in multipart body for update
                         Log.d("TAG", "Profile image is a URL, skipping multipart upload: $imagePath")
                         null
                     } else {
-                        // It's a local file path
                         Log.d("TAG", "Profile image is a local file, creating multipart body: $imagePath")
                         val profileImageFile = File(imagePath)
                         createMultipartBody(profileImageFile, Constants.EditProfile.PROFILE_IMAGE)
@@ -630,6 +725,7 @@ class GetEditProfileUiStateUseCase
                                 userAuthResponseData = it.data?.data
                             )
                         }
+
                         is NetworkResult.UnAuthenticated -> {
                             showOrHideLoader(false)
                             showErrorMessage(
@@ -797,6 +893,23 @@ class GetEditProfileUiStateUseCase
         } catch (e: Exception) {
             Log.e("TAG", "Error validating decimal value: $value", e)
             false
+        }
+    }
+
+    private fun checkFormChanges() {
+        val currentState = editProfileDataFlow.value
+        val hasChanges = currentState.firstName != currentState.originalFirstName ||
+                currentState.lastName != currentState.originalLastName ||
+                currentState.email != currentState.originalEmail ||
+                currentState.dateSelected != currentState.originalDateSelected ||
+                currentState.profileImage != currentState.originalProfileImage ||
+                currentState.height != currentState.originalHeight ||
+                currentState.weight != currentState.originalWeight ||
+                currentState.allergies != currentState.originalAllergies ||
+                currentState.medicalConditions != currentState.originalMedicalConditions
+
+        editProfileDataFlow.update { state ->
+            state.copy(isFormChanged = hasChanges)
         }
     }
 

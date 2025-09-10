@@ -16,7 +16,7 @@ import com.medrevpatient.mobile.app.model.domain.response.container.friendInfo.F
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.imageDisplay.ImageDisplayActivity
 import com.medrevpatient.mobile.app.ux.main.MainActivity
@@ -368,7 +368,7 @@ class GetFriendProfileUiStateUseCase
 
                     is NetworkResult.UnAuthenticated -> {
                         showOrHideLoader(false)
-                        showWaringMessage(
+                        showWarningMessage(
                             context = context,
                             message = it.message.toString()
                         )

@@ -69,7 +69,7 @@
         <activity
             android:name=".ux.container.ContainerActivity"
             android:theme="@style/AppTheme.Splash"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ux.main.videoLoad.ImageVideoPlayerActivity"
             android:windowSoftInputMode="adjustResize" />

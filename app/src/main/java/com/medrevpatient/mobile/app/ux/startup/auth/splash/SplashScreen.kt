@@ -76,7 +76,6 @@ private fun SplashScreenContent(uiState: SplashUiState) {
                 padding(bottom = 80.dp),
 
             )
-
         // Bottom-start image (hexagonal medical icons)
         Image(
             painterResource(id = R.drawable.ic_medical_icons),

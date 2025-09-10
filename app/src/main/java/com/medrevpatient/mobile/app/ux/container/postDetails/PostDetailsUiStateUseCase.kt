@@ -152,7 +152,7 @@ class PostDetailsUiStateUseCase
                     addCommentAPICall(coroutineScope, keyboard = event.keyboard)
 
                 } else {
-                    AppUtils.showWaringMessage(
+                    AppUtils.showWarningMessage(
                         context = this.context,
                         message = context.getString(R.string.please_add_comment_text)
                     )

@@ -209,6 +209,19 @@ private fun LoginViewContent(uiState: LoginUiState, event: (LoginUiEvent) -> Uni
                 }
             }
         }
+        Spacer(modifier = Modifier.height(25.dp))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            LogInSignInNavText(
+                message = "Don't have an account?",
+                actionText = "Register",
+                onClick = {
+                    uiState.event(LoginUiEvent.SignUp)
+                },
+            )
+        }
         Spacer(modifier = Modifier.height(40.dp))
     }
     ModelSheetLauncher(

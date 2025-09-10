@@ -6,12 +6,14 @@ import com.google.gson.annotations.SerializedName
 data class VerifyOTPReq(
     @SerializedName("email") val email: String? = null,
     @SerializedName("otp") val otp: String? = null,
-    @SerializedName("otpType") val otpType: Int? = null
+    @SerializedName("otpType") val otpType: Int? = null,
+    @SerializedName("newEmail") val newEmail: String? = null,
 )
 
 data class ResendOTPReq(
     @SerializedName("otpType") val otpType: Int? = null,
     @SerializedName("email") val email: String? = null,
+    @SerializedName("newEmail") val newEmail: String? = null,
 )
 
 data class ForgetPasswordReq(

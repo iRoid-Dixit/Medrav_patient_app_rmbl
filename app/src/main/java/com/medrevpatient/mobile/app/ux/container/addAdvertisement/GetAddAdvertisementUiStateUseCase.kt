@@ -16,7 +16,8 @@ import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.createMultipartBody
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+
+
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.container.advertisement.AdvertisementRoute
 import com.medrevpatient.mobile.app.ux.container.advertisementSubscription.AdvertisementSubscriptionRoute
@@ -395,7 +396,7 @@ class GetAddAdvertisementUiStateUseCase
                     }
 
                 } else {
-                    showWaringMessage(
+                    com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage(
                         this.context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )

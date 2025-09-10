@@ -9,7 +9,7 @@ import com.medrevpatient.mobile.app.model.domain.request.mainReq.ChangePasswordR
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -133,7 +133,7 @@ class GetChangePasswordUiStateUseCase
                 doChangePassword(coroutineScope =coroutineScope, navigate = navigate)
 
             } else {
-                showWaringMessage(
+                showWarningMessage(
                     this.context,
                     context.getString(R.string.please_check_your_internet_connection_first)
                 )

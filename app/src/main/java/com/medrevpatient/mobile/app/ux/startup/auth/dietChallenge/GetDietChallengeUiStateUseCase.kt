@@ -5,7 +5,7 @@ import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.domain.validation.ValidationUseCase
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.startup.auth.sideEffectQuestion.SideEffectQuestionRoute
 import kotlinx.coroutines.CoroutineScope

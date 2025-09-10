@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -32,11 +33,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +49,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.foundation.layout.ime
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -120,7 +127,6 @@ fun EditProfileScreen(
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun EditProfileScreenContent(
     uiState: EditProfileUiState,
@@ -128,26 +134,37 @@ private fun EditProfileScreenContent(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val editProfileUiState by uiState.editProfileDataFlow.collectAsStateWithLifecycle()
+    val scrollState = rememberScrollState()
+    val density = LocalDensity.current
+    
+    // Listen for keyboard visibility changes
+    LaunchedEffect(Unit) {
+        // This will trigger when keyboard appears/disappears
+        // We can add additional logic here if needed
+    }
+    
     Column(
         modifier = Modifier
             .padding(horizontal = 20.dp)
-            .verticalScroll(rememberScrollState())
-            .imePadding()
+            .verticalScroll(scrollState)
+
             .noRippleClickable {
                 keyboardController?.hide()
             }
-            .fillMaxSize(),
+            .fillMaxSize()
+            .imePadding(),
+
     ) {
         Spacer(modifier = Modifier.size(40.dp))
         ProfileHeader(editProfileUiState, uiState.event)
         Spacer(modifier = Modifier.size(30.dp))
         EditProfileInputField(
             editProfileUiState,
-            event
+            event,
+            scrollState = scrollState
         )
     }
 }
-
 @Composable
 fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfileUiEvent) -> Unit) {
     val context = LocalContext.current
@@ -255,10 +272,13 @@ fun ProfileHeader(editProfileUiState: EditProfileDataState?, event: (EditProfile
 @Composable
 fun EditProfileInputField(
     editProfileUiState: EditProfileDataState?,
-    event: (EditProfileUiEvent) -> Unit
+    event: (EditProfileUiEvent) -> Unit,
+    scrollState: ScrollState
 ) {
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDateMillis by rememberSaveable { mutableStateOf<Long?>(null) }
+
+
     val bmiCategoryText = when (editProfileUiState?.bmiCategory) {
         1 -> "Underweight"
         2 -> "Normal"
@@ -369,7 +389,14 @@ fun EditProfileInputField(
             Column(modifier = Modifier.weight(1f)) {
                 AppInputTextField(
                     value = editProfileUiState?.height ?: "",
-                    onValueChange = { event(EditProfileUiEvent.HeightValueChange(it)) },
+                    onValueChange = { input ->
+                        val filtered = input.filter { it.isDigit() }
+                        if (filtered.isNotEmpty() && (filtered.toIntOrNull() ?: 0) > 0) {
+                            event(EditProfileUiEvent.HeightValueChange(filtered))
+                        } else {
+                            event(EditProfileUiEvent.HeightValueChange(""))
+                        }
+                    },
                     title = "Height",
                     isTitleVisible = true,
                     isLeadingIconVisible = true,
@@ -386,7 +413,14 @@ fun EditProfileInputField(
             Column(modifier = Modifier.weight(1f)) {
                 AppInputTextField(
                     value = editProfileUiState?.weight ?: "",
-                    onValueChange = { event(EditProfileUiEvent.WeightValueChange(it)) },
+                    onValueChange = { input ->
+                        val filtered = input.filter { it.isDigit() }
+                        if (filtered.isNotEmpty() && (filtered.toIntOrNull() ?: 0) > 0) {
+                            event(EditProfileUiEvent.WeightValueChange(filtered))
+                        } else {
+                            event(EditProfileUiEvent.WeightValueChange(""))
+                        }
+                    },
                     isLeadingIconVisible = true,
                     isTitleVisible = true,
                     title = "Weight",
@@ -417,30 +451,42 @@ fun EditProfileInputField(
             ),
             header = "Your BMI"
         )
-        AppInputTextField(
-            value = editProfileUiState?.allergies ?: "",
-            onValueChange = { event(EditProfileUiEvent.AllergiesValueChange(it)) },
-            isTitleVisible = true,
-            title = "Allergies",
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-                capitalization = KeyboardCapitalization.Words
-            ),
-            header = "Enter your allergies"
-        )
-        AppInputTextField(
-            value = editProfileUiState?.medicalConditions ?: "",
-            onValueChange = { event(EditProfileUiEvent.MedicalConditionsValueChange(it)) },
-            isTitleVisible = true,
-            title = "Medical Conditions",
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-                capitalization = KeyboardCapitalization.Words
-            ),
-            header = "Enter your medical conditions"
-        )
+        // Allergies field with auto-scroll
+        Box {
+            AppInputTextField(
+                value = editProfileUiState?.allergies ?: "",
+                onValueChange = { 
+                    event(EditProfileUiEvent.AllergiesValueChange(it))
+                },
+                isTitleVisible = true,
+                title = "Allergies",
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Words
+                ),
+                header = "Enter your allergies",
+
+            )
+        }
+        // Medical Conditions field with auto-scroll
+        Box {
+            AppInputTextField(
+                value = editProfileUiState?.medicalConditions ?: "",
+                onValueChange = { 
+                    event(EditProfileUiEvent.MedicalConditionsValueChange(it))
+                },
+                isTitleVisible = true,
+                title = "Medical Conditions",
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                    capitalization = KeyboardCapitalization.Words
+                ),
+                header = "Enter your medical conditions",
+
+            )
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(top = 20.dp, bottom = 50.dp)
@@ -468,7 +514,8 @@ fun EditProfileInputField(
                 },
                 modifier = Modifier.weight(1f),
                 text = "Update",
-                isLoading = editProfileUiState?.showLoader == true
+                isLoading = editProfileUiState?.showLoader == true,
+                isEnabled = editProfileUiState?.isFormChanged == true
             )
             if (showDatePickerDialog) {
                 DatePickerWithDialog(

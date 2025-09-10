@@ -23,7 +23,8 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
-import com.medrevpatient.mobile.app.utils.AppUtils.showWaringMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
+
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
 import com.medrevpatient.mobile.app.ux.startup.auth.register.RegisterRoute
@@ -116,11 +117,9 @@ class GetLoginUiStateUseCase
 
                 }
             }
-
             is LoginUiEvent.SignUp -> {
-                navigate(Navigate(RegisterRoute.createRoute()))
+                openTermsAndConditionsInBrowser(context, url = "http://157.245.106.111:8080/registration")
             }
-
             is LoginUiEvent.DoLogin -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
@@ -150,21 +149,20 @@ class GetLoginUiStateUseCase
                     }
 
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
                 }
             }
-
             is LoginUiEvent.ResentSheetVisibility -> {
                 loginDataFlow.update { state ->
                     state.copy(
-                        resetSheetVisible = event.isVisible
+                        resetSheetVisible = event.isVisible,
+                        resendEmail = ""
                     )
                 }
             }
-
             is LoginUiEvent.ResendValueChange -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -173,15 +171,12 @@ class GetLoginUiStateUseCase
                             emailAddress = event.resendEmail,
                             context = context
                         ).errorMsg
-
                     )
                 }
             }
-
             LoginUiEvent.BackToLoginClick -> {
 
             }
-
             is LoginUiEvent.OtpValueChange -> {
                 loginDataFlow.update { state ->
                     state.copy(
@@ -228,7 +223,7 @@ class GetLoginUiStateUseCase
                     }
 
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
@@ -275,7 +270,7 @@ class GetLoginUiStateUseCase
                         doUserVerifyOtpIn(coroutineScope = coroutineScope,event)
                     }
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
@@ -351,7 +346,7 @@ class GetLoginUiStateUseCase
                     }
 
                 } else {
-                    showWaringMessage(
+                    showWarningMessage(
                         context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )

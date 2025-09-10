@@ -2,6 +2,7 @@ package com.medrevpatient.mobile.app.ux.main.profile
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
@@ -92,7 +93,7 @@ class GetProfileUiStateUseCase
                 }
             }
             ProfileUiEvent.CustomerService -> {
-                AppUtils.showWaringMessage(this.context, "Under Development")
+                AppUtils.showWarningMessage(this.context, "Under Development")
             }
             is ProfileUiEvent.LogoutSheetVisibility -> {
                 profileUiDataFlow.update { state ->
@@ -138,6 +139,11 @@ class GetProfileUiStateUseCase
                         }
                     }
                 }
+            }
+
+            ProfileUiEvent.DevelopedClick -> {
+                openTermsAndConditionsInBrowser(this.context, url = "https://iroidsolutions.com/")
+
             }
         }
     }
@@ -215,6 +221,13 @@ class GetProfileUiStateUseCase
         }
     }
 
+    private fun openTermsAndConditionsInBrowser(context: Context, url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this flag
+        }
+        context.startActivity(intent)
+    }
+
     private fun deleteAccount(
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit
@@ -244,14 +257,15 @@ class GetProfileUiStateUseCase
                                 context = this@GetProfileUiStateUseCase.context,
                                 it.data?.message ?: ""
                             )
-                            val intent = Intent(context, StartupActivity::class.java)
+                            navigateToStartupScreens(context = context, navigate = navigate, screenName = Constants.AppScreen.SIGN_IN)
+                           /* val intent = Intent(context, StartupActivity::class.java)
                             intent.putExtra(Constants.IS_COME_FOR, Constants.AppScreen.SIGN_IN)
                             navigate(
                                 NavigationAction.NavigateIntent(
                                     intent,
-                                    finishCurrentActivity = true
+                                    finishCurrentActivity = false
                                 ),
-                            )
+                            )*/
                         }
                     }
 
@@ -285,7 +299,7 @@ class GetProfileUiStateUseCase
     ) {
         val intent = Intent(context, StartupActivity::class.java)
         intent.putExtra(Constants.IS_COME_FOR, screenName)
-        navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = false))
+        navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = true))
     }
 }
 

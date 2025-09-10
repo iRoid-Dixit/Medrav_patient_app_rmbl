@@ -48,6 +48,17 @@ data class EditProfileDataState(
     var isResendVisible: Boolean? = false,
     val isVerifyButtonLoading: Boolean = false,
     val isResendButtonLoading: Boolean = false,
+    // Form change tracking
+    val isFormChanged: Boolean = false,
+    // Original values for comparison
+    val originalFirstName: String = "",
+    val originalLastName: String = "",
+    val originalDateSelected: String = "",
+    val originalProfileImage: String = "",
+    val originalHeight: String = "",
+    val originalWeight: String = "",
+    val originalAllergies: String = "",
+    val originalMedicalConditions: String = "",
 
 )
 

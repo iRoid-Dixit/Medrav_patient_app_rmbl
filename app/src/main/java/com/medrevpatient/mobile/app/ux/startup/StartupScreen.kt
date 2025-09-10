@@ -1,14 +1,8 @@
 package com.medrevpatient.mobile.app.ux.startup
-
 import android.app.Activity
 import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -50,5 +44,4 @@ fun StartupScreen(
         bundle = bundle
     )
     HandleNavigation(viewModelNav = viewModel, navController = navController)
-
 }
