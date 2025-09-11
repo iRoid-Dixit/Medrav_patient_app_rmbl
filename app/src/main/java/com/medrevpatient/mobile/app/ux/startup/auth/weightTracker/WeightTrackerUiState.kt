@@ -13,29 +13,24 @@ data class WeightTrackerData(
     val showLoader: Boolean = false,
     val currentWeight: String = "",
     val weightUnit: WeightUnit = WeightUnit.LBS,
-    val lastRecordedWeight: String = "",
-    val lastRecordedDate: String = "",
-    val weeklyChange: String = "",
-    val weeklyChangePercentage: String = "",
-    val totalLost: String = "",
-    val weightHistory: List<WeightDataPoint> = listOf(),
+
+
     // API Response fields
     val currentWeightKg: String? = null,
     val currentWeightLbs: String? = null,
     val lastRecordedWeightKg: Double? = null,
     val lastRecordedWeightLbs: Double? = null,
-    val lastRecordedTimestamp: String? = null,
     val sinceLastWeekLossKg: Double = 0.0,
     val sinceLastWeekLossLbs: Double = 0.0,
     val totalLossKg: Double = 0.0,
     val totalLossLbs: Double = 0.0,
     val bodyWeightPercentage: Double = 0.0,
     val chartData: List<WeightChartData> = emptyList(),
-    val weeklyWeightLossLbs: Double = 0.0,
-    val weeklyWeightLossPercentage: Double = 0.0,
+
+
     val doseRecommendationText: String = "",
     val clinicalNoteText: String = "",
-    val monthlyWeightLossTargetPercentage: Double = 0.0
+
 )
 
 data class WeightDataPoint(
@@ -54,7 +49,6 @@ enum class WeightUnit {
 
 sealed interface WeightTrackerUiEvent {
     data class GetContext(val context: Context) : WeightTrackerUiEvent
-    data class UpdateWeight(val weight: String) : WeightTrackerUiEvent
     data class UpdateUnit(val unit: WeightUnit) : WeightTrackerUiEvent
     object SubmitWeight : WeightTrackerUiEvent
     object ScheduleCheckIn : WeightTrackerUiEvent

@@ -73,15 +73,10 @@ class GetWeightTrackerUiStateUseCase
                 this.context = event.context
             }
 
-            is WeightTrackerUiEvent.UpdateWeight -> {
-                this@GetWeightTrackerUiStateUseCase.weightTrackerDataFlow.update { currentData ->
-                    currentData.copy(currentWeight = event.weight) ?: WeightTrackerData(currentWeight = event.weight)
-                }
-            }
 
             is WeightTrackerUiEvent.UpdateUnit -> {
                 this@GetWeightTrackerUiStateUseCase.weightTrackerDataFlow.update { currentData ->
-                    currentData.copy(weightUnit = event.unit) ?: WeightTrackerData(weightUnit = event.unit)
+                    currentData.copy(weightUnit = event.unit)
                 }
             }
 
@@ -160,23 +155,16 @@ class GetWeightTrackerUiStateUseCase
                                       } ?: emptyList(),
                                       
                                       // Weekly weight loss
-                                      weeklyWeightLossLbs = it.data?.data?.weeklyWeightLossLbs ?: 0.0,
-                                      weeklyWeightLossPercentage = it.data?.data?.weeklyWeightLossPercentage ?: 0.0,
-                                      
+
                                       // Text content
                                       doseRecommendationText = it.data?.data?.doseRecommendationText ?: "",
                                       clinicalNoteText = it.data?.data?.clinicalNoteText ?: "",
                                       
                                       // Monthly target
-                                      monthlyWeightLossTargetPercentage = it.data?.data?.monthlyWeightLossTargetPercentage ?: 0.0,
+
                                       
                                       // Convert chart data to weight history
-                                      weightHistory = it.data?.data?.chartData?.map { chartPoint ->
-                                          WeightDataPoint(
-                                              week = chartPoint.week,
-                                              weight = chartPoint.weight?.toInt() ?: 0
-                                          )
-                                      } ?: emptyList()
+
 
                                  )
                              }

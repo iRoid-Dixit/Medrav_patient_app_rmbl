@@ -183,8 +183,8 @@ private fun CurrentWeightSection(
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = when (weightData?.weightUnit) {
-                WeightUnit.LBS -> "Last recorded: ${weightData.lastRecordedWeightLbs ?: 0.0} lbs (${weightData.lastRecordedDate})"
-                WeightUnit.KG -> "Last recorded: ${weightData.lastRecordedWeightKg ?: 0.0} kg (${weightData.lastRecordedDate })"
+                WeightUnit.LBS -> "Last recorded: ${weightData.lastRecordedWeightLbs ?: 0.0} lbs (7 days ago)"
+                WeightUnit.KG -> "Last recorded: ${weightData.lastRecordedWeightKg ?: 0.0} kg (7 days ago)"
                 else -> "Last recorded: 0 lbs (7 days ago)"
             },
             fontFamily = nunito_sans_400,
