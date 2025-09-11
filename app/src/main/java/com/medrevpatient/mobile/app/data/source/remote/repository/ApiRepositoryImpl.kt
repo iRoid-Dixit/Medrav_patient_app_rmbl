@@ -65,6 +65,7 @@ import com.medrevpatient.mobile.app.model.domain.response.container.storege.Stor
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
+import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
 import com.medrevpatient.mobile.app.model.domain.response.searchPeople.SearchPeopleResponse
@@ -1686,6 +1687,30 @@ class ApiRepositoryImpl @Inject constructor(
     override fun submitDietChallengeAnswer(request: DietChallengeSubmitRequest): Flow<NetworkResult<ApiResponse<DietChallengeResponse>>> = flow {
         try {
             val response = apiServices.submitDietChallengeAnswer(request)
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun getWeightTrackerData(): Flow<NetworkResult<ApiResponse<WeightTrackerResponse>>> = flow {
+        try {
+            val response = apiServices.getWeightTrackerData()
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))

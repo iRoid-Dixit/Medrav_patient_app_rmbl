@@ -53,6 +53,8 @@ object Constants {
         const val EDIT_ADVERTISEMENT_SCREEN: String = "editAdvertisementScreen"
         const val ADD_ADVERTISEMENT_SCREEN: String = "addAdvertisementScreen"
         const val APPOINTMENT_DETAILS_SCREEN: String = "appointmentDetailsScreen"
+        const val HOME_SCREEN: String = "homeScreen"
+
 
 
     }

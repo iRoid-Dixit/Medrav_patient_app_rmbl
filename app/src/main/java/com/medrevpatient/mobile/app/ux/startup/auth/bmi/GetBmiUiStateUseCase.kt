@@ -91,7 +91,6 @@ class GetBmiUiStateUseCase
                     )
                 }
             }
-
             is BmiUiEvent.CalculateBmi -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {

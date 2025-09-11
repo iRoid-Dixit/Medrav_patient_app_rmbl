@@ -23,6 +23,7 @@ object EndPoints {
         const val SIDE_EFFECT_SUBMIT = "api/patient/side-effects/submit"
         const val DIET_CHALLENGE_GET = "api/patient/diet-challenges/get-challenge"
         const val DIET_CHALLENGE_SUBMIT = "api/patient/diet-challenges/submit-answer"
+        const val WEIGHT_TRACKER_GET = "api/patient/weight-tracker"
     }
     object Notification{
         const val FCM_TOKEN = "fcmtoken/create-fcmToken"

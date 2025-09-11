@@ -12,7 +12,7 @@ data class DietChallengeResponse(
     @SerializedName("incorrectAnswers")
     val incorrectAnswers: Int?=null,
     @SerializedName("accuracyPercentage")
-    val accuracyPercentage: Int?=null,
+    val accuracyPercentage: Double?=null,
     @SerializedName("currentQuestion")
     val currentQuestion: CurrentQuestion?=null,
     @SerializedName("availableCategories")

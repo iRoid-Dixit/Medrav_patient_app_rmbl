@@ -16,7 +16,6 @@ import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
-import com.medrevpatient.mobile.app.ux.container.addPeople.AddPeopleRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -129,14 +128,7 @@ class GetCreateTribeOrInnerCircleUiStateUseCase
             }
 
             is CreateTribeOrInnerCircleUiEvent.OnAddMemberClick -> {
-                navigate(
-                    NavigationAction.Navigate(
-                        AddPeopleRoute.createRoute(
-                            Constants.AppScreen.CREATE_CIRCLE_SCREEN,
-                            groupId = "none"
-                        )
-                    )
-                )
+
             }
 
             is CreateTribeOrInnerCircleUiEvent.CircleNameValueChange -> {

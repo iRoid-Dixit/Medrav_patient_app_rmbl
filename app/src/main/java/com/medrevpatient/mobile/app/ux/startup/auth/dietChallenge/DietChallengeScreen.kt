@@ -1,11 +1,11 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.dietChallenge
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,21 +31,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.AvailableCategory
+import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.CurrentQuestion
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
+import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.theme.*
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
 
@@ -56,11 +63,13 @@ fun DietChallengeScreen(
 ) {
     val uiState = viewModel.uiState
     val context = LocalContext.current
+    val dietChallengeFlow by uiState.dietChallengeDataFlow.collectAsStateWithLifecycle()
     AppScaffold(
         containerColor = White,
         topAppBar = {
             TopBarComponent(
-                onClick = { navController.popBackStack() },
+                onClick = { uiState.event(DietChallengeUiEvent.OnBackClick) },
+                isBackVisible = true,
                 titleText = "Daily Diet Challenge",
             )
         },
@@ -68,18 +77,15 @@ fun DietChallengeScreen(
     ) {
         uiState.event(DietChallengeUiEvent.GetContext(context))
         DietChallengeContent(uiState = uiState, event = uiState.event)
-    }
 
+    }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChallengeUiEvent) -> Unit) {
-    val dietChallengeData by uiState.dietChallengeDataFlow.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val context = LocalContext.current
-    var selectedCategory by remember { mutableStateOf<FoodCategory?>(null) }
+    val dietChallengeData by uiState.dietListData.collectAsStateWithLifecycle()
+    val dietChallengeFlow by uiState.dietChallengeDataFlow.collectAsStateWithLifecycle()
     LazyColumn(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
@@ -93,8 +99,9 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
     ) {
         item {
             ProgressCard(
-                correctAnswers = dietChallengeData?.correctAnswers ?: 0,
-                incorrectAnswers = dietChallengeData?.incorrectAnswers ?: 0
+                correctAnswers = dietChallengeFlow?.correctAnswers ?: 0,
+                incorrectAnswers = dietChallengeFlow?.incorrectAnswers ?: 0,
+                questionsRemaining = dietChallengeFlow?.questionsRemaining
             )
         }
         item {
@@ -102,7 +109,7 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
         }
         item {
             FoodItemCard(
-                foodItem = dietChallengeData?.currentFoodItem ?: FoodItem()
+                foodItem = dietChallengeData?.currentQuestion ?: CurrentQuestion()
             )
         }
         item {
@@ -118,13 +125,12 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
-        items(foodCategories) { category ->
+        items(dietChallengeData?.availableCategories ?: emptyList()) { category ->
             CategoryButton(
-                category = category,
-                isSelected = selectedCategory == category,
+                availableCategory = category ?: AvailableCategory(),
+                isSelected = dietChallengeFlow?.selectedCategoryId == category?.id,
                 onCategorySelected = {
-                    selectedCategory = category
-                    event(DietChallengeUiEvent.SelectCategory(category.name))
+                    event(DietChallengeUiEvent.SelectCategory(category?.name ?: ""))
                 }
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -138,8 +144,9 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
                     event(DietChallengeUiEvent.ContinueChallenge)
                 },
                 modifier = Modifier.fillMaxWidth(),
+                isLoading = dietChallengeFlow?.showLoader == true,
                 text = "Continue",
-                isEnabled = selectedCategory != null
+                isEnabled = dietChallengeFlow?.selectedCategoryId != null
             )
         }
     }
@@ -148,7 +155,8 @@ private fun DietChallengeContent(uiState: DietChallengeUiState, event: (DietChal
 @Composable
 private fun ProgressCard(
     correctAnswers: Int,
-    incorrectAnswers: Int
+    incorrectAnswers: Int,
+    questionsRemaining: Int?
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -181,7 +189,7 @@ private fun ProgressCard(
             }
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally // ✅ Center items
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = incorrectAnswers.toString(),
@@ -196,12 +204,13 @@ private fun ProgressCard(
                     fontSize = 12.sp
                 )
             }
+
         }
     }
 }
 @Composable
 private fun FoodItemCard(
-    foodItem: FoodItem
+    foodItem: CurrentQuestion
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -215,12 +224,21 @@ private fun FoodItemCard(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Food Image Placeholder (you can replace with actual image)
-            Image(painterResource(id = R.drawable.ic_bread), contentDescription = null)
-            Spacer(modifier = Modifier.height(12.dp))
+            // Food Image from API
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(foodItem.foodImage)
+                    .decoderFactory(SvgDecoder.Factory())
+                    .crossfade(true)
+                    .build(),
+                contentDescription = foodItem.foodName,
+                modifier = Modifier.size(120.dp),
+                contentScale = ContentScale.Crop
+            )
 
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = foodItem.name,
+                text = foodItem.foodName?:"",
                 fontFamily = nunito_sans_700,
                 fontSize = 24.sp,
                 color = SteelGray
@@ -240,7 +258,7 @@ private fun FoodItemCard(
 
 @Composable
 private fun CategoryButton(
-    category: FoodCategory,
+    availableCategory: AvailableCategory,
     isSelected: Boolean,
     onCategorySelected: () -> Unit
 ) {
@@ -268,36 +286,54 @@ private fun CategoryButton(
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Image(
-                painter = painterResource(id = category.icon),
-                contentDescription = category.name,
-                modifier = Modifier.size(24.dp),
-                colorFilter = ColorFilter.tint(AppThemeColor)
-            )
+            if (availableCategory.image?.isNotEmpty()==true) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(availableCategory.image)
+                        .decoderFactory(SvgDecoder.Factory())
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = availableCategory.name,
+                    modifier = Modifier.size(24.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = category.name,
+                text = availableCategory.name?:"",
                 fontFamily = nunito_sans_400,
                 fontSize = 14.sp,
                 color = if (isSelected) AppThemeColor else PortGore
             )
         }
     }
-
 }
-data class FoodCategory(
-    val name: String,
-    val icon: Int
-)
-private val foodCategories = listOf(
-    FoodCategory("Fiber with Low Absorption rate", R.drawable.ic_leaf),
-    FoodCategory("Starchy with High Absorption rate", R.drawable.ic_leaf),
-    FoodCategory("Starchy with Low Absorption rate", R.drawable.ic_leaf),
-    FoodCategory("Meat with High Fat", R.drawable.ic_leaf),
-    FoodCategory("Meat with Low Fat", R.drawable.ic_leaf),
-    FoodCategory("Drinks with High Potassium", R.drawable.ic_leaf),
-    FoodCategory("Drinks without Potassium", R.drawable.ic_leaf)
-)
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                color = AppThemeColor,
+                modifier = Modifier.size(48.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Loading diet challenge...",
+                fontFamily = nunito_sans_400,
+                fontSize = 16.sp,
+                color = SteelGray
+            )
+        }
+    }
+}
 
 @Preview
 @Composable

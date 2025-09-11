@@ -1,15 +1,20 @@
 import org.gradle.kotlin.dsl.android
+import org.gradle.kotlin.dsl.hilt
 import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.test
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 plugins {
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    //id ("kotlin-kapt")
+    //id("com.google.dagger.hilt.android")
+    // kotlin("kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 android {
     namespace = "com.medrevpatient.mobile.app"
@@ -65,7 +70,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get().toString()
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
     packaging {
         resources {
@@ -98,36 +103,58 @@ fun getDaySuffix(date: Date): String {
     return suffix
 }
 dependencies {
-    implementation(libs.core.ktx)
-    implementation(libs.lifecycle.runtime.ktx)
-    implementation(libs.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
-    implementation(libs.androidx.media3.session)
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    // navigation data send activity and compose route
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
+    implementation(libs.androidx.appcompat.v170)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.places)
+    implementation(libs.androidx.activity)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.firebase.messaging.ktx)
+    implementation (libs.ui)
+    implementation (libs.androidx.foundation)
+    implementation (libs.androidx.material)
+
+    implementation (libs.material3)
+    implementation(libs.compose.material3.windowsize)
+    implementation (libs.androidx.material3.adaptive.navigation.suite)
+
+    //firebase crashlytics
+    implementation(platform(libs.firebase.bom))
+    implementation (platform(libs.androidx.compose.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 
     //Android
-    implementation(libs.androidx.splashscreen)
-    implementation(libs.androidx.datastorePrefs)
-    implementation(libs.androidx.activity)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.datastore.preferences)
+
     // Inject - Dagger hilt
-    kapt(libs.google.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
-    implementation(libs.google.hilt.library)
-//    implementation(libs.androidx.hilt.work)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.hilt.android)
 
     //compose
-    implementation(libs.compose.material3)
+    implementation(libs.material3)
     implementation(libs.compose.material3.windowsize)
 
     // Navigation
@@ -138,83 +165,70 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-    implementation(libs.google.gson)
+    implementation(libs.gson)
 
     // Android Architecture Components
-    implementation(libs.androidx.lifecycle.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.lifecycle.runtime)
-
-    //firebase
-    implementation(libs.firebase.crashlytics.ktx)
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.ui.auth)
-    implementation(libs.play.services.auth)
-    implementation(libs.firebase.messaging.ktx)
-
-    //country code
-   // implementation(libs.komposecountrycodepicker)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Logging
     implementation(libs.kermit)
 
-// image load
-    implementation(libs.coil.kt.coil.compose)
 
     //coroutine
-    implementation(libs.kotlin.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
 
-    //System UI
-    implementation(libs.accompanist.systemuicontroller)
+    //  Socket
+    implementation(libs.socket.io.client)
 
-    //toast messages
-    implementation(libs.toasty)
+    //paging 3
+    implementation ( libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
-    //paging-3
-    implementation(libs.paging.compose)
+    // Icons
+    implementation (libs.androidx.material.icons.extended)
+    // image load
+    implementation(libs.coil.compose)
+    // google places api
 
-    //calendar
-    implementation(libs.threetenabp)
 
-    //in-app subscription
-    implementation(libs.billing.ktx)
-    implementation(libs.revenuecat.purchases)
 
-    //facebook login
-    implementation(libs.facebook.android.sdk)
+    // status bar colors changes
+    implementation (libs.accompanist.systemuicontroller)
 
-    //Youtube video
-    implementation(libs.youtubeplayer.compose.android)
+    // pager
+    implementation (libs.accompanist.pager)
 
-    implementation(libs.androidyoutubeplayer.core)
     // custom toast
     implementation (libs.cookiebar2)
 
-    implementation (libs.accompanist.pager)
-
-    // pull to refresh
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.androidx.camera.extensions)
+    // permission issue
+    implementation (libs.androidx.activity.compose.v193)
+    implementation (libs.accompanist.permissions)
+    // map load
+    //implementation(libs.maps.compose)
+    implementation (libs.play.services.location)
+    // refresh layout
     implementation (libs.accompanist.swiperefresh)
 
-    //firebase crashlytics
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
+    // google login
+    implementation (libs.play.services.auth)
 
+    implementation(libs.firebase.auth.ktx)
 
-    // image swap
-
-    //   Socket
-    implementation(libs.socket.io.client)
+    implementation(libs.facebook.android.sdk)
 
     //chart
     implementation (libs.compose.charts)
     // Svg image load
     implementation(libs.coil.svg)
-
-
-
 
 }

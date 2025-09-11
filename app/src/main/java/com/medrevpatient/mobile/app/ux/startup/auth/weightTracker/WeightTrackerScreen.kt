@@ -47,6 +47,7 @@ import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
+import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
 import com.medrevpatient.mobile.app.ui.theme.*
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
 import ir.ehsannarmani.compose_charts.LineChart
@@ -66,6 +67,8 @@ fun WeightTrackerScreen(
 ) {
     val uiState = viewModel.uiState
     val context = LocalContext.current
+    val weightData by uiState.weightTrackerDataFlow.collectAsStateWithLifecycle()
+
     AppScaffold(
         containerColor = White,
         topAppBar = {
@@ -77,17 +80,37 @@ fun WeightTrackerScreen(
         },
         navBarData = null
     ) {
+
         uiState.event(WeightTrackerUiEvent.GetContext(context))
         WeightTrackerScreenContent(uiState = uiState, event = uiState.event)
     }
 
+    if (weightData?.showLoader==true){
+        CustomLoader()
+    }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
 
 @Composable
 private fun WeightTrackerScreenContent(uiState: WeightTrackerUiState, event: (WeightTrackerUiEvent) -> Unit) {
-    val weightData by uiState.bmiDataFlow.collectAsStateWithLifecycle()
+    val weightData by uiState.weightTrackerDataFlow.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
+    
+    if (weightData?.showLoader == true) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Loading weight data...",
+                fontFamily = nunito_sans_400,
+                fontSize = 16.sp,
+                color = SteelGray
+            )
+        }
+        return
+    }
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -105,7 +128,7 @@ private fun WeightTrackerScreenContent(uiState: WeightTrackerUiState, event: (We
             onUnitChange = { event(WeightTrackerUiEvent.UpdateUnit(it)) }
         )
         Spacer(modifier = Modifier.height(24.dp))
-        WeightProgressSection()
+        WeightProgressSection(weightData = weightData)
         Spacer(modifier = Modifier.height(24.dp))
         DoseRecommendationSection(weightData = weightData)
         Spacer(modifier = Modifier.height(30.dp))
@@ -159,7 +182,11 @@ private fun CurrentWeightSection(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Last recorded: ${weightData?.lastRecordedWeight ?: "185"} ${weightData?.weightUnit?.name?.lowercase() ?: "lbs"} (${weightData?.lastRecordedDate ?: "7 days ago"})",
+            text = when (weightData?.weightUnit) {
+                WeightUnit.LBS -> "Last recorded: ${weightData.lastRecordedWeightLbs ?: 0.0} lbs (${weightData.lastRecordedDate})"
+                WeightUnit.KG -> "Last recorded: ${weightData.lastRecordedWeightKg ?: 0.0} kg (${weightData.lastRecordedDate })"
+                else -> "Last recorded: 0 lbs (7 days ago)"
+            },
             fontFamily = nunito_sans_400,
             fontSize = 14.sp,
             color = SteelGray.copy(alpha = 0.8f),
@@ -182,7 +209,11 @@ private fun CurrentWeightSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = weightData?.currentWeight ?: "183",
+                        text = when (weightData?.weightUnit) {
+                            WeightUnit.LBS -> weightData.currentWeightLbs?.toString() ?: "0"
+                            WeightUnit.KG -> weightData.currentWeightKg?.toString() ?: "0"
+                            else -> "0"
+                        },
                         fontFamily = nunito_sans_600,
                         color = Martinique50,
                         fontSize = 32.sp
@@ -252,7 +283,11 @@ private fun CurrentWeightSection(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${weightData?.weeklyChange ?: "-2"} ${weightData?.weightUnit?.name?.lowercase() ?: "lbs"}",
+                        text = when (weightData?.weightUnit) {
+                            WeightUnit.LBS -> "${weightData.sinceLastWeekLossLbs } lbs"
+                            WeightUnit.KG -> "${weightData.sinceLastWeekLossKg} kg"
+                            else -> "0 lbs"
+                        },
                         fontFamily = nunito_sans_600,
                         fontSize = 16.sp,
                         color = Green16
@@ -274,13 +309,12 @@ private fun CurrentWeightSection(
 }
 
 @Composable
-private fun WeightProgressSection() {
+private fun WeightProgressSection(weightData: WeightTrackerData?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val tempList = listOf(150.0, 300.0, 150.0, 300.0, 150.0)
-        ChartView(list = tempList)
-
+        val chartData = weightData?.chartData?.mapNotNull { it.weight } ?: listOf(150.0, 300.0, 150.0, 300.0, 150.0)
+        ChartView(list = chartData)
     }
 }
 
@@ -398,7 +432,7 @@ private fun DoseRecommendationSection(weightData: WeightTrackerData?) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Based on your weight loss of ${weightData?.weeklyChange ?: "2"} ${weightData?.weightUnit?.name?.lowercase() ?: "lbs"} this week (${weightData?.weeklyChangePercentage ?: "1.1%"}), we recommend maintaining your current dose.",
+            text = weightData?.doseRecommendationText ?: "",
             fontFamily = nunito_sans_400,
             fontSize = 14.sp,
             color = YellowA1,
@@ -416,10 +450,9 @@ private fun DoseRecommendationSection(weightData: WeightTrackerData?) {
                 fontFamily = nunito_sans_600,
                 fontSize = 14.sp,
                 color = Yellow85,
-
                 )
             Text(
-                text = "Target: 2% monthly weight loss for dose increase consideration",
+                text = weightData?.clinicalNoteText ?: "",
                 fontFamily = nunito_sans_400,
                 fontSize = 12.sp,
                 color = YellowA1,
@@ -435,12 +468,16 @@ private fun SummaryStatisticsSection(weightData: WeightTrackerData?) {
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         StatCard(
-            value = "${weightData?.totalLost ?: "-12"} lbs", // add lbs
+            value = when (weightData?.weightUnit) {
+                WeightUnit.LBS -> "${weightData.totalLossLbs } lbs"
+                WeightUnit.KG -> "${weightData.totalLossKg} kg"
+                else -> "0 lbs"
+            },
             label = "Total Lost",
             modifier = Modifier.weight(1f) // apply weight here
         )
         StatCard(
-            value = weightData?.bodyWeightPercentage ?: "6.1%",
+            value = "${weightData?.bodyWeightPercentage ?: 0.0}%",
             label = "Body Weight",
             modifier = Modifier.weight(1f)
         )

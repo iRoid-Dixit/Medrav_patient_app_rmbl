@@ -20,14 +20,13 @@ import com.medrevpatient.mobile.app.model.domain.response.advertisement.Advertis
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
+import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
-import com.medrevpatient.mobile.app.ux.imageDisplay.ImageDisplayActivity
-import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
-import com.medrevpatient.mobile.app.ux.startup.auth.bmi.BmiRoute
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +39,7 @@ class GetHomeUiStateUseCase
     private val appPreferenceDataStore: AppPreferenceDataStore,
     private val apiRepository: ApiRepository,
 ) {
+    private val homePatientData = MutableStateFlow(HomeScreenData())
     private val homeUiDataFlow = MutableStateFlow(HomeUiDataState())
     private lateinit var context: Context
     operator fun invoke(
@@ -47,10 +47,10 @@ class GetHomeUiStateUseCase
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): HomeUiState {
-        /*getHomePatientData(
+        getHomePatientData(
             coroutineScope = coroutineScope,
             navigate = navigate
-        )*/
+        )
         coroutineScope.launch {
             homeUiDataFlow.update { state ->
                 state.copy(
@@ -64,6 +64,7 @@ class GetHomeUiStateUseCase
         }
         return HomeUiState(
             homeUiDataFlow = homeUiDataFlow,
+            homePatientData = homePatientData,
             event = { homeUiEvent ->
                 homeUiEvent(
                     coroutineScope = coroutineScope,
@@ -74,7 +75,6 @@ class GetHomeUiStateUseCase
             }
         )
     }
-
     private fun homeUiEvent(
         coroutineScope: CoroutineScope,
         event: HomeUiEvent,
@@ -129,15 +129,20 @@ class GetHomeUiStateUseCase
                     when (it) {
                         is NetworkResult.Error -> {
                             showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                            Log.d("TAG", "getHomePatientData: ${it.message}")
                             showOrHideLoader(false)
                         }
-
                         is NetworkResult.Loading -> {
                             showOrHideLoader(true)
                         }
-
                         is NetworkResult.Success -> {
                             showOrHideLoader(false)
+                            // Update homePatientData with the API response
+                            val responseData = it.data?.data
+                            if (responseData != null) {
+                                homePatientData.value = responseData
+                                Log.d("TAG", "HomeScreenData updated: displaySideEffectCheckIn=${responseData.displaySideEffectCheckIn}, displayDailyDietChallenge=${responseData.displayDailyDietChallenge}")
+                            }
                             showSuccessMessage(context = context, it.data?.message ?: "Data loaded successfully")
                         }
 

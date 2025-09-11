@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ux.main.home
+
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -33,6 +34,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +48,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.data.source.local.UserData.RecentActivity
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
@@ -63,7 +66,9 @@ import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
+import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
@@ -102,6 +107,8 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataState?) {
+    val homePatientData by uiState.homePatientData.collectAsStateWithLifecycle()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -110,85 +117,77 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(15.dp))
-            AssignedDoctorCard(
-                doctorName = "Dr. Mark Wilson",
-                doctorSpecialty = "Weight Management Specialist",
-                doctorImage = R.drawable.ic_place_holder.toString()
-            )
+            if (homePatientData?.assignedDoctor != null) {
+                Spacer(modifier = Modifier.height(15.dp))
+                AssignedDoctorCard(
+                    doctorName = homePatientData?.assignedDoctor?.fullName ?: "",
+                    doctorSpecialty = homePatientData?.assignedDoctor?.specialist ?: "",
+                    doctorImage = homePatientData?.assignedDoctor?.profileImage ?: ""
+                )
+            }
         }
         item {
             GoalProgressCard(
-                currentWeight = "55.6 kg",
-                weightChange = "Dropped - 4 kg",
-                minWeight = "50",
-                maxWeight = "70",
-                progress = 0.3f
+                currentWeight = if (homePatientData?.goalProgress?.currentWeightKg == null) "0 kg" else homePatientData?.goalProgress?.currentWeightKg.toString(),
+                weightChange = if (homePatientData?.goalProgress?.weeklyChangeDisplay == null) "" else homePatientData?.goalProgress?.weeklyChangeDisplay ?: "",
+                minWeight = if (homePatientData?.goalProgress?.initialWeightKg==null) "0" else homePatientData?.goalProgress?.initialWeightKg.toString(),
+                maxWeight = if (homePatientData?.goalProgress?.goalWeightKg==null) "0" else homePatientData?.goalProgress?.goalWeightKg.toString(),
+                progress = homePatientData?.goalProgress?.progressPercentage?.toFloat() ?: 0f
             )
         }
         item {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                ActionCard(
-                    title = "Side Effect Check-In",
-                    iconRes = R.drawable.ic_side_effect_checkin,
-                    onClick = {
-                        uiState.event(HomeUiEvent.SideEffectClick)
-                    }
-                )
-                ActionCard(
-                    title = "Daily Diet Challenge",
-                    iconRes = R.drawable.ic_daily_diet_challenge,
-                    onClick = {
-                        uiState.event(HomeUiEvent.DailyDietClick)
-                    }
-                )
+                //if (homePatientData?.displaySideEffectCheckIn == true) {
+                    ActionCard(
+                        title = "Side Effect Check-In",
+                        iconRes = R.drawable.ic_side_effect_checkin,
+                        onClick = {
+                            uiState.event(HomeUiEvent.SideEffectClick)
+                        }
+                    )
+               // }
+                Log.d("TAG", "HomeScreenContent: ${homePatientData?.displaySideEffectCheckIn}")
+                if (homePatientData?.displayDailyDietChallenge == true) {
+                    ActionCard(
+                        title = "Daily Diet Challenge",
+                        iconRes = R.drawable.ic_daily_diet_challenge,
+                        onClick = {
+                            uiState.event(HomeUiEvent.DailyDietClick)
+                        }
+                    )
+                }
             }
         }
         item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp)
+            if (homePatientData?.recentActivities?.isNotEmpty()==true) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
-                    Text(
-                        text = "Recent Activity",
-                        fontFamily = nunito_sans_600,
-                        fontSize = 18.sp,
-                        color = Black20,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-                    val recentActivities = listOf(
-                        RecentActivity(
-                            title = "Weight logged: 185 lbs",
-                            timestamp = "Today, 8:30 AM",
-                            iconRes = R.drawable.ic_weight_scale,
-                        ),
-                        RecentActivity(
-                            title = "Medication taken",
-                            timestamp = "Yesterday, 9:00 AM",
-                            iconRes = R.drawable.ic_medication,
-
-                            ),
-                        RecentActivity(
-                            title = "Appointment with Dr. Wilson",
-                            timestamp = "3 days ago",
-                            iconRes = R.drawable.ic_appointment,
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        Text(
+                            text = "Recent Activity",
+                            fontFamily = nunito_sans_600,
+                            fontSize = 18.sp,
+                            color = Black20,
+                            modifier = Modifier.padding(bottom = 12.dp)
                         )
-                    )
-                    recentActivities.forEach { activity ->
-                        RecentActivityItem(activity = activity)
+                        homePatientData?.recentActivities?.forEach { activity ->
+                            RecentActivityItem(activity = activity)
+                        }
                     }
                 }
             }
         }
         item {
+             if (homePatientData?.showBmiCheckIn==true){
             AppButtonComponent(
                 onClick = {
                     uiState.event(HomeUiEvent.CalculateBMIClick)
@@ -197,9 +196,12 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
                 text = "Calculate BMI",
             )
             Spacer(modifier = Modifier.height(20.dp))
+
+            }
         }
     }
 }
+
 @Composable
 fun ActionCard(
     title: String,
@@ -241,10 +243,16 @@ fun ActionCard(
         }
     }
 }
+
 @Composable
 fun RecentActivityItem(
-    activity: RecentActivity
+    activity: com.medrevpatient.mobile.app.model.domain.response.home.RecentActivity
 ) {
+    val icon = when (activity.type) {
+        1 -> R.drawable.ic_weight_scale
+        2 -> R.drawable.ic_medication
+        else -> R.drawable.ic_appointment
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -252,7 +260,7 @@ fun RecentActivityItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = activity.iconRes),
+            painter = painterResource(icon),
             contentDescription = activity.title,
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -266,7 +274,7 @@ fun RecentActivityItem(
                 color = SteelGray
             )
             Text(
-                text = activity.timestamp,
+                text = AppUtils.formatRelativeTime(activity.time),
                 fontFamily = nunito_sans_400,
                 fontSize = 12.sp,
                 color = Gray40
@@ -274,13 +282,14 @@ fun RecentActivityItem(
         }
     }
 }
+
 @Composable
 fun GoalProgressCard(
     currentWeight: String = "55.6 kg",
     weightChange: String = "Dropped - 4 kg",
     minWeight: String = "50",
     maxWeight: String = "70",
-    progress: Float = 0.3f // 30% progress
+    progress: Float = 0.0f
 ) {
     Card(
         modifier = Modifier
@@ -441,9 +450,10 @@ fun AssignedDoctorCard(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_place_holder),
+                AsyncImage(
+                    model = doctorImage ?: "",
                     contentDescription = "Doctor Profile",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(55.dp)
                         .clip(CircleShape)

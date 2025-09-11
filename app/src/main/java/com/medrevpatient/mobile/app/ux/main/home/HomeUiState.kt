@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 data class HomeUiState(
     //data
     val homeUiDataFlow: StateFlow<HomeUiDataState?> = MutableStateFlow(null),
+    val homePatientData: StateFlow<HomeScreenData?> = MutableStateFlow(null),
     val event: (HomeUiEvent) -> Unit = {}
 )
 data class HomeUiDataState(

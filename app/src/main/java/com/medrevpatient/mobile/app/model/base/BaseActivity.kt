@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
-import com.app.musicplayerdemo.service.TAG
+
 import com.medrevpatient.mobile.app.App
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.data.source.Constants
@@ -33,7 +33,7 @@ abstract class BaseActivity<VM : ViewModel> : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         SocketClass.connectSocket(accessToken)
-        Log.d(TAG, "onResume: $accessToken")
+        Log.d("TAG", "onResume: $accessToken")
         if (!isScreenLocked()) {
             initSocketListener()
         }
@@ -50,7 +50,6 @@ abstract class BaseActivity<VM : ViewModel> : ComponentActivity() {
     }
     private fun initSocketListener() {
         SocketClass.getSocket(accessToken)?.let {
-            Log.d(TAG, "initSocketListener: $accessToken")
             Log.e("TAG", "initSocketListener: connect socket listener ")
             it.on(io.socket.client.Socket.EVENT_CONNECT, onConnected)
             it.on(io.socket.client.Socket.EVENT_CONNECT, onConnected)
@@ -64,7 +63,7 @@ abstract class BaseActivity<VM : ViewModel> : ComponentActivity() {
     private fun destroySocketListeners() {
         SocketClass.getSocket(accessToken)?.let {
             loggerE("destroy socket listener")
-            Log.e(TAG, "destroySocketListeners: ")
+            Log.e("TAG", "destroySocketListeners: ")
             it.off(io.socket.client.Socket.EVENT_CONNECT, onConnected)
             it.off(io.socket.client.Socket.EVENT_CONNECT_ERROR, onConnectError)
             it.off(io.socket.client.Socket.EVENT_DISCONNECT, onDisconnected)

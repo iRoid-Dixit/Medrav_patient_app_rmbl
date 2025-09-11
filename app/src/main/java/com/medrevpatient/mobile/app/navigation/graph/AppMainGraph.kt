@@ -6,8 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.ux.container.about.AboutRoute
-import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
-import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyScreen
 import com.medrevpatient.mobile.app.ux.main.home.HomeRoute
 import com.medrevpatient.mobile.app.ux.main.home.HomeScreen
 import com.medrevpatient.mobile.app.ux.main.medication.MedicationRoute
@@ -30,21 +28,18 @@ fun AppMainGraph(
         Constants.AppScreen.ABOUT_US -> {
             AboutRoute.routeDefinition.value
         }
-
-        Constants.AppScreen.GRIOT_LEGACY_SCREEN -> {
-            GriotLegacyRoute.routeDefinition.value
-        }
         Constants.AppScreen.SEARCH_SCREEN -> {
             AppointmentRoute.routeDefinition.value
         }
-
         Constants.AppScreen.MAIN_VILLAGE_SCREEN -> {
             HomeRoute.routeDefinition.value
         }
         Constants.AppScreen.MESSAGE_SCREEN -> {
             MedicationRoute.routeDefinition.value
         }
-
+        Constants.AppScreen.HOME_SCREEN -> {
+            HomeRoute.routeDefinition.value
+        }
         else -> {
             HomeRoute.routeDefinition.value
         }
@@ -55,6 +50,5 @@ fun AppMainGraph(
         MedicationRoute.addNavigationRoute(this){ MedicationScreen(navController)}
         MessageRoute.addNavigationRoute(this){ MessageScreen(navController) }
         ProfileRoute.addNavigationRoute(this){ ProfileScreen(navController) }
-        GriotLegacyRoute.addNavigationRoute(this){ GriotLegacyScreen(navController) }
     }
 }

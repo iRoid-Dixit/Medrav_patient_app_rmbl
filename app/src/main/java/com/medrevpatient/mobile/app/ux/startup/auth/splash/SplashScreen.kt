@@ -1,15 +1,11 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.splash
-
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,13 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.ui.compose.common.dialog.AppUpdateDialog
-import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
-import com.medrevpatient.mobile.app.ui.theme.MedrevPatientTheme
-import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.ui.theme.BgColor
-
+import com.medrevpatient.mobile.app.ui.theme.MedrevPatientTheme
 @Composable
 fun SplashScreen(
     navController: NavController,

@@ -43,6 +43,7 @@ import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.L
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
+import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
 
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
@@ -52,6 +53,8 @@ import com.medrevpatient.mobile.app.model.domain.response.sideEffect.SideEffectQ
 import com.medrevpatient.mobile.app.model.domain.response.subscription.SubscriptionResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.MemberResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.TribeResponse
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightChartData
+import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -492,5 +495,8 @@ interface ApiServices {
     suspend fun submitDietChallengeAnswer(
         @Body request: DietChallengeSubmitRequest
     ): Response<ApiResponse<DietChallengeResponse>>
+
+    @GET(EndPoints.Auth.WEIGHT_TRACKER_GET)
+    suspend fun getWeightTrackerData(): Response<ApiResponse<WeightTrackerResponse>>
 
 }

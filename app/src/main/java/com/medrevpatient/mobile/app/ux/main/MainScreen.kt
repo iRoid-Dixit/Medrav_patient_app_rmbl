@@ -1,10 +1,7 @@
 package com.medrevpatient.mobile.app.ux.main
-
-import androidx.compose.foundation.background
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -15,12 +12,9 @@ import com.medrevpatient.mobile.app.navigation.graph.AppMainGraph
 import com.medrevpatient.mobile.app.navigation.scaffold.AppNavBarData
 import com.medrevpatient.mobile.app.navigation.scaffold.AppNavBarType
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
-import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.utils.ext.requireActivity
 import com.medrevpatient.mobile.app.ux.main.bottombar.AppNavigationBar
-import com.medrevpatient.mobile.app.ux.main.griotLegacy.GriotLegacyRoute
-
 @ExperimentalMaterial3Api
 @Composable
 fun MainScreen(

@@ -1,9 +1,7 @@
 package com.medrevpatient.mobile.app.ux.main
-
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.local.datastore.AppPreferenceDataStore
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
@@ -14,15 +12,9 @@ import com.medrevpatient.mobile.app.navigation.DefaultNavBarConfig
 import com.medrevpatient.mobile.app.navigation.ViewModelNavBar
 import com.medrevpatient.mobile.app.navigation.ViewModelNavBarImpl
 import com.medrevpatient.mobile.app.utils.AppUtils
-import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
-import com.medrevpatient.mobile.app.utils.socket.SocketClass
-import com.medrevpatient.mobile.app.ux.container.chat.GetChatUiStateUseCase.SocketCallback
 import com.medrevpatient.mobile.app.ux.main.bottombar.NavBarItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.socket.client.Ack
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel

@@ -24,9 +24,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.aviran.cookiebar2.CookieBar
-import org.threeten.bp.Duration
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
+
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -36,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 object AppUtils {
 
@@ -115,23 +114,6 @@ object AppUtils {
         }
     }
 
-    fun getTimeAgo(timestampMillis: Long): String {
-        val now = Instant.now()
-        val past = Instant.ofEpochMilli(timestampMillis)
-        val duration = Duration.between(past, now)
-
-        return when {
-            duration.toMinutes() < 1 -> "Just now"
-            duration.toMinutes() < 60 -> "${duration.toMinutes()} mins ago"
-            duration.toHours() < 24 -> "${duration.toHours()} hours ago"
-            duration.toDays() == 1L -> "Yesterday"
-            duration.toDays() < 7 -> "${duration.toDays()} days ago"
-            else -> {
-                val localDateTime = past.atZone(ZoneId.systemDefault()).toLocalDate()
-                localDateTime.toString() // e.g. 2024-04-07
-            }
-        }
-    }
 
     fun createMultipartBody(file: File?, keyName: String?): MultipartBody.Part {
         return if (file != null) {
@@ -180,6 +162,25 @@ object AppUtils {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
         }
         return type
+    }
+    fun formatRelativeTime(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val timeMillis = timestamp * 1000 // API gives seconds → convert to ms
+        val diff = now - timeMillis
+
+        val days = TimeUnit.MILLISECONDS.toDays(diff)
+        val date = Date(timeMillis)
+        val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+
+        return when {
+            days == 0L -> "Today, ${timeFormat.format(date)}"
+            days == 1L -> "Yesterday, ${timeFormat.format(date)}"
+            days in 2..6 -> "$days days ago"
+            else -> {
+                val fullFormat = SimpleDateFormat("dd MMM yyyy, h:mm a", Locale.getDefault())
+                fullFormat.format(date)
+            }
+        }
     }
 
     private fun getFileExtensionFromUri(context: Context, uri: Uri): String? {

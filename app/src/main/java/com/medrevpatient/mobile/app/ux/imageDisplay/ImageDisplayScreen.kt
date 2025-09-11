@@ -1,6 +1,5 @@
 package com.medrevpatient.mobile.app.ux.imageDisplay
 
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,13 +27,11 @@ import coil.compose.AsyncImage
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.medrevpatient.mobile.app.R
-import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.Media
 import com.medrevpatient.mobile.app.ui.compose.common.HorizontalPagerIndicator
 import com.medrevpatient.mobile.app.ui.compose.common.Zoomable
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.White
-import com.medrevpatient.mobile.app.ux.main.videoLoad.ImageVideoPlayerActivity
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,7 +43,6 @@ fun ImageDisplayScreen(
     val mediaList: List<Media> =
         Gson().fromJson(mediaListData, object : TypeToken<List<Media>>() {}.type)
     val pagerState = rememberPagerState(pageCount = { mediaList.size })
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -55,8 +50,8 @@ fun ImageDisplayScreen(
     ) {
         Zoomable(
             modifier = Modifier.fillMaxSize(),
-            minZoom = 0.8f,   // Allows slight zoom out
-            maxZoom = 3f      // Allows proper zoom in
+            minZoom = 0.8f,
+            maxZoom = 3f
         ) {
             Box(
                 modifier = Modifier
@@ -90,19 +85,7 @@ fun ImageDisplayScreen(
                                 colorFilter = ColorFilter.tint(White),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .clickable {
-                                        val intent = Intent(
-                                            context,
-                                            ImageVideoPlayerActivity::class.java
-                                        ).apply {
-                                            putExtra(
-                                                Constants.Values.VIDEO_LINK,
-                                                mediaItem.filename
-                                            )
-                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        }
-                                        context.startActivity(intent)
-                                    }
+
 
                             )
                         }
@@ -117,7 +100,6 @@ fun ImageDisplayScreen(
                             .padding(bottom = 12.dp)
                     )
                 }
-
             }
         }
         TopBarContent(
@@ -126,6 +108,7 @@ fun ImageDisplayScreen(
         )
     }
 }
+
 @Composable
 fun TopBarContent(onBackClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(

@@ -46,6 +46,7 @@ import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.L
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
+import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
@@ -430,5 +431,10 @@ interface ApiRepository {
      * Submit Diet Challenge Answer
      * */
     fun submitDietChallengeAnswer(request: DietChallengeSubmitRequest): Flow<NetworkResult<ApiResponse<DietChallengeResponse>>>
+
+    /**
+     * Get Weight Tracker Data
+     * */
+    fun getWeightTrackerData(): Flow<NetworkResult<ApiResponse<WeightTrackerResponse>>>
 
 }
