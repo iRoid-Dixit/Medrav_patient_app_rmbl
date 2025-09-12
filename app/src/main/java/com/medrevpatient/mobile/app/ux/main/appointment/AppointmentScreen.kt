@@ -56,7 +56,6 @@ import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
-
 @ExperimentalMaterial3Api
 @Composable
 fun AppointmentScreen(

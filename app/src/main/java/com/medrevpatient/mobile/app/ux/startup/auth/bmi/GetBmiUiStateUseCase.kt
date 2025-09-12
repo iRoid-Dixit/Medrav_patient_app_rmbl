@@ -155,6 +155,7 @@ class GetBmiUiStateUseCase
                     is NetworkResult.Loading -> {
                         showOrHideLoader(true)
                     }
+
                     is NetworkResult.Success -> {
                         showOrHideLoader(false)
                         navigate(PopIntent)

@@ -2,7 +2,6 @@ package com.medrevpatient.mobile.app.ux.startup.auth.weightTracker
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository

@@ -145,7 +145,6 @@ class GetHomeUiStateUseCase
                             }
                             showSuccessMessage(context = context, it.data?.message ?: "Data loaded successfully")
                         }
-
                         is NetworkResult.UnAuthenticated -> {
                             showOrHideLoader(false)
                             showErrorMessage(context = context, it.message ?: "Authentication failed!")

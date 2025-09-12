@@ -51,7 +51,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
             if (task.isSuccessful) {
                 val token = task.result
                 Log.e("TAG", "FirebaseToken $token")
-                viewModel.registerForPushAPI(token, this)
+                //viewModel.registerForPushAPI(token, this)
             } else {
                 Log.e(
                     "TAG",

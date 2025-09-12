@@ -128,10 +128,10 @@ private fun HomeScreenContent(uiState: HomeUiState, homeDetailsData: HomeUiDataS
         }
         item {
             GoalProgressCard(
-                currentWeight = if (homePatientData?.goalProgress?.currentWeightKg == null) "0 kg" else homePatientData?.goalProgress?.currentWeightKg.toString(),
-                weightChange = if (homePatientData?.goalProgress?.weeklyChangeDisplay == null) "" else homePatientData?.goalProgress?.weeklyChangeDisplay ?: "",
-                minWeight = if (homePatientData?.goalProgress?.initialWeightKg==null) "0" else homePatientData?.goalProgress?.initialWeightKg.toString(),
-                maxWeight = if (homePatientData?.goalProgress?.goalWeightKg==null) "0" else homePatientData?.goalProgress?.goalWeightKg.toString(),
+                currentWeight = homePatientData?.goalProgress?.currentWeightKg ?: "0 kg",
+                weightChange = homePatientData?.goalProgress?.weeklyChangeDisplay ?: "",
+                minWeight = homePatientData?.goalProgress?.initialWeightKg ?: "0",
+                maxWeight = homePatientData?.goalProgress?.goalWeightKg ?: "0",
                 progress = homePatientData?.goalProgress?.progressPercentage?.toFloat() ?: 0f
             )
         }

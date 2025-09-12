@@ -28,7 +28,7 @@ class MainViewModel
         NavBarItem.getNavBarItemRouteMap()
     )
 ) {
-    fun registerForPushAPI(token: String, context: Context) {
+   /* fun registerForPushAPI(token: String, context: Context) {
         val req = TokenStoreReq(
             type = Constants.DEVICE_TYPE,
             deviceId = AppUtils.getDeviceId(context),
@@ -45,7 +45,7 @@ class MainViewModel
                 }
             }
         }
-    }
+    }*/
 
 
 
