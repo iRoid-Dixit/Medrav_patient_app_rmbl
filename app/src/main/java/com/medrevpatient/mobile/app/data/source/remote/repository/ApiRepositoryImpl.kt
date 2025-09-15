@@ -8,6 +8,7 @@ import com.medrevpatient.mobile.app.data.source.remote.paging.AddGroupMemberPagi
 import com.medrevpatient.mobile.app.data.source.remote.paging.AdvertisementPagingSource
 import com.medrevpatient.mobile.app.data.source.remote.paging.AllPeoplePagingSource
 import com.medrevpatient.mobile.app.data.source.remote.paging.ApiCallback
+import com.medrevpatient.mobile.app.data.source.remote.paging.AppointmentPagingSource
 import com.medrevpatient.mobile.app.data.source.remote.paging.BlockMemberPagingSource
 import com.medrevpatient.mobile.app.data.source.remote.paging.CommentListPagingSource
 import com.medrevpatient.mobile.app.data.source.remote.paging.FAQQuestionPagingSource
@@ -27,6 +28,7 @@ import com.medrevpatient.mobile.app.model.domain.request.SubscriptionInfoReq
 import com.medrevpatient.mobile.app.model.domain.request.TokenStoreReq
 import com.medrevpatient.mobile.app.model.domain.request.addMember.AddMemberRequest
 import com.medrevpatient.mobile.app.model.domain.request.addMember.GroupMemberRequest
+import com.medrevpatient.mobile.app.model.domain.request.appointment.AvailableSlotsRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.AppUpdateRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.ResetPasswordReq
@@ -48,7 +50,8 @@ import com.medrevpatient.mobile.app.model.domain.response.ApiResponse
 import com.medrevpatient.mobile.app.model.domain.response.ApiResponseNew
 import com.medrevpatient.mobile.app.model.domain.response.TermsResponse
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
-import com.medrevpatient.mobile.app.model.domain.response.archive.ArchiveScreenResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
@@ -63,7 +66,6 @@ import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.A
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
-import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
@@ -299,6 +301,7 @@ class ApiRepositoryImpl @Inject constructor(
     }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
         emit(NetworkResult.Error(cause.message))
     }
+
     override fun singlePostDelete(singlePostReq: SinglePostReq): Flow<NetworkResult<ApiResponse<LegacyPostResponse>>> =
         flow {
             try {
@@ -325,43 +328,15 @@ class ApiRepositoryImpl @Inject constructor(
             emit(NetworkResult.Error(cause.message))
         }
 
-    /** Home Screen */
-    override fun getHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenResponse>>> = flow {
-        try {
-            val response = apiServices.getHomeScreenData()
-
-            if (response.isSuccessful && response.body() != null) {
-                emit(NetworkResult.Success(response.body()!!))
-            } else {
-                emit(NetworkResult.Error(response.errorBody().extractError()))
-            }
-
-        } catch (e: IOException) {
-            // IOException for network failures.
-            emit(NetworkResult.Error(e.message))
-        } catch (e: HttpException) {
-            // HttpException for any non-2xx HTTP status codes.
-            if (e.code() == 401) {
-                emit(NetworkResult.UnAuthenticated(e.message))
-            } else {
-                emit(NetworkResult.Error(e.message))
-            }
-        }
-    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
-        emit(NetworkResult.Error(cause.message))
-    }
-
     /** Patient Home Screen */
     override fun getPatientHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenData>>> = flow {
         try {
             val response = apiServices.getPatientHomeScreenData()
-
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))
             } else {
                 emit(NetworkResult.Error(response.errorBody().extractError()))
             }
-
         } catch (e: IOException) {
             // IOException for network failures.
             emit(NetworkResult.Error(e.message))
@@ -1266,42 +1241,6 @@ class ApiRepositoryImpl @Inject constructor(
         }
 
 
-
-    /**
-     * Archive screen
-     * */
-    override fun getArchiveScreenData(
-        month: Int,
-        year: Int
-    ): Flow<NetworkResult<ApiResponse<ArchiveScreenResponse>>> = flow {
-        try {
-            val response = apiServices.getArchiveScreenData(month = month, year = year)
-
-            if (response.isSuccessful && response.body() != null) {
-                emit(NetworkResult.Success(response.body()!!))
-            } else {
-                emit(NetworkResult.Error(response.errorBody().extractError()))
-            }
-
-        } catch (e: IOException) {
-            // IOException for network failures.
-            emit(NetworkResult.Error(e.message))
-        } catch (e: HttpException) {
-            // HttpException for any non-2xx HTTP status codes.
-            if (e.code() == 401) {
-                emit(NetworkResult.UnAuthenticated(e.message))
-            } else {
-                emit(NetworkResult.Error(e.message))
-            }
-        }
-    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
-        emit(NetworkResult.Error(cause.message))
-    }
-
-
-
-
-
     override fun updateProfile(updateProfileReq: UpdateProfileReq): Flow<NetworkResult<ApiResponse<UserAuthResponse>>> =
         flow {
             try {
@@ -1684,6 +1623,7 @@ class ApiRepositoryImpl @Inject constructor(
     }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
         emit(NetworkResult.Error(cause.message))
     }
+
     override fun submitDietChallengeAnswer(request: DietChallengeSubmitRequest): Flow<NetworkResult<ApiResponse<DietChallengeResponse>>> = flow {
         try {
             val response = apiServices.submitDietChallengeAnswer(request)
@@ -1711,6 +1651,37 @@ class ApiRepositoryImpl @Inject constructor(
     override fun getWeightTrackerData(): Flow<NetworkResult<ApiResponse<WeightTrackerResponse>>> = flow {
         try {
             val response = apiServices.getWeightTrackerData()
+
+            if (response.isSuccessful && response.body() != null) {
+                emit(NetworkResult.Success(response.body()!!))
+            } else {
+                emit(NetworkResult.Error(response.errorBody().extractError()))
+            }
+        } catch (e: IOException) {
+            // IOException for network failures.
+            emit(NetworkResult.Error(e.message))
+        } catch (e: HttpException) {
+            // HttpException for any non-2xx HTTP status codes.
+            if (e.code() == 401) {
+                emit(NetworkResult.UnAuthenticated(e.message))
+            } else {
+                emit(NetworkResult.Error(e.message))
+            }
+        }
+    }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
+        emit(NetworkResult.Error(cause.message))
+    }
+
+    override fun getAppointmentData(status: Int?): Flow<PagingData<AppointmentResponse>> = Pager(
+        config = PagingConfig(pageSize = 20, maxSize = 100, enablePlaceholders = false),
+        pagingSourceFactory = {
+            AppointmentPagingSource(status = status, apiServices)
+        }
+    ).flow
+
+    override fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsResponse>> = flow {
+        try {
+            val response = apiServices.getAvailableSlots(request)
 
             if (response.isSuccessful && response.body() != null) {
                 emit(NetworkResult.Success(response.body()!!))

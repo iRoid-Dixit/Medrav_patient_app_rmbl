@@ -184,7 +184,7 @@ fun InnerCircleInputField(
             DropdownField(
                 list = listOf(stringResource(R.string.tribe), stringResource(R.string.innercircle)),
                 expanded = expanded,
-                selectedRole = createTribeOrInnerCircleUiState.groupSelect,
+                selectedCategory = createTribeOrInnerCircleUiState.groupSelect,
                 onRoleDropDownExpanded = {
                     expanded = it
                 },

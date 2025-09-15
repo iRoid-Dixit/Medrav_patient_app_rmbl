@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,18 +15,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,13 +46,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppBottomNavigation
 import com.medrevpatient.mobile.app.ui.compose.common.AppointmentFilterTabs
 import com.medrevpatient.mobile.app.ui.compose.common.BottomNavItem
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
+import com.medrevpatient.mobile.app.ui.compose.common.loader.CustomLoader
+import com.medrevpatient.mobile.app.ui.compose.common.noFoundRelatedComponent.NoDataFoundContent
+import com.medrevpatient.mobile.app.ui.compose.common.noFoundRelatedComponent.TapHereRefreshContent
 import com.medrevpatient.mobile.app.ui.theme.AppThemeColor
 import com.medrevpatient.mobile.app.ui.theme.BlueChalk
 import com.medrevpatient.mobile.app.ui.theme.GrayBD
@@ -55,7 +72,9 @@ import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 import com.medrevpatient.mobile.app.ui.theme.nunito_sans_700
+import com.medrevpatient.mobile.app.utils.AppUtils
 import com.medrevpatient.mobile.app.utils.AppUtils.noRippleClickable
+
 @ExperimentalMaterial3Api
 @Composable
 fun AppointmentScreen(
@@ -86,12 +105,27 @@ fun AppointmentScreen(
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppointmentScreenContent(
     uiState: AppointmentsUiState,
     appointmentsUiDataFlow: AppointmentsUiDataState?
 ) {
+    val appointmentList = uiState.appointmentList.collectAsLazyPagingItems()
     val keyboardController = LocalSoftwareKeyboardController.current
+    var isUserRefreshing by remember { mutableStateOf(false) }
+
+    // Only show pull-to-refresh indicator when user manually refreshes
+    val isRefreshing = isUserRefreshing && appointmentList.loadState.refresh is LoadState.Loading
+
+    // Track when user manually refreshes
+    LaunchedEffect(appointmentList.loadState.refresh) {
+        if (appointmentList.loadState.refresh is LoadState.NotLoading) {
+            isUserRefreshing = false
+        }
+    }
+    val pullToRefreshState = rememberPullToRefreshState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -107,45 +141,102 @@ private fun AppointmentScreenContent(
             selectedTab = appointmentsUiDataFlow?.selectedTab ?: AppointmentTab.ALL,
             onTabSelected = { tab -> uiState.event(AppointmentsUiEvent.OnTabSelected(tab)) }
         )
-        // Appointments list
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 20.dp),
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(White),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+                .background(Color.White),
         ) {
-            val filteredAppointments = appointmentsUiDataFlow?.appointments?.filter { appointment ->
-                when (appointmentsUiDataFlow.selectedTab) {
-                    AppointmentTab.ALL -> true
-                    AppointmentTab.UPCOMING -> appointment.status == AppointmentStatus.UPCOMING
-                    AppointmentTab.PAST -> appointment.status == AppointmentStatus.PAST || appointment.status == AppointmentStatus.CANCELED
+            PullToRefreshBox(
+                state = pullToRefreshState,
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    isUserRefreshing = true
+                    appointmentList.refresh()
+                },
+                modifier = Modifier.fillMaxSize(),
+                indicator = {
+                    PullToRefreshDefaults.Indicator(
+                        state = pullToRefreshState,
+                        isRefreshing = isRefreshing,
+                        containerColor = White,
+                        color = AppThemeColor,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                    )
                 }
-            } ?: emptyList()
+            ) {
+                appointmentList.loadState.refresh.apply {
+                    when (this) {
+                        is LoadState.Error -> {
+                            Box(
+                                Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                TapHereRefreshContent(onClick = { appointmentList.retry() })
+                            }
+                        }
 
-            items(filteredAppointments) { appointment ->
-                AppointmentCard(
-                    appointment = appointment,
-                    onVideoCallClick = { uiState.event(AppointmentsUiEvent.OnVideoCallClick(appointment.id)) },
-                    onMessageClick = { uiState.event(AppointmentsUiEvent.OnMessageClick(appointment.id)) },
-                    onViewDetailsClick = { uiState.event(AppointmentsUiEvent.ViewDetailsClick)}
-                )
+                        is LoadState.Loading -> {
+                            CustomLoader()
+                        }
+
+                        is LoadState.NotLoading -> {
+                            if (appointmentList.itemCount == 0) {
+                                NoDataFoundContent(text = "No appointments found")
+                            } else {
+                                LazyColumn(
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 15.dp),
+                                ) {
+                                    items(appointmentList.itemCount) { index ->
+                                        appointmentList[index]?.let { response ->
+                                            AppointmentCard(
+                                                appointment = response,
+                                                onVideoCallClick = { },
+                                                onMessageClick = { },
+                                                onViewDetailsClick = { uiState.event(AppointmentsUiEvent.ViewDetailsClick) }
+                                            )
+                                        }
+                                    }
+                                    when (appointmentList.loadState.append) {
+                                        is LoadState.Error -> {
+                                            item {
+                                                TapHereRefreshContent(onClick = { appointmentList.retry() })
+                                            }
+                                        }
+
+                                        LoadState.Loading -> {
+                                            item {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(vertical = 16.dp),
+                                                    contentAlignment = Alignment.TopCenter
+                                                ) {
+                                                    CircularProgressIndicator(color = AppThemeColor)
+                                                }
+                                            }
+                                        }
+
+                                        is LoadState.NotLoading -> Unit
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        // Bottom navigation
-        AppBottomNavigation(
-            items = getBottomNavItems(),
-            onItemClick = { index ->
-                // Handle bottom nav clicks
-            }
-        )
+
     }
 }
 
 @Composable
 fun AppointmentCard(
     modifier: Modifier = Modifier,
-    appointment: AppointmentItem,
+    appointment: AppointmentResponse,
     onVideoCallClick: () -> Unit = {},
     onMessageClick: () -> Unit = {},
     onViewDetailsClick: () -> Unit = {}
@@ -175,10 +266,8 @@ fun AppointmentCard(
                 // horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-                // Date circle
                 DateCircle(
-                    day = appointment.day,
-                    isToday = appointment.isToday
+                    day = AppUtils.getDayFromTimestamp(appointment.appointmentTimestamp),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
 
@@ -195,36 +284,41 @@ fun AppointmentCard(
                     ) {
                         Column {
                             Text(
-                                text = appointment.month,
+                                text = AppUtils.getMonthFromTimestamp(appointment.appointmentTimestamp),
                                 fontSize = 14.sp,
                                 fontFamily = nunito_sans_400,
                                 color = SteelGray.copy(alpha = 0.8f)
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = appointment.time,
+                                text = AppUtils.getFormattedDateTime(appointment.appointmentTimestamp),
                                 fontSize = 14.sp,
                                 fontFamily = nunito_sans_600,
                                 color = SteelGray
                             )
                         }
-                        // Status tag
                         StatusTag(status = appointment.status)
                     }
-
-
                 }
             }
-            // Doctor info
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Image(painter = painterResource(id = R.drawable.ic_place_holder), contentDescription = null, modifier = Modifier.size(45.dp))
-
+                AsyncImage(
+                    model = appointment.doctorInfo.profileImage,
+                    contentDescription = null,
+                    error = painterResource(id = R.drawable.ic_place_holder),
+                    placeholder = painterResource(id = R.drawable.ic_place_holder),
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                    Modifier
+                        .size(45.dp)
+                        .clip(shape = CircleShape)
+                )
                 Column {
                     Text(
-                        text = appointment.doctorName,
+                        text = appointment.doctorInfo.fullName,
                         fontSize = 16.sp,
                         fontFamily = nunito_sans_600,
                         color = SteelGray,
@@ -232,7 +326,7 @@ fun AppointmentCard(
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        text = appointment.doctorSpecialization,
+                        text = appointment.doctorInfo.specialization,
                         fontSize = 14.sp,
                         fontFamily = nunito_sans_400,
                         color = Martinique.copy(alpha = 0.4f),
@@ -241,14 +335,14 @@ fun AppointmentCard(
                     )
                 }
             }
-            // Action buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(painter = painterResource(id = R.drawable.ic_video_icon), contentDescription = null)
-                Spacer(modifier = Modifier.width(16.dp))
+                if (appointment.joinVideoCall){
+                    Image(painter = painterResource(id = R.drawable.ic_video_icon), contentDescription = null)
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
                 Image(painter = painterResource(id = R.drawable.ic_message), contentDescription = null)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -260,21 +354,19 @@ fun AppointmentCard(
                 )
             }
         }
-
     }
 }
 
 @Composable
 private fun DateCircle(
     day: String,
-    isToday: Boolean
-) {
-    val backgroundColor = if (isToday) BlueChalk else BlueChalk.copy(alpha = 0.3f)
+
+    ) {
     Box(
         modifier = Modifier
             .size(45.dp)
             .background(
-                color = backgroundColor,
+                color = BlueChalk,
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center
@@ -290,18 +382,27 @@ private fun DateCircle(
 
 @Composable
 private fun StatusTag(
-    status: AppointmentStatus
+    status: Int
 ) {
     val backgroundColor = when (status) {
-        AppointmentStatus.UPCOMING -> BlueChalk
-        AppointmentStatus.PAST -> Silver.copy(alpha = 0.1f)
-        AppointmentStatus.CANCELED -> RedOrange.copy(alpha = 0.1f)
+        1 -> BlueChalk
+        2 -> Silver.copy(alpha = 0.1f)
+        3 -> RedOrange.copy(alpha = 0.1f)
+        else -> BlueChalk
     }
     val textColors = when (status) {
-        AppointmentStatus.UPCOMING -> AppThemeColor
-        AppointmentStatus.PAST -> GrayBD
-        AppointmentStatus.CANCELED -> RedF7
+        1 -> AppThemeColor
+        2 -> GrayBD
+        3 -> RedF7
+        else -> AppThemeColor
     }
+    val statusText = when (status) {
+        1 -> "Upcoming"
+        2 -> "Past"
+        3 -> "Cancelled"
+        else -> "Unknown"
+    }
+
     Box(
         modifier = Modifier
             .background(
@@ -311,7 +412,7 @@ private fun StatusTag(
             .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         Text(
-            text = status.name.lowercase().replaceFirstChar { it.uppercase() },
+            text = statusText,
             fontSize = 12.sp,
             fontFamily = nunito_sans_600,
             color = textColors,
@@ -319,35 +420,36 @@ private fun StatusTag(
     }
 }
 
+
 private fun getBottomNavItems(): List<BottomNavItem> {
     return listOf(
         BottomNavItem(
-            icon = com.medrevpatient.mobile.app.R.drawable.ic_unselected_home,
-            selectedIcon = com.medrevpatient.mobile.app.R.drawable.ic_selected_home,
+            icon = R.drawable.ic_unselected_home,
+            selectedIcon = R.drawable.ic_selected_home,
             label = "Home",
             isSelected = false
         ),
         BottomNavItem(
-            icon = com.medrevpatient.mobile.app.R.drawable.ic_unselected_appointments,
-            selectedIcon = com.medrevpatient.mobile.app.R.drawable.ic_selected_appointments,
+            icon = R.drawable.ic_unselected_appointments,
+            selectedIcon = R.drawable.ic_selected_appointments,
             label = "Appointments",
             isSelected = true
         ),
         BottomNavItem(
-            icon = com.medrevpatient.mobile.app.R.drawable.ic_unselected_medication,
-            selectedIcon = com.medrevpatient.mobile.app.R.drawable.ic_selected_medication,
+            icon = R.drawable.ic_unselected_medication,
+            selectedIcon = R.drawable.ic_selected_medication,
             label = "Medication",
             isSelected = false
         ),
         BottomNavItem(
-            icon = com.medrevpatient.mobile.app.R.drawable.ic_unselected_message,
-            selectedIcon = com.medrevpatient.mobile.app.R.drawable.ic_selected_message,
+            icon = R.drawable.ic_unselected_message,
+            selectedIcon = R.drawable.ic_selected_message,
             label = "Message",
             isSelected = false
         ),
         BottomNavItem(
-            icon = com.medrevpatient.mobile.app.R.drawable.ic_unselected_profile,
-            selectedIcon = com.medrevpatient.mobile.app.R.drawable.ic_selected_profile,
+            icon = R.drawable.ic_unselected_profile,
+            selectedIcon = R.drawable.ic_selected_profile,
             label = "Profile",
             isSelected = false
         )

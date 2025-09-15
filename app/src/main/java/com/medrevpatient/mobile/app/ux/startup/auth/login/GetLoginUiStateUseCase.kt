@@ -1,9 +1,7 @@
 package com.medrevpatient.mobile.app.ux.startup.auth.login
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.data.source.Constants
@@ -24,10 +22,8 @@ import com.medrevpatient.mobile.app.navigation.NavigationAction.*
 import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
 import com.medrevpatient.mobile.app.utils.AppUtils.showWarningMessage
-
 import com.medrevpatient.mobile.app.utils.connection.NetworkMonitor
 import com.medrevpatient.mobile.app.ux.main.MainActivity
-import com.medrevpatient.mobile.app.ux.startup.auth.register.RegisterRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,7 +37,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
-
 class GetLoginUiStateUseCase
 @Inject constructor(
     private val validationUseCase: ValidationUseCase,
@@ -68,19 +63,15 @@ class GetLoginUiStateUseCase
         }
         return LoginUiState(
             loginDataFlow = loginDataFlow,
-
             event = { authUiEvent ->
                 authEvent(
                     event = authUiEvent,
                     navigate = navigate,
                     coroutineScope = coroutineScope
-
                 )
             }
-
         )
     }
-
     @OptIn(ExperimentalMaterial3Api::class)
     private fun authEvent(
         event: LoginUiEvent,

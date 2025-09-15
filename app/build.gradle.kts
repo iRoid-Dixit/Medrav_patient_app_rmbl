@@ -117,7 +117,7 @@ dependencies {
     // navigation data send activity and compose route
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-
+    implementation(libs.material3)
     implementation(libs.androidx.appcompat.v170)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.places)
@@ -134,7 +134,6 @@ dependencies {
     implementation (libs.androidx.foundation)
     implementation (libs.androidx.material)
 
-    implementation (libs.material3)
     implementation(libs.compose.material3.windowsize)
     implementation (libs.androidx.material3.adaptive.navigation.suite)
 
@@ -154,7 +153,7 @@ dependencies {
     implementation(libs.hilt.android)
 
     //compose
-    implementation(libs.material3)
+    implementation(libs.compose.material3)
     implementation(libs.compose.material3.windowsize)
 
     // Navigation
@@ -193,8 +192,6 @@ dependencies {
     // image load
     implementation(libs.coil.compose)
     // google places api
-
-
 
     // status bar colors changes
     implementation (libs.accompanist.systemuicontroller)

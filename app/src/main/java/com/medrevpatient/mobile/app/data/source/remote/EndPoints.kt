@@ -33,6 +33,8 @@ object EndPoints {
         const val HOME_SCREEN: String = "api/home-screen"
         const val MARK_AS_PLAYED: String = "mark-as-played"
         const val NOTIFICATION_OFF_ON: String = "user/notification-on-off"
+        const val APPOINTMENT_LIST: String = "api/patient/appointment/list"
+        const val AVAILABLE_SLOTS: String = "api/patient/appointment/available-slots"
     }
     object Container {
         const val HOME: String = "home"

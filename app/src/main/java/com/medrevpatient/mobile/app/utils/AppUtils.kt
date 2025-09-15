@@ -31,6 +31,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -64,13 +69,36 @@ object AppUtils {
         }
     }
 
-    fun formatTimestamp(timestamp: Long?): String {
-        return if (timestamp != null) {
-            val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
-            sdf.format(timestamp)
+    fun getMonthFromTimestamp(timestamp: Long): String {
+        val dateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(timestamp),
+            ZoneId.systemDefault()
+        )
+        return dateTime.format(DateTimeFormatter.ofPattern("MMMM yyyy")) // e.g. "July 2023"
+    }
+    fun getFormattedDateTime(timestamp: Long): String {
+        val dateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(timestamp),
+            ZoneId.systemDefault()
+        )
+
+        val today = LocalDate.now(ZoneId.systemDefault())
+        val appointmentDate = dateTime.toLocalDate()
+
+        val timePart = dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+
+        return if (appointmentDate.isEqual(today)) {
+            "Today, $timePart"
         } else {
-            ""
+            dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
         }
+    }
+    fun getDayFromTimestamp(timestamp: Long): String {
+        val dateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(timestamp),
+            ZoneId.systemDefault()
+        )
+        return dateTime.dayOfMonth.toString() // e.g. "15"
     }
 
     fun getFileFromContentUri(context: Context, contentUri: Uri, filename: String): File? {

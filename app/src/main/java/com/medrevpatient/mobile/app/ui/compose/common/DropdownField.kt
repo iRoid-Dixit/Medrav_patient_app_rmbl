@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,8 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
@@ -38,21 +39,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.medrevpatient.mobile.app.R
 import com.medrevpatient.mobile.app.ui.theme.Gray2F
+import com.medrevpatient.mobile.app.ui.theme.Gray40
+import com.medrevpatient.mobile.app.ui.theme.Gray5
+import com.medrevpatient.mobile.app.ui.theme.Gray50
+import com.medrevpatient.mobile.app.ui.theme.SteelGray
 import com.medrevpatient.mobile.app.ui.theme.White
-import com.medrevpatient.mobile.app.ui.theme.White50
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_400
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
+import kotlin.Boolean
 
 @Composable
 fun DropdownField(
     list: List<String>,
     expanded: Boolean,
-    selectedRole: String,
+    selectedCategory: String,
     onRoleDropDownExpanded: (Boolean) -> Unit = {},
     onUserRoleValue: (String) -> Unit = {},
     errorMessage: String? = null,
-    placeholder: String? = "Select Gender"
+    placeholder: String? = "Select Gender",
+    isTitleVisible: Boolean = false,
+    title: String = "",
+    backGroundColor: Color = Gray5,
+    valueTextColor: Color = Black,
+    borderColors: Color = Color.Transparent,
 ) {
-    val dropdownIcon = if (expanded) R.drawable.ic_app_icon else R.drawable.ic_app_icon
+    val dropdownIcon = if (expanded) R.drawable.ic_drop_up else R.drawable.ic_drow_down
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -62,89 +74,90 @@ fun DropdownField(
         else -> Gray2F
     }
 
-        Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+    Column {
+        if (isTitleVisible) {
+            Text(
+                text = title, fontFamily = nunito_sans_600,
+                color = SteelGray,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .background(color = backGroundColor, shape = RoundedCornerShape(15))
+                .fillMaxWidth()
+                .clickable {
+                    onRoleDropDownExpanded(!expanded)
+                }
+                .heightIn(50.dp)
+                .border(width = 1.dp, color = borderColors, shape = RoundedCornerShape(15))
+
+                .clip(RoundedCornerShape(15))
+        ) {
+            Spacer(modifier = Modifier.width(15.dp))
+            Text(
+                text = selectedCategory.ifBlank { placeholder ?: "" },
+                fontSize = 16.sp,
+                fontFamily = nunito_sans_600,
+                color = if (selectedCategory.isNotBlank()) valueTextColor else Gray50,
+                modifier = Modifier.weight(1f)
+            )
+            Image(
+                painter = painterResource(id = dropdownIcon),
+                contentDescription = null,
+            )
+            Spacer(modifier = Modifier.width(15.dp))
+        }
+        if (errorMessage?.isNotEmpty() == true) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontFamily = nunito_sans_600,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                modifier = Modifier.padding(start = 16.dp, top = 10.dp)
+            )
+        }
+        if (expanded) {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        AnimatedVisibility(visible = expanded) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier
-                    .background(color = Gray2F, shape = RoundedCornerShape(10))
                     .fillMaxWidth()
-                    .clickable {
-                        onRoleDropDownExpanded(!expanded)
-                    }
-                    .heightIn(56.dp)
-                    .border(
-                        width = 1.dp,
-                        color = borderColor,
-                        shape = RoundedCornerShape(10)
-                    )
-                    .clip(RoundedCornerShape(10))
+                    .background(Color.White, RoundedCornerShape(10.dp))
             ) {
-                Spacer(modifier = Modifier.width(15.dp))
-                Text(
-                    text = selectedRole.ifBlank { placeholder ?: "" },
-                    fontSize = 14.sp,
-                    fontWeight = W500,
-                    fontFamily = WorkSans,
-                    color = if (selectedRole.isNotEmpty()) White else White50,
-                    modifier = Modifier.weight(1f)
-                )
-               /* Image(
-                    painter = painterResource(id = dropdownIcon),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(if (selectedRole.isNotEmpty()) White else White50),
-                )*/
-                Spacer(modifier = Modifier.width(15.dp))
-            }
-            if (errorMessage?.isNotEmpty() == true) {
-                Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    fontFamily = WorkSans,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    modifier = Modifier.padding(start = 16.dp, top = 10.dp)
-                )
-            }
-            if (expanded){
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            AnimatedVisibility(visible = expanded) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, White, RoundedCornerShape(8.dp)),
-                    color = White,
-                    shape = RoundedCornerShape(8.dp),
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        list.forEachIndexed { index, item ->
-                            Text(
-                                text = item,
-                                fontSize = 16.sp,
-                                fontWeight = W500,
-                                fontFamily = WorkSans,
-                                color = Black,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onUserRoleValue(item)
-                                        onRoleDropDownExpanded(false)
-                                    }
-                                    .padding(
-                                        top = if (index == 0) 20.dp else 10.dp,
-                                        bottom = if (index == list.lastIndex) 20.dp else 10.dp,
-                                        start = 22.dp,
-                                        end = 20.dp
-                                    )
-                            )
-                        }
+                list.forEachIndexed { index, item ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(White)
+                            .border(width = 1.dp, color = SteelGray.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(10.dp))
+                            .clickable {
+                                onUserRoleValue(item)
+                                onRoleDropDownExpanded(false)
+                            }
+                            .padding(vertical = 14.dp, horizontal = 20.dp)
+                    ) {
+                        Text(
+                            text = item,
+                            fontSize = 16.sp,
+                            fontWeight = W500,
+                            fontFamily = WorkSans,
+                            color = Black
+                        )
                     }
                 }
             }
         }
-
+    }
 }
 
 @Preview
@@ -154,12 +167,12 @@ fun RoleDropdownFieldPreview() {
     DropdownField(
         list = listOf(),
         expanded = expanded,
-        selectedRole = "",
+        selectedCategory = "",
         onRoleDropDownExpanded = {
             expanded = it
         },
         onUserRoleValue = {
             expanded = true
         },
-        )
+    )
 }

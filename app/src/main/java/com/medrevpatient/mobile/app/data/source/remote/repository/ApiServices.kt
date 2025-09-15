@@ -14,6 +14,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.appointment.AvailableSlotsRequest
 import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
 import com.medrevpatient.mobile.app.model.domain.request.sideEffect.SideEffectAnswerRequest
@@ -27,7 +28,8 @@ import com.medrevpatient.mobile.app.model.domain.response.ApiResponse
 import com.medrevpatient.mobile.app.model.domain.response.ApiResponseNew
 import com.medrevpatient.mobile.app.model.domain.response.TermsResponse
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
-import com.medrevpatient.mobile.app.model.domain.response.archive.ArchiveScreenResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
@@ -42,9 +44,7 @@ import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.A
 import com.medrevpatient.mobile.app.model.domain.response.container.legacyPost.LegacyPostResponse
 import com.medrevpatient.mobile.app.model.domain.response.container.storege.StorageResponse
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
-import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
-
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
@@ -53,8 +53,6 @@ import com.medrevpatient.mobile.app.model.domain.response.sideEffect.SideEffectQ
 import com.medrevpatient.mobile.app.model.domain.response.subscription.SubscriptionResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.MemberResponse
 import com.medrevpatient.mobile.app.model.domain.response.tribe.TribeResponse
-import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightChartData
-import com.medrevpatient.mobile.app.ux.startup.auth.weightTracker.WeightTrackerData
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -242,9 +240,7 @@ interface ApiServices {
     @DELETE(EndPoints.Auth.ACCOUNT_DELETE)
     suspend fun deleteAccount(): Response<ApiResponse<UserAuthResponse>>
 
-    //home screen
-    @GET(EndPoints.Main.HOME)
-    suspend fun getHomeScreenData(): Response<ApiResponse<HomeScreenResponse>>
+
 
     //patient home screen
     @GET(EndPoints.Main.HOME_SCREEN)
@@ -351,12 +347,7 @@ interface ApiServices {
     @GET(EndPoints.Main.MARK_AS_PLAYED)
     suspend fun markedAudioAsPlayed(@Query("date") date: String): Response<ApiResponse<Any>>
 
-    //Archive screen
-    @GET(EndPoints.Archive.ARCHIVE)
-    suspend fun getArchiveScreenData(
-        @Query("month") month: Int,
-        @Query("year") year: Int
-    ): Response<ApiResponse<ArchiveScreenResponse>>
+
 
 
     @GET(EndPoints.Friends.LIST_INNER_CIRCLE_AND_TRIBE)
@@ -498,5 +489,17 @@ interface ApiServices {
 
     @GET(EndPoints.Auth.WEIGHT_TRACKER_GET)
     suspend fun getWeightTrackerData(): Response<ApiResponse<WeightTrackerResponse>>
+
+    @GET(EndPoints.Main.APPOINTMENT_LIST)
+    suspend fun getAppointmentList(
+        @Query("status") status: Int?,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<ApiResponseNew<AppointmentResponse>>
+
+    @POST(EndPoints.Main.AVAILABLE_SLOTS)
+    suspend fun getAvailableSlots(
+        @Body request: AvailableSlotsRequest
+    ): Response<AvailableSlotsResponse>
 
 }

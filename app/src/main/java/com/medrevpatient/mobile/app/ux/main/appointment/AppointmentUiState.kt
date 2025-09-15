@@ -1,5 +1,7 @@
 package com.medrevpatient.mobile.app.ux.main.appointment
 
+import androidx.paging.PagingData
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -7,7 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 data class AppointmentsUiState(
     //data
     val appointmentsUiDataFlow: StateFlow<AppointmentsUiDataState?> = MutableStateFlow(null),
-
+    val appointmentList: StateFlow<PagingData<AppointmentResponse>> = MutableStateFlow(
+        PagingData.empty()
+    ),
     val event: (AppointmentsUiEvent) -> Unit = {}
 )
 

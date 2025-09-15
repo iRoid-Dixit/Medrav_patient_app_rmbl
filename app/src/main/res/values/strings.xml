@@ -169,7 +169,7 @@
     <string name="please_enter_your_legacy">Please enter your legacy.</string>
     <string name="please_enter_message">Please enter a message</string>
     <string name="please_enter_a_phone_number">Please enter a phone number</string>
-    <string name="please_select_your_gender">Please select your gender</string>
+    <string name="please_select_your_category">Please select your category</string>
     <string name="please_select_your_circle">Please select your circle</string>
     <string name="please_select_your_profile">Please select your profile</string>
     <string name="please_select_your_group_circle">Please select your group circle</string>
@@ -179,7 +179,7 @@
     <string name="you_must_accept_the_terms_and_conditions_to_continue">You must accept the Terms and Conditions to continue</string>
     <string name="you_must_accept_the_community_guidelines_to_continue">You must accept the community guidelines to continue</string>
     <string name="please_select_image_or_video">Please select at least one image or video</string>
-    <string name="please_enter_your_date_of_birth">Please enter your date of birth</string>
+    <string name="please_enter_your_date_of_birth">Please enter your appointment</string>
     <string name="select_at_least_one_member">Please select at least one member.</string>
     <string name="please_select_at_least_one_tribe">Please select at least one Tribe</string>
     <string name="please_select_at_least_one_innercircle">Please select at least one InnerCircle</string>
@@ -214,9 +214,9 @@
     <string name="verify_otp">Verify OTP</string>
     <string name="enter_the_code_send_to_you_via_email">Enter the code send to you via Email\n</string>
     <string name="enter_code">Enter code</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
-    <string name="non_binary">Non Binary</string>
+    <string name="initial_consultation">Initial Consultation</string>
+    <string name="Medication_review">Medication review</string>
+    <string name="weight_loss_management_follow_up">Weight Loss Management Follow up</string>
     <string name="reset_password">Reset Password</string>
     <string name="your_new_password_must_be_different_from_previously_used_password">Your new password must be different from previously used password.</string>
 

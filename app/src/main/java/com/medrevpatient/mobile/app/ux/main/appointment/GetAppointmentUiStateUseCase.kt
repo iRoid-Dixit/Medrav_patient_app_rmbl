@@ -1,12 +1,16 @@
 package com.medrevpatient.mobile.app.ux.main.appointment
 import android.content.Context
 import android.content.Intent
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.medrevpatient.mobile.app.data.source.Constants
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
 import com.medrevpatient.mobile.app.navigation.NavigationAction
 import com.medrevpatient.mobile.app.ux.container.ContainerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class GetAppointmentUiStateUseCase
@@ -14,18 +18,20 @@ class GetAppointmentUiStateUseCase
     private val apiRepository: ApiRepository,
 
 ) {
-    private val searchUiDataFlow = MutableStateFlow(AppointmentsUiDataState().copy(
-        appointments = getSampleAppointments()
-    ))
+    private val searchUiDataFlow = MutableStateFlow(AppointmentsUiDataState())
+
+    private val appointmentList =
+        MutableStateFlow<PagingData<AppointmentResponse>>(PagingData.empty())
     operator fun invoke(
         context: Context,
-        @Suppress("UnusedPrivateProperty")
         coroutineScope: CoroutineScope,
         navigate: (NavigationAction) -> Unit,
     ): AppointmentsUiState {
-
+        // Load initial appointments for "All" tab
+        getAppointment(coroutineScope, AppointmentTab.ALL)
         return AppointmentsUiState(
             appointmentsUiDataFlow = searchUiDataFlow,
+            appointmentList = appointmentList,
             event = { archiveUiEvent ->
                 appointmentsUiEvent(
                     context = context,
@@ -46,6 +52,7 @@ class GetAppointmentUiStateUseCase
         when (event) {
             is AppointmentsUiEvent.OnTabSelected -> {
                 searchUiDataFlow.value = searchUiDataFlow.value.copy(selectedTab = event.tab)
+                getAppointment(coroutineScope, event.tab)
             }
             is AppointmentsUiEvent.OnAppointmentClick -> {
 
@@ -80,49 +87,20 @@ class GetAppointmentUiStateUseCase
         }
     }
 
-    private fun getSampleAppointments(): List<AppointmentItem> {
-        return listOf(
-            AppointmentItem(
-                id = "1",
-                day = "15",
-                month = "July 2023",
-                time = "Today, 10:00 AM",
-                isToday = true,
-                doctorName = "Dr. Mark Wilson",
-                doctorSpecialization = "Weight Management Specialist",
-                status = AppointmentStatus.UPCOMING
-            ),
-            AppointmentItem(
-                id = "2",
-                day = "28",
-                month = "June 2023",
-                time = "10:00 AM",
-                doctorName = "Dr. Mark Wilson",
-                doctorSpecialization = "Weight Management Specialist",
-                status = AppointmentStatus.PAST
-            ),
-            AppointmentItem(
-                id = "3",
-                day = "28",
-                month = "June 2023",
-                time = "10:00 AM",
-                doctorName = "Dr. Mark Wilson",
-                doctorSpecialization = "Weight Management Specialist",
-                status = AppointmentStatus.CANCELED
-            ),
-            AppointmentItem(
-                id = "4",
-                day = "15",
-                month = "July 2023",
-                time = "Today, 11:30 AM",
-                isToday = true,
-                doctorName = "Dr. Mark Wilson",
-                doctorSpecialization = "Weight Management Specialist",
-                status = AppointmentStatus.UPCOMING
-            )
-        )
-    }
 
+
+    private fun getAppointment(coroutineScope: CoroutineScope, tab: AppointmentTab) {
+        coroutineScope.launch {
+            val status = when (tab) {
+                AppointmentTab.ALL -> null
+                AppointmentTab.UPCOMING -> 1
+                AppointmentTab.PAST -> 2
+            }
+            apiRepository.getAppointmentData(status = status).cachedIn(this).collect { pagingData ->
+                appointmentList.value = pagingData
+            }
+        }
+    }
     private fun navigateToContainerScreens(
         context: Context,
         navigate: (NavigationAction) -> Unit,
@@ -132,7 +110,4 @@ class GetAppointmentUiStateUseCase
         intent.putExtra(Constants.IS_COME_FOR, screenName)
         navigate(NavigationAction.NavigateIntent(intent = intent, finishCurrentActivity = false))
     }
-
-
-
 }

@@ -71,7 +71,7 @@ fun DateSelectComponent(
                 .background(color = backGroundColor, shape = RoundedCornerShape(15))
                 .fillMaxWidth()
                 .border(width = 1.dp, color = borderColors, shape = RoundedCornerShape(15))
-                .heightIn(48.dp)
+                .heightIn(50.dp)
                 .clickable { onClick() }
                 .clip(RoundedCornerShape(15))
         ) {

@@ -11,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.sp
+import com.medrevpatient.mobile.app.ui.theme.Black
 import com.medrevpatient.mobile.app.ui.theme.White
 import com.medrevpatient.mobile.app.ui.theme.WorkSans
+import com.medrevpatient.mobile.app.ui.theme.nunito_sans_600
 
 @Composable
 fun NoDataFoundContent(
@@ -30,10 +32,8 @@ fun NoDataFoundContent(
             text = text,
             fontSize = 16.sp,
             maxLines = 1,
-
-            color = White,
-            fontFamily = WorkSans,
-            fontWeight = W600
+            color = Black,
+            fontFamily = nunito_sans_600,
         )
     }
 

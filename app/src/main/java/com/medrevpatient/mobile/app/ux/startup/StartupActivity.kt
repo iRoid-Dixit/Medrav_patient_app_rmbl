@@ -1,4 +1,5 @@
 package com.medrevpatient.mobile.app.ux.startup
+
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -20,48 +21,21 @@ class StartupActivity : BaseActivity<StartupViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val isComeFor = intent.getStringExtra(Constants.IS_COME_FOR) ?: Constants.AppScreen.START_UP
-
         val bundle = intent.extras
         val reset = intent.getStringExtra(Constants.BundleKey.RESET)
         Log.d("TAG", "isComeForm: $isComeFor")
         fitSystemWindow(false)
-        //installSplashScreen()
         enableEdgeToEdge()
         setContent {
-
-               /* MedrevPatientTheme {
-                    StartupScreen(
-                        startDestination = isComeFor,
-                        bundle = bundle ?: Bundle.EMPTY,
-                        restartApp = reset ?: ""
-                    )
-                }*/
-           // MedrevPatientTheme {
-                //Surface(
-                //    modifier = Modifier
-                //        .statusBarsPadding()
-                //        .navigationBarsPadding(),
-                //    contentColor = White,
-                //) {
-                    StartupScreen(
-                        startDestination = isComeFor,
-                        bundle = bundle ?: Bundle.EMPTY,
-                        restartApp = reset ?: ""
-                    )
-               // }
-           // }
-
-            /* GriotLegacyTheme {
-                 StartupScreen(startDestination = isComeFor)
-             }*/
+            StartupScreen(
+                startDestination = isComeFor,
+                bundle = bundle ?: Bundle.EMPTY,
+                restartApp = reset ?: ""
+            )
         }
-
-
     }
-
     override fun onStartup() {
         super.onStartup()
         viewModel.startup()
     }
-
 }

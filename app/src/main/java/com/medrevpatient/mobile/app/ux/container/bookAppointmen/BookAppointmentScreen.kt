@@ -1,6 +1,5 @@
 package com.medrevpatient.mobile.app.ux.container.bookAppointmen
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +51,7 @@ import com.medrevpatient.mobile.app.navigation.scaffold.AppScaffold
 import com.medrevpatient.mobile.app.ui.compose.common.AppButtonComponent
 import com.medrevpatient.mobile.app.ui.compose.common.DatePickerWithDialog
 import com.medrevpatient.mobile.app.ui.compose.common.DateSelectComponent
+import com.medrevpatient.mobile.app.ui.compose.common.DropdownField
 import com.medrevpatient.mobile.app.ui.compose.common.NotesTextArea
 import com.medrevpatient.mobile.app.ui.compose.common.TopBarComponent
 import com.medrevpatient.mobile.app.ui.theme.*
@@ -80,10 +81,8 @@ fun BookAppointmentScreen(
         uiState.event(BookAppointmentUiEvent.GetContext(context))
         BookAppointmentScreenContent(uiState = uiState, event = uiState.event)
     }
-
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
-
 @Composable
 private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event: (BookAppointmentUiEvent) -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -94,92 +93,295 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
     var selectedDateMillis by rememberSaveable { mutableStateOf<Long?>(null) }
     val bookAppointmentUiState by uiState.bookAppointmentUiDataFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top,
+    var expanded by remember { mutableStateOf(false) }
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .noRippleClickable {
                 keyboardController?.hide()
             }
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-            .verticalScroll(rememberScrollState())
     ) {
-        DateSelectComponent(
-            value = bookAppointmentUiState?.selectedDate ?: "",
-            header = "mm/dd/yyyy",
-            isTitleVisible = true,
-            backGroundColor = White,
-            borderColors = SteelGray.copy(alpha = 0.2f),
-            title = "Select Date",
-            trailingIcon = R.drawable.ic_calendar,
-            onClick = {
-                event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(true))
-            }
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        // Select Time Section
-        TimeSlotComponent(
-            selectedTime = bookAppointmentUiState?.selectedTime ?: "09:00 AM",
-            selectedTimePeriod = bookAppointmentUiState?.selectedTimePeriod ?: "Morning",
-            availableTimeSlots = bookAppointmentUiState?.availableTimeSlots ?: listOf(
-                "08:00 AM", "08:15 AM", "08:30 AM", "08:45 AM",
-                "09:00 AM", "09:15 AM", "09:30 AM", "09:45 AM",
-                "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
-                "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM"
-            ),
-            unavailableTimeSlots = bookAppointmentUiState?.unavailableTimeSlots ?: listOf("10:00 PM"),
-            timePeriods = bookAppointmentUiState?.timePeriods ?: listOf("Morning", "Afternoon", "Evening"),
-            isDropdownExpanded = bookAppointmentUiState?.isTimePeriodDropdownExpanded ?: false,
-            onTimeSelected = { time ->
-                event(BookAppointmentUiEvent.SelectTime(time))
-            },
-            onTimePeriodSelected = { period ->
-                event(BookAppointmentUiEvent.SelectTimePeriod(period))
-            },
-            onDropdownExpanded = { expanded ->
-                event(BookAppointmentUiEvent.ToggleTimePeriodDropdown(expanded))
-            }
-        )
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 20.dp)
+        ) {
+            DateSelectComponent(
+                value = bookAppointmentUiState?.selectedDate ?: "",
+                header = "mm/dd/yyyy",
+                isTitleVisible = true,
+                backGroundColor = White,
+                errorMessage =bookAppointmentUiState?.selectedDateErrorFlow ?: "" ,
+                borderColors = SteelGray.copy(alpha = 0.2f),
+                title = "Select Date",
+                trailingIcon = R.drawable.ic_calendar,
+                onClick = {
+                    event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(true))
+                }
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            
+            // Select Time Section - Modified to avoid nested scrolling
+            TimeSlotComponentFixed(
+                selectedTime = bookAppointmentUiState?.selectedTime ?: "09:00 AM",
+                selectedTimePeriod = bookAppointmentUiState?.selectedTimePeriod ?: "Morning",
+                availableTimeSlots = bookAppointmentUiState?.availableTimeSlots ?: listOf(
+                    "08:00 AM", "08:15 AM", "08:30 AM", "08:45 AM",
+                    "09:00 AM", "09:15 AM", "09:30 AM", "09:45 AM",
+                    "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
+                    "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM"
+                ),
+                unavailableTimeSlots = bookAppointmentUiState?.unavailableTimeSlots ?: listOf("10:00 PM"),
+                timePeriods = bookAppointmentUiState?.timePeriods ?: listOf("Morning", "Afternoon", "Evening"),
+                isDropdownExpanded = bookAppointmentUiState?.isTimePeriodDropdownExpanded ?: false,
+                isLoading = bookAppointmentUiState?.isLoadingSlots ?: false,
+                onTimeSelected = { time ->
+                    event(BookAppointmentUiEvent.SelectTime(time))
+                },
+                onTimePeriodSelected = { period ->
+                    event(BookAppointmentUiEvent.SelectTimePeriod(period))
+                },
+                onDropdownExpanded = { expanded ->
+                    event(BookAppointmentUiEvent.ToggleTimePeriodDropdown(expanded))
+                },
+                errorMessage = bookAppointmentUiState?.timeSelectErrorFlow ?: bookAppointmentUiState?.slotsError
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            DropdownField(
+                list = listOf(
+                    stringResource(R.string.initial_consultation),
+                    stringResource(R.string.Medication_review),
+                    stringResource(R.string.weight_loss_management_follow_up)
+                ),
+                valueTextColor = SteelGray,
+                isTitleVisible = true,
+                backGroundColor = White,
+                borderColors = SteelGray.copy(alpha = 0.2f),
+                title = "Select Category",
+                expanded = expanded,
+                selectedCategory = bookAppointmentUiState?.selectCategory ?: "",
+                onRoleDropDownExpanded = {
+                    expanded = it
+                },
+                errorMessage = bookAppointmentUiState?.selectCategoryErrorMsg,
+                onUserRoleValue = {
+                    event(BookAppointmentUiEvent.RoleDropDownExpanded(it))
+                },
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // Additional Notes Section
-        NotesTextArea(
-            value = bookAppointmentUiState?.additionalNotes ?: "",
-            onValueChange = { notes ->
-                event(BookAppointmentUiEvent.UpdateNotes(notes))
-            }
-        )
+            // Additional Notes Section
+            NotesTextArea(
+                value = bookAppointmentUiState?.additionalNotes ?: "",
+                onValueChange = { notes ->
+                    event(BookAppointmentUiEvent.UpdateNotes(notes))
+                }
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            // Confirm Booking Button
+            AppButtonComponent(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Confirm Booking",
+                onClick = {
+                    event(BookAppointmentUiEvent.ConfirmBooking)
+                }
+            )
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Confirm Booking Button
-        AppButtonComponent(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Confirm Booking",
-            onClick = {
-                event(BookAppointmentUiEvent.ConfirmBooking)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+        
+        if (bookAppointmentUiState?.isDatePickerVisible == true) {
+            DatePickerWithDialog(
+                onSelectedDate = selectedDateMillis,
+                onDateSelected = { dateString ->
+                    event(BookAppointmentUiEvent.SelectDate(dateString))
+                    event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(false))
+                },
+                onDismiss = {
+                    event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(false))
+                },
+                onDateSelectedLong = {
+                    selectedDateMillis = it
+                }
+            )
+        }
     }
-   if (bookAppointmentUiState?.isDatePickerVisible == true) {
-       DatePickerWithDialog(
-           onSelectedDate = selectedDateMillis,
-           onDateSelected = { dateString ->
-                event(BookAppointmentUiEvent.SelectDate(dateString))
-                event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(false))
-           },
-           onDismiss = {
-               event(BookAppointmentUiEvent.BookAppointmentSheetVisibility(false))
-           },
-           onDateSelectedLong = {
-               selectedDateMillis = it
-           }
-       )
-   }
+}
+@Composable
+fun TimeSlotComponentFixed(
+    selectedTime: String,
+    selectedTimePeriod: String,
+    availableTimeSlots: List<String>,
+    unavailableTimeSlots: List<String>,
+    timePeriods: List<String>,
+    isDropdownExpanded: Boolean,
+    isLoading: Boolean = false,
+    onTimeSelected: (String) -> Unit,
+    onTimePeriodSelected: (String) -> Unit,
+    onDropdownExpanded: (Boolean) -> Unit,
+    errorMessage: String? = null,
+) {
+    Column {
+        // Time Period Dropdown
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Select Time",
+                fontFamily = nunito_sans_600,
+                color = SteelGray,
+                fontSize = 16.sp,
+            )
+            Box {
+                Row(
+                    modifier = Modifier
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .border(width = 1.dp, color = SteelGray.copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp))
+                        .clickable { onDropdownExpanded(!isDropdownExpanded) }
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedTimePeriod,
+                        fontFamily = nunito_sans_600,
+                        color = SteelGray,
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_arrow_down),
+                        contentDescription = "Dropdown",
+                    )
+                }
+                DropdownMenu(
+                    expanded = isDropdownExpanded,
+                    onDismissRequest = { onDropdownExpanded(false) }
+                ) {
+                    timePeriods.forEach { period ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = period,
+                                    fontFamily = nunito_sans_600,
+                                    color = SteelGray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            onClick = {
+                                onTimePeriodSelected(period)
+                                onDropdownExpanded(false)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        Text(
+            text = "Select a convenient time",
+            fontFamily = nunito_sans_400,
+            color = Martinique.copy(alpha = 0.5f),
+            fontSize = 12.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Replace LazyVerticalGrid with Column and Rows to avoid nested scrolling
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (isLoading) {
+                // Show loading indicator
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Loading available slots...",
+                        fontFamily = nunito_sans_400,
+                        color = SteelGray,
+                        fontSize = 14.sp
+                    )
+                }
+            } else {
+                // Create rows of 3 items each
+                availableTimeSlots.chunked(3).forEach { rowItems ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(15.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        rowItems.forEach { timeSlot ->
+                            val isSelected = timeSlot == selectedTime
+                            val isUnavailable = unavailableTimeSlots.contains(timeSlot)
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .background(
+                                        color = when {
+                                            isUnavailable -> Gray20
+                                            isSelected -> Magnolia
+                                            else -> White
+                                        },
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .border(
+                                        width = 1.dp,
+                                        color = when {
+                                            isUnavailable -> Gray20
+                                            isSelected -> AppThemeColor
+                                            else -> Gray5
+                                        },
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .clickable(enabled = !isUnavailable) {
+                                        if (!isUnavailable) {
+                                            onTimeSelected(timeSlot)
+                                        }
+                                    }
+                                    .padding(vertical = 10.dp, horizontal = 12.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = timeSlot,
+                                    fontFamily = nunito_sans_400,
+                                    color = when {
+                                        isUnavailable -> Gray20
+                                        isSelected -> AppThemeColor
+                                        else -> SteelGray
+                                    },
+                                    fontSize = 14.sp,
+                                )
+                            }
+                        }
+                        repeat(3 - rowItems.size) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+            if (errorMessage?.isNotEmpty() == true) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    fontFamily = nunito_sans_600,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    modifier = Modifier.padding(start = 16.dp, top = 7.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -262,12 +464,11 @@ fun TimeSlotComponent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Time Slots Grid
         LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            columns = GridCells.Fixed(3), // ✅ 3 slots per row
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.height(200.dp)
+
         ) {
             items(availableTimeSlots) { timeSlot ->
                 val isSelected = timeSlot == selectedTime
@@ -277,39 +478,38 @@ fun TimeSlotComponent(
                     modifier = Modifier
                         .background(
                             color = when {
-                                isUnavailable -> Gray5
-                                isSelected -> AppThemeColor
+                                isUnavailable -> Gray20
+                                isSelected -> Magnolia
                                 else -> White
                             },
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = when {
-                                isUnavailable -> Gray5
+                                isUnavailable -> Gray20
                                 isSelected -> AppThemeColor
                                 else -> Gray5
                             },
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .clickable(enabled = !isUnavailable) {
                             if (!isUnavailable) {
                                 onTimeSelected(timeSlot)
                             }
                         }
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 10.dp, horizontal = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = timeSlot,
-                        fontFamily = nunito_sans_600,
+                        fontFamily = nunito_sans_400,
                         color = when {
-                            isUnavailable -> Gray40
-                            isSelected -> White
+                            isUnavailable -> Gray20
+                            isSelected -> AppThemeColor
                             else -> SteelGray
                         },
-                        fontSize = 12.sp,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                        fontSize = 14.sp,
                     )
                 }
             }

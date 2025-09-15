@@ -17,6 +17,7 @@ import com.medrevpatient.mobile.app.model.domain.request.authReq.LogInRequest
 import com.medrevpatient.mobile.app.model.domain.request.authReq.SignUpReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.UpdateProfileReq
 import com.medrevpatient.mobile.app.model.domain.request.authReq.VerifyOTPReq
+import com.medrevpatient.mobile.app.model.domain.request.appointment.AvailableSlotsRequest
 import com.medrevpatient.mobile.app.model.domain.request.bmi.BmiCalculateRequest
 import com.medrevpatient.mobile.app.model.domain.request.imagePostionReq.ImagePositionReq
 import com.medrevpatient.mobile.app.model.domain.request.sideEffect.SideEffectAnswerRequest
@@ -30,7 +31,8 @@ import com.medrevpatient.mobile.app.model.domain.response.ApiResponse
 import com.medrevpatient.mobile.app.model.domain.response.ApiResponseNew
 import com.medrevpatient.mobile.app.model.domain.response.TermsResponse
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
-import com.medrevpatient.mobile.app.model.domain.response.archive.ArchiveScreenResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
@@ -47,7 +49,6 @@ import com.medrevpatient.mobile.app.model.domain.response.container.storege.Stor
 import com.medrevpatient.mobile.app.model.domain.response.dietChallenge.DietChallengeResponse
 import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenData
 import com.medrevpatient.mobile.app.model.domain.response.weightTracker.WeightTrackerResponse
-import com.medrevpatient.mobile.app.model.domain.response.home.HomeScreenResponse
 import com.medrevpatient.mobile.app.model.domain.response.message.MessageResponse
 import com.medrevpatient.mobile.app.model.domain.response.notification.NotificationResponse
 import com.medrevpatient.mobile.app.model.domain.response.searchPeople.SearchPeopleResponse
@@ -313,9 +314,6 @@ interface ApiRepository {
     fun addRemoveGroupMember(groupMemberRequest: GroupMemberRequest): Flow<NetworkResult<ApiResponse<UnblockResponse>>>
 
 
-    /** Home Screen */
-    fun getHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenResponse>>>
-
     /** Patient Home Screen */
     fun getPatientHomeScreenData(): Flow<NetworkResult<ApiResponse<HomeScreenData>>>
 
@@ -327,10 +325,7 @@ interface ApiRepository {
     /** image position change  */
     fun imagePositionChange(imagePositionReq: ImagePositionReq): Flow<NetworkResult<ApiResponse<MessageResponse>>>
 
-    fun getArchiveScreenData(month: Int, year: Int): Flow<NetworkResult<ApiResponse<ArchiveScreenResponse>>>
-    /**
-     * Paging Request
-     * */
+
 
 
     fun getTribeList(type:Int): Flow<PagingData<TribeResponse>>
@@ -436,5 +431,16 @@ interface ApiRepository {
      * Get Weight Tracker Data
      * */
     fun getWeightTrackerData(): Flow<NetworkResult<ApiResponse<WeightTrackerResponse>>>
+
+    /**
+     * Get Appointment
+     * */
+    fun getAppointmentData(status: Int?): Flow<PagingData<AppointmentResponse>>
+
+    /**
+     * Get Available Slots
+     * */
+    fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsResponse>>
+
 
 }
