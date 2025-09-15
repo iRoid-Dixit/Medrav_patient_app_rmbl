@@ -51,7 +51,7 @@ import com.medrevpatient.mobile.app.model.domain.response.ApiResponseNew
 import com.medrevpatient.mobile.app.model.domain.response.TermsResponse
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
-import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsData
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
@@ -1679,7 +1679,7 @@ class ApiRepositoryImpl @Inject constructor(
         }
     ).flow
 
-    override fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsResponse>> = flow {
+    override fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsData>> = flow {
         try {
             val response = apiServices.getAvailableSlots(request)
 

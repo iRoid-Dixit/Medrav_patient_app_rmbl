@@ -170,7 +170,7 @@ class GetBookAppointmentUiStateUseCase
                             bookAppointmentUiDataFlow.update { it.copy(isLoadingSlots = true) }
                         }
                         is NetworkResult.Success -> {
-                            val availableSlots = result.data?.data?.availableSlots
+                            val availableSlots = result.data?.availableSlots
                             val availableTimeSlots = availableSlots
                                 ?.filter { it.isAvailable }
                                 ?.map { formatTimeSlot(it.time) }

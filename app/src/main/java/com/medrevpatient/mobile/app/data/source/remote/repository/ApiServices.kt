@@ -29,7 +29,7 @@ import com.medrevpatient.mobile.app.model.domain.response.ApiResponseNew
 import com.medrevpatient.mobile.app.model.domain.response.TermsResponse
 import com.medrevpatient.mobile.app.model.domain.response.advertisement.AdvertisementResponse
 import com.medrevpatient.mobile.app.model.domain.response.appointment.AppointmentResponse
-import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsResponse
+import com.medrevpatient.mobile.app.model.domain.response.appointment.AvailableSlotsData
 import com.medrevpatient.mobile.app.model.domain.response.auth.AppUpdateResponse
 import com.medrevpatient.mobile.app.model.domain.response.auth.UserAuthResponse
 import com.medrevpatient.mobile.app.model.domain.response.bmi.BmiCalculateResponse
@@ -66,9 +66,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Query
-
 interface ApiServices {
-
     @POST(EndPoints.Auth.LOG_IN)
     suspend fun doLoginIn(
         @Body logInRequest: LogInRequest
@@ -500,6 +498,6 @@ interface ApiServices {
     @POST(EndPoints.Main.AVAILABLE_SLOTS)
     suspend fun getAvailableSlots(
         @Body request: AvailableSlotsRequest
-    ): Response<AvailableSlotsResponse>
+    ): Response<AvailableSlotsData>
 
 }
