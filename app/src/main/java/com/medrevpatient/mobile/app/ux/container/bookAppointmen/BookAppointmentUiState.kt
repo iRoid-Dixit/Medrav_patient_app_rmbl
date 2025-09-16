@@ -22,9 +22,7 @@ data class BookAppointmentData(
     val selectCategoryErrorMsg: String? = null,
     val isDatePickerVisible: Boolean = false,
     val isTimePeriodDropdownExpanded: Boolean = false,
-    var availableTimeSlots: List<String> = listOf(
-
-    ),
+    var availableTimeSlots: List<String> = listOf(),
     val unavailableTimeSlots: List<String> = listOf("10:00 PM"),
     val timePeriods: List<String> = listOf("Morning", "Afternoon", "Evening"),
     val isLoadingSlots: Boolean = false,

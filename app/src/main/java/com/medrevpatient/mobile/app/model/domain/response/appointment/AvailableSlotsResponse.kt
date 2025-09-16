@@ -28,3 +28,4 @@ data class AvailableSlot(
     val timestamp: Long
 )
 
+

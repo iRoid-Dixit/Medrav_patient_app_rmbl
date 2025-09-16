@@ -143,6 +143,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                 timePeriods = bookAppointmentUiState?.timePeriods ?: listOf("Morning", "Afternoon", "Evening"),
                 isDropdownExpanded = bookAppointmentUiState?.isTimePeriodDropdownExpanded ?: false,
                 isLoading = bookAppointmentUiState?.isLoadingSlots ?: false,
+                isEnabled = bookAppointmentUiState?.selectedDate?.isNotBlank() == true,
                 onTimeSelected = { time ->
                     event(BookAppointmentUiEvent.SelectTime(time))
                 },
@@ -152,14 +153,15 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                 onDropdownExpanded = { expanded ->
                     event(BookAppointmentUiEvent.ToggleTimePeriodDropdown(expanded))
                 },
-                errorMessage = bookAppointmentUiState?.timeSelectErrorFlow ?: bookAppointmentUiState?.slotsError
+                errorMessage = bookAppointmentUiState?.timeSelectErrorFlow
             )
             Spacer(modifier = Modifier.height(20.dp))
             DropdownField(
                 list = listOf(
+                    stringResource(R.string.weight_loss_management_follow_up),
                     stringResource(R.string.initial_consultation),
-                    stringResource(R.string.Medication_review),
-                    stringResource(R.string.weight_loss_management_follow_up)
+                    stringResource(R.string.initial_consultation),
+                    stringResource(R.string.Medication_review)
                 ),
                 valueTextColor = SteelGray,
                 isTitleVisible = true,
@@ -176,10 +178,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                     event(BookAppointmentUiEvent.RoleDropDownExpanded(it))
                 },
             )
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            // Additional Notes Section
             NotesTextArea(
                 value = bookAppointmentUiState?.additionalNotes ?: "",
                 onValueChange = { notes ->
@@ -187,7 +186,6 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                 }
             )
             Spacer(modifier = Modifier.height(32.dp))
-            // Confirm Booking Button
             AppButtonComponent(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Confirm Booking",
@@ -195,7 +193,6 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                     event(BookAppointmentUiEvent.ConfirmBooking)
                 }
             )
-
             Spacer(modifier = Modifier.height(20.dp))
         }
 
@@ -226,13 +223,13 @@ fun TimeSlotComponentFixed(
     timePeriods: List<String>,
     isDropdownExpanded: Boolean,
     isLoading: Boolean = false,
+    isEnabled: Boolean = true,
     onTimeSelected: (String) -> Unit,
     onTimePeriodSelected: (String) -> Unit,
     onDropdownExpanded: (Boolean) -> Unit,
     errorMessage: String? = null,
 ) {
     Column {
-        // Time Period Dropdown
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,33 +245,39 @@ fun TimeSlotComponentFixed(
                 Row(
                     modifier = Modifier
                         .background(
-                            color = White,
+                            color = if (isEnabled) White else White.copy(alpha = 0.5f),
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .border(width = 1.dp, color = SteelGray.copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp))
-                        .clickable { onDropdownExpanded(!isDropdownExpanded) }
+                        .border(
+                            width = 1.dp,
+                            color = if (isEnabled) SteelGray.copy(alpha = 0.2f) else Gray20.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .noRippleClickable {
+                            if (isEnabled) onDropdownExpanded(!isDropdownExpanded)
+                        }
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = selectedTimePeriod,
+                        text = if (isEnabled) selectedTimePeriod else "Select date first",
                         fontFamily = nunito_sans_600,
-                        color = SteelGray,
+                        color = if (isEnabled) SteelGray else Gray20,
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Image(
                         painter = painterResource(id = R.drawable.ic_arrow_down),
                         contentDescription = "Dropdown",
+                        alpha = if (isEnabled) 1f else 0.5f
                     )
                 }
                 DropdownMenu(
                     expanded = isDropdownExpanded,
                     onDismissRequest = { onDropdownExpanded(false) },
                     modifier = Modifier.background(Color.Transparent),
-                    offset = DpOffset(x = 0.dp, y = 8.dp), // optional: to create spacing
+                    offset = DpOffset(x = 0.dp, y = 0.dp),
                     properties = PopupProperties(focusable = true),
-                    // 🟢 Transparent background, no shadow
                     tonalElevation = 0.dp,
                     shadowElevation = 0.dp,
                     containerColor = Color.Transparent
@@ -406,9 +409,6 @@ fun TimeSlotComponentFixed(
         }
     }
 }
-
-
-
 
 @Preview
 @Composable

@@ -69,12 +69,12 @@ class GetBookAppointmentUiStateUseCase
                 this.context = event.context
             }
             is BookAppointmentUiEvent.SelectDate -> {
-                bookAppointmentUiDataFlow.update { it.copy(selectedDate = event.date) }
+                bookAppointmentUiDataFlow.update { it.copy(selectedDate = event.date, selectedDateErrorFlow = null) }
                 // Fetch available slots when date is selected
                 fetchAvailableSlots(coroutineScope = coroutineScope)
             }
             is BookAppointmentUiEvent.SelectTime -> {
-                bookAppointmentUiDataFlow.update { it.copy(selectedTime = event.time) }
+                bookAppointmentUiDataFlow.update { it.copy(selectedTime = event.time, timeSelectErrorFlow = null) }
             }
             is BookAppointmentUiEvent.SelectTimePeriod -> {
                 bookAppointmentUiDataFlow.update { it.copy(selectedTimePeriod = event.period) }
@@ -96,27 +96,41 @@ class GetBookAppointmentUiStateUseCase
             is BookAppointmentUiEvent.ConfirmBooking -> {
                 if (!isOffline.value) {
                     validationUseCase.apply {
+                        val currentState = bookAppointmentUiDataFlow.value
+                        
+                        // Always validate date and category
                         val dateValidationResult = dateOfBirthValidation(
-                            bookAppointmentUiDataFlow.value.selectedDate,
+                            currentState.selectedDate,
                             context
                         )
                         val patientCategoryValidationResult =
-                            genderValidation(bookAppointmentUiDataFlow.value.selectCategory, context)
+                            genderValidation(currentState.selectCategory, context)
+                        
+                        // Only validate time if date is selected
+                        val timeValidationResult = if (currentState.selectedDate.isNotBlank()) {
+                            timeSelectionValidation(currentState.selectedTime, context)
+                        } else {
+                            ValidationResult(isSuccess = true, errorMsg = null)
+                        }
+                        
                         val hasError = listOf(
                             dateValidationResult,
                             patientCategoryValidationResult,
+                            timeValidationResult,
                         ).any { !it.isSuccess }
+                        
                         bookAppointmentUiDataFlow.update { state ->
                             state.copy(
-                                selectCategoryErrorMsg = dateValidationResult.errorMsg,
-                                selectedDateErrorFlow =patientCategoryValidationResult.errorMsg,
+                                selectCategoryErrorMsg = patientCategoryValidationResult.errorMsg,
+                                selectedDateErrorFlow = dateValidationResult.errorMsg,
+                                timeSelectErrorFlow = timeValidationResult.errorMsg,
                             )
                         }
                         if (hasError) return
                     }
-                 // navigate(NavigationAction.Navigate(VerifyOtpRoute.createRoute(email = registerUiDataState.value.email?.trim()?:"", screenName = Constants.AppScreen.REGISTER_SCREEN)))
+                    // navigate(NavigationAction.Navigate(VerifyOtpRoute.createRoute(email = registerUiDataState.value.email?.trim()?:"", screenName = Constants.AppScreen.REGISTER_SCREEN)))
                 } else {
-                   AppUtils.showWarningMessage(
+                    AppUtils.showWarningMessage(
                         this.context,
                         context.getString(R.string.please_check_your_internet_connection_first)
                     )
@@ -126,10 +140,7 @@ class GetBookAppointmentUiStateUseCase
                 bookAppointmentUiDataFlow.update { state ->
                     state.copy(
                         selectCategory = event.selectGender,
-                        selectCategoryErrorMsg = genderValidation(
-                            event.selectGender,
-                            context = context
-                        ).errorMsg
+                        selectCategoryErrorMsg = null // Clear error when user makes selection
                     )
                 }
             }
@@ -148,6 +159,13 @@ class GetBookAppointmentUiStateUseCase
         )
     }
 
+    private fun timeSelectionValidation(time: String, context: Context): ValidationResult {
+        return ValidationResult(
+            isSuccess = time.isNotBlank(),
+            errorMsg = if (time.isBlank()) context.getString(R.string.please_select_time) else null
+        )
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     private fun fetchAvailableSlots(
         coroutineScope: CoroutineScope,
@@ -157,10 +175,8 @@ class GetBookAppointmentUiStateUseCase
                 date = convertDateToApiFormat(bookAppointmentUiDataFlow.value.selectedDate),
                 timePeriod = getTimePeriodNumber(bookAppointmentUiDataFlow.value.selectedTimePeriod)
             )
-            // Set loading state
-            bookAppointmentUiDataFlow.update { state ->
-                state.copy(isLoadingSlots = true, slotsError = null)
-            }
+
+
             apiRepository.getAvailableSlots(availableSlotsRequest).collect {
                 when (it) {
                     is NetworkResult.Error -> {
@@ -193,7 +209,7 @@ class GetBookAppointmentUiStateUseCase
     private fun showOrHideLoader(showLoader: Boolean) {
         bookAppointmentUiDataFlow.update { state ->
             state.copy(
-                isLoadingSlots = showLoader
+                showLoader = showLoader
             )
         }
     }
@@ -213,7 +229,7 @@ class GetBookAppointmentUiStateUseCase
             val parts = time.split(":")
             val hour = parts[0].toInt()
             val minute = parts[1]
-            
+
             when {
                 hour == 0 -> "12:$minute AM"
                 hour < 12 -> "$time AM"

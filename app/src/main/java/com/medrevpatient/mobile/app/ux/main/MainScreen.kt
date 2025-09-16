@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.medrevpatient.mobile.app.navigation.HandleNavBarNavigation
 import com.medrevpatient.mobile.app.navigation.graph.AppMainGraph
 import com.medrevpatient.mobile.app.navigation.scaffold.AppNavBarData
@@ -22,10 +21,8 @@ fun MainScreen(
     startDestination: String,
 ) {
     val navController = rememberNavController()
-    val systemUi = rememberSystemUiController()
     val currBackStackState by navController.currentBackStackEntryAsState()
     val currDestination = currBackStackState?.destination
-    val context = LocalContext.current
     AppScaffold(
         containerColor = White,
         navBarData = AppNavBarData(

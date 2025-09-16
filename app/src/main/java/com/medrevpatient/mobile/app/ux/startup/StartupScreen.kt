@@ -1,15 +1,12 @@
 package com.medrevpatient.mobile.app.ux.startup
-import android.app.Activity
 import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.medrevpatient.mobile.app.navigation.HandleNavigation
 import com.medrevpatient.mobile.app.navigation.graph.AppStartUpGraph
 import com.medrevpatient.mobile.app.utils.ext.requireActivity
-
 @Composable
 fun StartupScreen(
     viewModel: StartupViewModel = hiltViewModel(LocalContext.current.requireActivity()),
@@ -18,7 +15,6 @@ fun StartupScreen(
     bundle: Bundle
 ) {
     val navController = rememberNavController()
-
     AppStartUpGraph(
         navController = navController,
         startDestination = startDestination,

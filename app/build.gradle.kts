@@ -113,14 +113,14 @@ dependencies {
     implementation(libs.androidx.datastore.core)
     implementation(libs.material)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
+
     // navigation data send activity and compose route
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.material3)
     implementation(libs.androidx.appcompat.v170)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.places)
+
+
     implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -176,7 +176,6 @@ dependencies {
     // Logging
     implementation(libs.kermit)
 
-
     //coroutine
     implementation(libs.kotlinx.coroutines.android)
 
@@ -193,35 +192,17 @@ dependencies {
     implementation(libs.coil.compose)
     // google places api
 
-    // status bar colors changes
-    implementation (libs.accompanist.systemuicontroller)
-
-    // pager
-    implementation (libs.accompanist.pager)
-
     // custom toast
     implementation (libs.cookiebar2)
 
-    implementation (libs.androidx.camera.core)
-    implementation (libs.androidx.camera.camera2)
-    implementation (libs.androidx.camera.lifecycle)
-    implementation (libs.androidx.camera.view)
-    implementation (libs.androidx.camera.extensions)
     // permission issue
     implementation (libs.androidx.activity.compose.v193)
     implementation (libs.accompanist.permissions)
-    // map load
-    //implementation(libs.maps.compose)
-    implementation (libs.play.services.location)
-    // refresh layout
-    implementation (libs.accompanist.swiperefresh)
 
     // google login
     implementation (libs.play.services.auth)
 
     implementation(libs.firebase.auth.ktx)
-
-    implementation(libs.facebook.android.sdk)
 
     //chart
     implementation (libs.compose.charts)

@@ -1,5 +1,6 @@
 package com.medrevpatient.mobile.app.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 
@@ -89,8 +90,11 @@ val TickleMePink = Color(0xFFFF748C)
 val Buttercup = Color(0xFFF59E0B)
 val CornflowerLilac = Color(0xFFFFAEA8)
 val Mauve = Color(0xFFF6C3FF)
-
-
+val violetsAreBlue = Color(0xFF9261FA)
+val ghostWhite = Color(0xFFFBF8FF)
+val spaceCadetA60 = Color(0x992C2C51)
+val fulvous = Color(0xFFDB8301)
+val whiteBrush = Brush.linearGradient(colors = listOf(White, White))
 // Weight Tracker Colors
 val ElectricViolet = Color(0xFF9333EA)
 val PurpleLight = Color(0xFFE8E0FF)
@@ -108,3 +112,4 @@ val RedE4 = Color(0xFFEF4444)
 val GrayBD = Color(0xFFBDBDBD)
 val Silver = Color(0xFFBDBDBD)
 val RedOrange = Color(0xFFFF3333)
+val lavender = Color(0xFFEFE8FF)
