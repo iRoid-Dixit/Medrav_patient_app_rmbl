@@ -215,6 +215,20 @@ object UserData {
         StatusIndicatorData(R.drawable.ic_pause, 0, "Skipped", fulvous),
         StatusIndicatorData(R.drawable.ic_wrong_mark, 1, "Missed", RedOrange),
     )
+
+    //Replace with real data model
+    data class QuestionItem(
+        val id: Int,
+        val question: String,
+        val answer: String,
+    )
+    val frequentlyAskedQuestions = List(4){
+        QuestionItem(
+            id = it,
+            question = "How do I reset my password?",
+            answer = "To reset your password, go to the login screen and click on 'Forgot Password'. Follow the instructions sent to your registered email address."
+        )
+    }
 }
 
 
