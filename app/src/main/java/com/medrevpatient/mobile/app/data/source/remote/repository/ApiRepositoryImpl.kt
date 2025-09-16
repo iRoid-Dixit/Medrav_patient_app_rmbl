@@ -1679,7 +1679,7 @@ class ApiRepositoryImpl @Inject constructor(
         }
     ).flow
 
-    override fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsData>> = flow {
+    override fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<ApiResponse<AvailableSlotsData>>> = flow {
         try {
             val response = apiServices.getAvailableSlots(request)
 
@@ -1702,5 +1702,6 @@ class ApiRepositoryImpl @Inject constructor(
     }.onStart { emit(NetworkResult.Loading()) }.flowOn(Dispatchers.IO).catch { cause ->
         emit(NetworkResult.Error(cause.message))
     }
+
 
 }

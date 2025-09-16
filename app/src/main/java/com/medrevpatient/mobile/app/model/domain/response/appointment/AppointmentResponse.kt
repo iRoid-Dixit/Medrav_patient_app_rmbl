@@ -26,13 +26,3 @@ data class DoctorInfo(
     @SerializedName("isVerified")  val isVerified: Int,
     @SerializedName("profileImage")  val profileImage: String
 )
-data class AvailableSlot(
-    @SerializedName("time")
-    val time: String,
-    @SerializedName("isAvailable")
-    val isAvailable: Boolean,
-    @SerializedName("availableDoctorsCount")
-    val availableDoctorsCount: Int,
-    @SerializedName("timestamp")
-    val timestamp: Long
-)

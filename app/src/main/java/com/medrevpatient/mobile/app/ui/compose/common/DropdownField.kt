@@ -148,10 +148,9 @@ fun DropdownField(
                     ) {
                         Text(
                             text = item,
-                            fontSize = 16.sp,
-                            fontWeight = W500,
-                            fontFamily = WorkSans,
-                            color = Black
+                            fontSize = 14.sp,
+                            fontFamily = nunito_sans_400,
+                            color = SteelGray
                         )
                     }
                 }

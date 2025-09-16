@@ -1,6 +1,7 @@
 package com.medrevpatient.mobile.app.ux.container.bookAppointmen
 
 import android.content.Context
+import androidx.compose.material3.ExperimentalMaterial3Api
 import com.medrevpatient.mobile.app.data.source.remote.helper.NetworkResult
 import com.medrevpatient.mobile.app.data.source.remote.repository.ApiRepository
 import com.medrevpatient.mobile.app.domain.validation.ValidationResult
@@ -19,7 +20,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.medrevpatient.mobile.app.R
+import com.medrevpatient.mobile.app.model.domain.request.authReq.ForgetPasswordReq
 import com.medrevpatient.mobile.app.utils.AppUtils
+import com.medrevpatient.mobile.app.utils.AppUtils.showErrorMessage
+import com.medrevpatient.mobile.app.utils.AppUtils.showSuccessMessage
+import com.medrevpatient.mobile.app.ux.startup.auth.login.LoginUiEvent
 
 class GetBookAppointmentUiStateUseCase
 @Inject constructor(
@@ -66,16 +71,15 @@ class GetBookAppointmentUiStateUseCase
             is BookAppointmentUiEvent.SelectDate -> {
                 bookAppointmentUiDataFlow.update { it.copy(selectedDate = event.date) }
                 // Fetch available slots when date is selected
-                fetchAvailableSlots(event.date, getTimePeriodNumber(bookAppointmentUiDataFlow.value.selectedTimePeriod), coroutineScope)
+                fetchAvailableSlots(coroutineScope = coroutineScope)
             }
             is BookAppointmentUiEvent.SelectTime -> {
                 bookAppointmentUiDataFlow.update { it.copy(selectedTime = event.time) }
             }
             is BookAppointmentUiEvent.SelectTimePeriod -> {
                 bookAppointmentUiDataFlow.update { it.copy(selectedTimePeriod = event.period) }
-                // Fetch available slots when time period changes
                 if (bookAppointmentUiDataFlow.value.selectedDate.isNotBlank()) {
-                    fetchAvailableSlots(bookAppointmentUiDataFlow.value.selectedDate, getTimePeriodNumber(event.period), coroutineScope)
+                    fetchAvailableSlots(coroutineScope = coroutineScope)
                 }
             }
             is BookAppointmentUiEvent.UpdateNotes -> {
@@ -129,9 +133,6 @@ class GetBookAppointmentUiStateUseCase
                     )
                 }
             }
-            is BookAppointmentUiEvent.FetchAvailableSlots -> {
-                fetchAvailableSlots(event.date, event.timePeriod, coroutineScope)
-            }
         }
     }
     private fun genderValidation(gender: String?, context: Context): ValidationResult {
@@ -147,69 +148,55 @@ class GetBookAppointmentUiStateUseCase
         )
     }
 
-    private fun fetchAvailableSlots(date: String, timePeriod: Int, coroutineScope: CoroutineScope) {
-        if (date.isBlank()) return
-        
-        bookAppointmentUiDataFlow.update { it.copy(isLoadingSlots = true, slotsError = null) }
-        
-        val request = AvailableSlotsRequest(date = date, timePeriod = timePeriod)
-        
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun fetchAvailableSlots(
+        coroutineScope: CoroutineScope,
+    ) {
         coroutineScope.launch {
-            apiRepository.getAvailableSlots(request)
-                .catch { exception ->
-                    bookAppointmentUiDataFlow.update { 
-                        it.copy(
-                            isLoadingSlots = false,
-                            slotsError = exception.message ?: "Failed to fetch available slots"
-                        )
+            val availableSlotsRequest = AvailableSlotsRequest(
+                date = convertDateToApiFormat(bookAppointmentUiDataFlow.value.selectedDate),
+                timePeriod = getTimePeriodNumber(bookAppointmentUiDataFlow.value.selectedTimePeriod)
+            )
+            // Set loading state
+            bookAppointmentUiDataFlow.update { state ->
+                state.copy(isLoadingSlots = true, slotsError = null)
+            }
+            apiRepository.getAvailableSlots(availableSlotsRequest).collect {
+                when (it) {
+                    is NetworkResult.Error -> {
+                        showOrHideLoader(false)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
+                    }
+                    is NetworkResult.Loading -> {
+                        showOrHideLoader(true)
+                    }
+                    is NetworkResult.Success -> {
+                        val availableSlots = it.data?.data?.availableSlots ?: emptyList()
+                        val timeSlots = availableSlots.map { slot -> slot.time }
+                        showOrHideLoader(false)
+                        bookAppointmentUiDataFlow.update { state ->
+                            state.copy(
+                                availableTimeSlots = timeSlots,
+                            )
+                        }
+                        showSuccessMessage(context = context, it.data?.message ?: "")
+                    }
+                    is NetworkResult.UnAuthenticated -> {
+                        showOrHideLoader(true)
+                        showErrorMessage(context = context, it.message ?: "Something went wrong!")
                     }
                 }
-                .collect { result ->
-                    when (result) {
-                        is NetworkResult.Loading -> {
-                            bookAppointmentUiDataFlow.update { it.copy(isLoadingSlots = true) }
-                        }
-                        is NetworkResult.Success -> {
-                            val availableSlots = result.data?.availableSlots
-                            val availableTimeSlots = availableSlots
-                                ?.filter { it.isAvailable }
-                                ?.map { formatTimeSlot(it.time) }
-                                ?: emptyList()
-                            val unavailableTimeSlots = availableSlots
-                                ?.filter { !it.isAvailable }
-                                ?.map { formatTimeSlot(it.time) }
-                                ?: emptyList()
-                            
-                            bookAppointmentUiDataFlow.update { 
-                                it.copy(
-                                    isLoadingSlots = false,
-                                    availableTimeSlots = availableTimeSlots,
-                                    unavailableTimeSlots = unavailableTimeSlots,
-                                    slotsError = null
-                                )
-                            }
-                        }
-                        is NetworkResult.Error -> {
-                            bookAppointmentUiDataFlow.update { 
-                                it.copy(
-                                    isLoadingSlots = false,
-                                    slotsError = result.message ?: "Failed to fetch available slots"
-                                )
-                            }
-                        }
-                        is NetworkResult.UnAuthenticated -> {
-                            bookAppointmentUiDataFlow.update { 
-                                it.copy(
-                                    isLoadingSlots = false,
-                                    slotsError = "Authentication required"
-                                )
-                            }
-                        }
-                    }
-                }
+            }
         }
     }
 
+    private fun showOrHideLoader(showLoader: Boolean) {
+        bookAppointmentUiDataFlow.update { state ->
+            state.copy(
+                isLoadingSlots = showLoader
+            )
+        }
+    }
     private fun getTimePeriodNumber(period: String): Int {
         return when (period.lowercase()) {
             "morning" -> 1
@@ -235,6 +222,25 @@ class GetBookAppointmentUiStateUseCase
             }
         } catch (e: Exception) {
             time // Return original if parsing fails
+        }
+    }
+
+    /**
+     * Converts date from dd/MM/yyyy format to YYYY-MM-DD format for API calls
+     */
+    private fun convertDateToApiFormat(dateString: String): String {
+        return try {
+            val parts = dateString.split("/")
+            if (parts.size == 3) {
+                val day = parts[0].padStart(2, '0')
+                val month = parts[1].padStart(2, '0')
+                val year = parts[2]
+                "$year-$month-$day"
+            } else {
+                dateString // Return original if format is unexpected
+            }
+        } catch (e: Exception) {
+            dateString // Return original if parsing fails
         }
     }
 }

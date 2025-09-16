@@ -17,3 +17,14 @@ data class AvailableSlotsData(
     @SerializedName("availableSlots")
     val availableSlots: List<AvailableSlot>
 )
+data class AvailableSlot(
+    @SerializedName("time")
+    val time: String,
+    @SerializedName("isAvailable")
+    val isAvailable: Boolean,
+    @SerializedName("availableDoctorsCount")
+    val availableDoctorsCount: Int,
+    @SerializedName("timestamp")
+    val timestamp: Long
+)
+

@@ -22,7 +22,7 @@ data class BookAppointmentData(
     val selectCategoryErrorMsg: String? = null,
     val isDatePickerVisible: Boolean = false,
     val isTimePeriodDropdownExpanded: Boolean = false,
-    val availableTimeSlots: List<String> = listOf(
+    var availableTimeSlots: List<String> = listOf(
 
     ),
     val unavailableTimeSlots: List<String> = listOf("10:00 PM"),
@@ -40,6 +40,6 @@ sealed interface BookAppointmentUiEvent {
     data class ToggleTimePeriodDropdown(val isExpanded: Boolean) : BookAppointmentUiEvent
     object ConfirmBooking : BookAppointmentUiEvent
     data class RoleDropDownExpanded(val selectGender:String):BookAppointmentUiEvent
-    data class FetchAvailableSlots(val date: String, val timePeriod: Int) : BookAppointmentUiEvent
+
 
 }

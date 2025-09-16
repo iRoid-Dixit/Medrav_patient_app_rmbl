@@ -498,6 +498,6 @@ interface ApiServices {
     @POST(EndPoints.Main.AVAILABLE_SLOTS)
     suspend fun getAvailableSlots(
         @Body request: AvailableSlotsRequest
-    ): Response<AvailableSlotsData>
+    ): Response<ApiResponse<AvailableSlotsData>>
 
 }

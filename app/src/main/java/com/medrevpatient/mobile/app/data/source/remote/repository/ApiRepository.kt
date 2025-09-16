@@ -440,7 +440,7 @@ interface ApiRepository {
     /**
      * Get Available Slots
      * */
-    fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<AvailableSlotsData>>
+    fun getAvailableSlots(request: AvailableSlotsRequest): Flow<NetworkResult<ApiResponse<AvailableSlotsData>>>
 
 
 }

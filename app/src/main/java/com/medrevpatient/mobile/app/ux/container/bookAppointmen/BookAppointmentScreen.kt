@@ -35,14 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import com.medrevpatient.mobile.app.R
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -83,6 +87,7 @@ fun BookAppointmentScreen(
     }
     HandleNavigation(viewModelNav = viewModel, navController = navController)
 }
+
 @Composable
 private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event: (BookAppointmentUiEvent) -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -114,7 +119,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                 header = "mm/dd/yyyy",
                 isTitleVisible = true,
                 backGroundColor = White,
-                errorMessage =bookAppointmentUiState?.selectedDateErrorFlow ?: "" ,
+                errorMessage = bookAppointmentUiState?.selectedDateErrorFlow ?: "",
                 borderColors = SteelGray.copy(alpha = 0.2f),
                 title = "Select Date",
                 trailingIcon = R.drawable.ic_calendar,
@@ -123,7 +128,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
-            
+
             // Select Time Section - Modified to avoid nested scrolling
             TimeSlotComponentFixed(
                 selectedTime = bookAppointmentUiState?.selectedTime ?: "09:00 AM",
@@ -193,7 +198,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
 
             Spacer(modifier = Modifier.height(20.dp))
         }
-        
+
         if (bookAppointmentUiState?.isDatePickerVisible == true) {
             DatePickerWithDialog(
                 onSelectedDate = selectedDateMillis,
@@ -211,6 +216,7 @@ private fun BookAppointmentScreenContent(uiState: BookAppointmentUiState, event:
         }
     }
 }
+
 @Composable
 fun TimeSlotComponentFixed(
     selectedTime: String,
@@ -264,23 +270,40 @@ fun TimeSlotComponentFixed(
                 }
                 DropdownMenu(
                     expanded = isDropdownExpanded,
-                    onDismissRequest = { onDropdownExpanded(false) }
+                    onDismissRequest = { onDropdownExpanded(false) },
+                    modifier = Modifier.background(Color.Transparent),
+                    offset = DpOffset(x = 0.dp, y = 8.dp), // optional: to create spacing
+                    properties = PopupProperties(focusable = true),
+                    // 🟢 Transparent background, no shadow
+                    tonalElevation = 0.dp,
+                    shadowElevation = 0.dp,
+                    containerColor = Color.Transparent
                 ) {
                     timePeriods.forEach { period ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = period,
-                                    fontFamily = nunito_sans_600,
-                                    color = SteelGray,
-                                    fontSize = 14.sp
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color.White)
+                                .border(
+                                    width = 1.dp,
+                                    color = SteelGray.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(10.dp)
                                 )
-                            },
-                            onClick = {
-                                onTimePeriodSelected(period)
-                                onDropdownExpanded(false)
-                            }
-                        )
+                                .clickable {
+                                    onTimePeriodSelected(period)
+                                    onDropdownExpanded(false)
+                                }
+                                .padding(vertical = 14.dp, horizontal = 20.dp)
+                        ) {
+                            Text(
+                                text = period,
+                                fontSize = 14.sp,
+                                fontFamily = nunito_sans_400,
+                                color = SteelGray
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
                     }
                 }
             }
@@ -384,138 +407,7 @@ fun TimeSlotComponentFixed(
     }
 }
 
-@Composable
-fun TimeSlotComponent(
-    selectedTime: String,
-    selectedTimePeriod: String,
-    availableTimeSlots: List<String>,
-    unavailableTimeSlots: List<String>,
-    timePeriods: List<String>,
-    isDropdownExpanded: Boolean,
-    onTimeSelected: (String) -> Unit,
-    onTimePeriodSelected: (String) -> Unit,
-    onDropdownExpanded: (Boolean) -> Unit
-) {
-    Column {
-        // Time Period Dropdown
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Select Time",
-                fontFamily = nunito_sans_600,
-                color = SteelGray,
-                fontSize = 16.sp,
-            )
-            Box {
-                Row(
-                    modifier = Modifier
-                        .background(
-                            color = White,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .border(width = 1.dp, color = SteelGray.copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp))
-                        .clickable { onDropdownExpanded(!isDropdownExpanded) }
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = selectedTimePeriod,
-                        fontFamily = nunito_sans_600,
-                        color = SteelGray,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_arrow_down),
-                        contentDescription = "Dropdown",
-                    )
-                }
-                DropdownMenu(
-                    expanded = isDropdownExpanded,
-                    onDismissRequest = { onDropdownExpanded(false) }
-                ) {
-                    timePeriods.forEach { period ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = period,
-                                    fontFamily = nunito_sans_600,
-                                    color = SteelGray,
-                                    fontSize = 14.sp
-                                )
-                            },
-                            onClick = {
-                                onTimePeriodSelected(period)
-                                onDropdownExpanded(false)
-                            }
-                        )
-                    }
-                }
-            }
-        }
-        Text(
-            text = "Select a convenient time",
-            fontFamily = nunito_sans_400,
-            color = Martinique.copy(alpha = 0.5f),
-            fontSize = 12.sp
-        )
-        Spacer(modifier = Modifier.height(16.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3), // ✅ 3 slots per row
-            horizontalArrangement = Arrangement.spacedBy(15.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-
-        ) {
-            items(availableTimeSlots) { timeSlot ->
-                val isSelected = timeSlot == selectedTime
-                val isUnavailable = unavailableTimeSlots.contains(timeSlot)
-
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = when {
-                                isUnavailable -> Gray20
-                                isSelected -> Magnolia
-                                else -> White
-                            },
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = when {
-                                isUnavailable -> Gray20
-                                isSelected -> AppThemeColor
-                                else -> Gray5
-                            },
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable(enabled = !isUnavailable) {
-                            if (!isUnavailable) {
-                                onTimeSelected(timeSlot)
-                            }
-                        }
-                        .padding(vertical = 10.dp, horizontal = 12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = timeSlot,
-                        fontFamily = nunito_sans_400,
-                        color = when {
-                            isUnavailable -> Gray20
-                            isSelected -> AppThemeColor
-                            else -> SteelGray
-                        },
-                        fontSize = 14.sp,
-                    )
-                }
-            }
-        }
-    }
-}
 
 
 @Preview
