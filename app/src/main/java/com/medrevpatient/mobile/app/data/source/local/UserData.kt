@@ -9,6 +9,8 @@ import com.medrevpatient.mobile.app.ui.theme.Green4C
 import com.medrevpatient.mobile.app.ui.theme.RedOrange
 import com.medrevpatient.mobile.app.ui.theme.fulvous
 import com.medrevpatient.mobile.app.ui.theme.violetsAreBlue
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 object UserData {
@@ -36,11 +38,13 @@ object UserData {
         val price: String,
         val iconRes: Int
     )
+
     data class RecentActivity(
         val title: String,
         val timestamp: String,
         val iconRes: Int,
     )
+
     val settingScreenListingData = listOf(
         SettingData(title = R.string.app_name, colors = R.color.white, true),
         SettingData(title = R.string.app_name, colors = R.color.white, true),
@@ -60,6 +64,7 @@ object UserData {
         SettingData(title = R.string.app_name, R.color.red, false),
         SettingData(title = R.string.app_name, R.color.red, false),
     )
+
     // Data class for question structure
     data class Question(
         val id: Int,
@@ -67,7 +72,7 @@ object UserData {
         val options: List<String>
     )
 
-     var questions = listOf(
+    var questions = listOf(
         Question(
             id = 1,
             text = "Have you felt nausea since your last injection?",
@@ -135,6 +140,7 @@ object UserData {
             nextDoseInfo = "Next dose tomorrow at 7:30 AM"
         )
     )
+
     enum class MedicationStatus(
         val displayText: String,
         val textColor: Color,
@@ -176,6 +182,7 @@ object UserData {
         val title: Int,
         val isArrowVisible: Boolean = true
     )
+
     val profileItems = listOf(
         ProfileItem(
             icon = R.drawable.ic_edit_profile,
@@ -203,12 +210,14 @@ object UserData {
             isArrowVisible = true
         )
     )
+
     data class StatusIndicatorData(
         val icon: Int,
         val count: Int,
         val label: String,
         val color: Color
     )
+
     val statusList = listOf(
         StatusIndicatorData(R.drawable.ic_right_mark, 2, "Taken", Green4C),
         StatusIndicatorData(R.drawable.ic_clock, 1, "Due", violetsAreBlue),
@@ -222,13 +231,45 @@ object UserData {
         val question: String,
         val answer: String,
     )
-    val frequentlyAskedQuestions = List(4){
+
+    val frequentlyAskedQuestions = List(4) {
         QuestionItem(
             id = it,
             question = "How do I reset my password?",
             answer = "To reset your password, go to the login screen and click on 'Forgot Password'. Follow the instructions sent to your registered email address."
         )
     }
+
+    data class Chats(
+        val id: String = "",
+        val message: Message = Message(),
+        val createAt: Long = 0
+    ) {
+        data class Message(
+            val role: String = "",
+            val content: String = ""
+        ) {
+            val isMe: Boolean get() = role == "user"
+        }
+
+        val formatedTime
+            get() =
+                SimpleDateFormat("hh:mm a", java.util.Locale.getDefault()).format(Date(createAt))
+                    .toString()
+    }
+
+
+    val sampleChatList = List(10) { index ->
+        Chats(
+            id = index.toString(),
+            message = Chats.Message(
+                role = if (index % 2 == 0) "user" else "doctor",
+                content = "Message $index"
+            ),
+            createAt = System.currentTimeMillis() - index * 60000L // Each message 1 minute apart
+        )
+    }
+
 }
 
 

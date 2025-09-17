@@ -113,3 +113,7 @@ val GrayBD = Color(0xFFBDBDBD)
 val Silver = Color(0xFFBDBDBD)
 val RedOrange = Color(0xFFFF3333)
 val lavender = Color(0xFFEFE8FF)
+
+val appGradient = Brush.horizontalGradient(
+    colors = listOf(AppThemeColor, SteelGray)
+)

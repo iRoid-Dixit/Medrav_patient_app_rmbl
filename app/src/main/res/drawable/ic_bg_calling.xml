@@ -7,16 +7,6 @@
       android:pathData="M20,0C31.046,0 40,8.954 40,20C40,31.046 31.046,40 20,40C8.954,40 0,31.046 0,20C0,8.954 8.954,0 20,0Z"
       android:fillColor="#9261FA"
       android:fillAlpha="0.2"/>
-  <path
-      android:strokeWidth="1"
-      android:pathData="M20,0C31.046,0 40,8.954 40,20C40,31.046 31.046,40 20,40C8.954,40 0,31.046 0,20C0,8.954 8.954,0 20,0Z"
-      android:fillColor="#00000000"
-      android:strokeColor="#E5E7EB"/>
-  <path
-      android:strokeWidth="1"
-      android:pathData="M26.669,30H13.336V10H26.669V30Z"
-      android:fillColor="#00000000"
-      android:strokeColor="#E5E7EB"/>
   <group>
     <clip-path
         android:pathData="M13.336,12.5H26.669V25.833H13.336V12.5Z"/>
